@@ -1,0 +1,17 @@
+deepface==0.0.79
+glob2==0.7
+Image==1.5.33
+matplotlib==3.7.2
+mediapipe==0.10.2
+numpy==1.25.1
+openpyxl==3.1.2
+pandas==2.0.3
+parselmouth==1.1.1
+Pillow==10.0.0
+pyaudio==0.2.13
+tabulate==0.9.0
+tqdm==4.62.3
+```
+cv_bridge==1.15.0
+opencv-python
+```

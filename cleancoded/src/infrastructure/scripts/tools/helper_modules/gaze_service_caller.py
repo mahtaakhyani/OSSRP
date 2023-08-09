@@ -1,3 +1,7 @@
+'''This modules serves as a test for the gaze service. 
+It subscribes to the image topic and calls the gaze service with the image and the landmarks.
+The output is the gaze direction of the person in the image, a 3D vector in the camera frame.
+This module does not directly interact with ROS. It is a test for the gaze service. The gaze service is a ROS service which is called by this module through a service proxy.'''
 import rospy
 from face_pkg.srv import gaze
 from sensor_msgs.msg import Image
