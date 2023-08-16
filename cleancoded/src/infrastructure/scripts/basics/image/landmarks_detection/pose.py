@@ -19,6 +19,7 @@ class MeshDetector():
 	mp_holistic = mp.solutions.holistic
 	image = np.zeros((640,480,3))
 	imgmsg = Image()
+	rospy.init_node("landmark_detection", anonymous=False)
 
 	def __init__(self):
 		rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
@@ -114,7 +115,6 @@ class MeshDetector():
 
 
 if __name__ == "__main__":
-		rospy.init_node("landmark_detection", anonymous=False)
 		md = MeshDetector()
 		rospy.spin()
 

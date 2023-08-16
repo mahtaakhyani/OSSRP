@@ -16,7 +16,7 @@ mp_drawing = mp.solutions.drawing_utils
 
 '''
 Face Emotion Analysis publisher node
-Taking the camera input in, analyzing it, 
+Taking the camera input in, analyze it, 
 then publish it on the related topic through a 2D array message 
 containing the list of names and the probability of the given emotion being the answer
 (The higher the number, the stronger assurance)
@@ -40,7 +40,7 @@ class FaceDetection():
         rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
 
         while not rospy.is_shutdown():
-             rospy.spin()
+            rospy.spin()
     
     def syncinfo(self, info):  # sync camera video stream info
         self.height = info.height

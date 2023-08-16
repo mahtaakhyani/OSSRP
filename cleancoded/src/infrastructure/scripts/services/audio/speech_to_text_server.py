@@ -59,5 +59,8 @@ class SpeechToText:
 
 
 if __name__ == "__main__":
+	try:
         stt = SpeechToText() 
         rospy.spin()
+	except rospy.ROSInterruptException:
+		pass

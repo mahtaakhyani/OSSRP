@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import math
-from helpers import relative, relativeT
+from cleancoded.src.infrastructure.scripts.tools.helper_modules.mathhelpers import relative, relativeT
 
 class GazeTracking():
 
