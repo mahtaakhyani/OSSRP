@@ -7,7 +7,8 @@ import numpy as np
 from std_msgs.msg import Float64MultiArray
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
-from face_pkg.msg import List
+from std_msgs.msg import List #????
+
 
 
 # from .matrix import gridding as gd
