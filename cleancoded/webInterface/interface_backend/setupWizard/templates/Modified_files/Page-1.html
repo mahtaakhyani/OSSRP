@@ -32,25 +32,7 @@
     
     
     
-      // Calling a service
-      // -----------------
-      // var addTwoIntsClient = new ROSLIB.Service({
-      //   ros : ros,
-      //   name : '/add_two_ints',
-      //   serviceType : 'rospy_tutorials/AddTwoInts'
-      // });
-    
-      // var request = new ROSLIB.ServiceRequest({
-      //   a : 1,
-      //   b : 2
-      // });
-    
-      // addTwoIntsClient.callService(request, function(result) {
-      //   console.log('Result for service call on '
-      //     + addTwoIntsClient.name
-      //     + ': '
-      //     + result.sum);
-      // });
+
     
       // // Getting and setting a param value
       // // ---------------------------------
@@ -92,7 +74,7 @@
                   <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d35" href="#tab-3d35" role="tab" aria-controls="tab-3d35" aria-selected="true">Camera</a>
                 </li>
                 <li class="u-tab-item" role="presentation">
-                  <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d36" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">Localization</a>
+                  <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d36" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">Speech</a>
                 </li>
               
               </ul>
@@ -115,11 +97,38 @@
               <div class="u-tab-content">
                 <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d35" role="tabpanel" aria-labelledby="link-tab-3d35">
                   <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0" style="">
+                    <button id="landmark" onclick="changeHref()" style="background-color: #ffbb00;"><span id="view_landmarks">Show Landmarks</span></button>
                     <div class="embed-responsive">
                       <img id="rgb-canvas" class="embed-responsive-item" src="http://localhost:8181/stream?topic=/camera/image_raw">
                         <p>Unable to load camera frames.</p>
                     </img>
                     </div>
+                  <script>
+                    let clickCount = 0;
+
+                    function changeHref() {
+                      let link = document.getElementById("rgb-canvas");
+                      let btn = document.getElementById("landmark");
+                      let text = document.getElementById("view_landmarks");
+                      if (clickCount % 2 === 0) {
+                        btn.style.backgroundColor = "#c99400";
+                        text.innerHTML = "Hide Landmarks";
+                        link.src = "http://localhost:8181/stream?topic=/camera/image_raw/landmarked";
+                      } else {
+                        btn.style.backgroundColor = "#ffbb00";
+                        text.innerHTML = "Show Landmarks";
+                        link.src = "http://localhost:8181/stream?topic=/camera/image_raw";
+                      }
+                      clickCount++;
+                    }
+                  </script>
+                  </div>
+                </div>
+              </div>
+              <div class="u-tab-content">
+                <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d36" role="tabpanel" aria-labelledby="link-tab-3d36">
+                  <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0" style="">
+                    <input id="tts" type="text" placeholder="Enter text to speak" style="width: 100%; height: 100%; font-size: 20px; padding: 10px; border-radius: 10px; border: 2px solid #ffbb00; background-color: #fff; color: #000;"/>
                   </div>
                 </div>
               </div>
@@ -434,18 +443,18 @@
                     <ul class="u-border-2 u-border-grey-75 u-custom-color-7 u-tab-list u-unstyled u-tab-list-1" role="tablist">
                 
                       <li class="u-tab-item" role="presentation">
-                        <a class="active u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d34" href="#tab-3d34" role="tab" aria-controls="tab-3d34" aria-selected="true">No. 1</a>
+                        <a class="active u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d344" href="#tab-3d34" role="tab" aria-controls="tab-3d34" aria-selected="true">No. 1</a>
                       </li>
                       <li class="u-tab-item" role="presentation">
-                        <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d35" href="#tab-3d35" role="tab" aria-controls="tab-3d35" aria-selected="true">No. 2</a>
+                        <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d355" href="#tab-3d35" role="tab" aria-controls="tab-3d35" aria-selected="true">No. 2</a>
                       </li>
                       <li class="u-tab-item" role="presentation">
-                        <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d36" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">No. 4</a>
+                        <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d366" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">No. 4</a>
                       </li>
                     
                     </ul>
                     <div class="u-tab-content"  ondrop="drop(event)" ondragover="allowDrop(event)">
-                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-3d34" role="tabpanel" aria-labelledby="link-tab-3d34">
+                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-3d344" role="tabpanel" aria-labelledby="link-tab-3d344">
                         <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0  scrollable" style="">
                           <button class="auto_run btn btn-primary" onclick="auto_run();">Auto Run</button>
                           <button class="clean_all btn btn-primary" onclick="clean();">Clear All</button>
@@ -456,7 +465,7 @@
                       <div class="u-container-layout u-container-layout-13"></div>
                     </div>
                     <div class="u-tab-content"  ondrop="drop(event)" ondragover="allowDrop(event)">
-                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d35" role="tabpanel" aria-labelledby="link-tab-3d35">
+                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d355" role="tabpanel" aria-labelledby="link-tab-3d355">
                         <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0  scrollable" style="">
                           <button class="auto_run btn btn-primary" onclick="auto_run();">Auto Run</button>
                           <button class="clean_all btn btn-primary" onclick="clean();">Clear All</button>
@@ -467,7 +476,7 @@
                       <div class="u-container-layout u-container-layout-13"></div>
                     </div>
                     <div class="u-tab-content"  ondrop="drop(event)" ondragover="allowDrop(event)">
-                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d36" role="tabpanel" aria-labelledby="link-tab-3d36">
+                      <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d366" role="tabpanel" aria-labelledby="link-tab-3d366">
                         <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0  scrollable" style="">
                           <button class="auto_run btn btn-primary" onclick="auto_run();">Auto Run</button>
                           <button class="clean_all btn btn-primary" onclick="clean();">Clear All</button>

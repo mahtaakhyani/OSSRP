@@ -33,7 +33,7 @@ class MainViewTemp(APIView):
             # print(EmotionModel.objects.all()[1].sound.path())
             # parrot_serializers_to_parse = ParrotCommandController().get(request)
             return TemplateResponse(request, 
-                'Modified_files/elements/frame.html',
+                'Modified_files/Page-1.html',
              {'emotions':emdb,
                 # 'voices':sdb,
                 # 'p_commands':parrot_serializers_to_parse

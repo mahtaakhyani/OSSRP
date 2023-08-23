@@ -15,38 +15,38 @@ This module is the server for the speech-to-text service. It receives the audio 
 import rospy
 import speech_recognition as sr
 from infrastructure.srv import Stt
-from audio_common_msgs.msg import AudioDataStamped as AudioData
 
-class SpeechToText:
+class SpeechToTextServer:
 	def __init__(self):
 		rospy.init_node('speech_to_text_server')
-		s = rospy.Service('speech_to_text', Stt, self.speech_to_text) 
-		rospy.Subscriber("/captured_audio", AudioData, self.callback) 
+		s = rospy.Service('speech_to_text', Stt, self.callback) 
 		rospy.loginfo("Ready to convert speech to text.")
 
 	def callback(self,data):
-		self.audio = data.data
+		audio = data.data
+		transcript = self.speech_to_text(audio)
+		return transcript
 
-	def speech_to_text(self,req):
+	def speech_to_text(self,audio):
 		r = sr.Recognizer() #initialize the recognizer
 		r.operation_timeout = 30 #set the operation timeout to 30 seconds meaning that if the speech is not recognized within 30 seconds, the operation will be aborted
 
 		# recognize speech using Google Speech Recognition
 		try:
 			rospy.log_info('Trying...')
-			transcript = r.recognize_google(self.audio,language='fa-IR')
+			text = r.recognize_google(audio,language='fa-IR')
 			# for testing purposes, we're just using the default API key
 			# to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
 			# instead of `r.recognize_google(audio)`
 
-			rospy.log_info("Google Speech Recognition thinks you said in persian: -  " + transcript)
+			rospy.log_info("Google Speech Recognition thinks you said in persian: -  " + text)
 			
 			# Uncomment the following lines to write the transcript to a file
 			# with open("transcript.txt","w+", encoding="utf-8") as tr:
 			# 	tr.write(transcript)
 			# 	tr.close()
 		
-			return transcript
+			return text
 
 		except sr.UnknownValueError:
 			rospy.logerror("Google Speech Recognition could not understand audio") #log the error
@@ -60,7 +60,6 @@ class SpeechToText:
 
 if __name__ == "__main__":
 	try:
-        stt = SpeechToText() 
-        rospy.spin()
+		stt = SpeechToTextServer() 
+		rospy.spin()
 	except rospy.ROSInterruptException:
-		pass

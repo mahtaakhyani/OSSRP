@@ -1,0 +1,3 @@
+string text
+---
+audio_common_msgs/AudioDataStamped speech

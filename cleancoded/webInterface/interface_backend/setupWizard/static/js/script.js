@@ -489,7 +489,7 @@ function clear_item(item){
 
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->
+// // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function submitWizardForm(data) {
@@ -509,3 +509,28 @@ function submitWizardForm(data) {
     error: function(response) {
     console.log(response);// logging the response in browser's console
 }});}
+
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- SERVICES ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // // Calling a service
+      // // -----------------
+      // var speech_to_text_client = new ROSLIB.Service({
+      //   ros : ros,
+      //   name : '/web_speech_to_text',
+      //   serviceType : 'infrastructure/EmoProb'
+      // });
+    
+      // var request = new ROSLIB.ServiceRequest({
+      //   a : 1,
+      //   b : 2
+      // });
+    
+      // speech_to_text_client.callService(request, function(result) {
+      //   console.log('Result for service call on '
+      //     + speech_to_text_client.name
+      //     + ': '
+      //     + result.sum);
+      // });

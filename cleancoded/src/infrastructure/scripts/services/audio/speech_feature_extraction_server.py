@@ -26,8 +26,6 @@ import sys
 import rospy
 import parselmouth
 from parselmouth.praat import call
-from audio_common_msgs.msg import AudioDataStamped as AudioData
-
 from infrastructure.srv import Stt, AudFeature
 
 
