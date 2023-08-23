@@ -1,0 +1,2 @@
+infrastructure
+-DCATKIN_DEVEL_PREFIX=/home/hooshang/OSSRP/cleancoded/devel -DCMAKE_INSTALL_PREFIX=/home/hooshang/OSSRP/cleancoded/install -G Unix Makefiles
