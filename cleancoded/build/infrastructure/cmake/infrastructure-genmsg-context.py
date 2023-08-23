@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/hooshang/OSSRP/cleancoded/src/infrastructure/msg/AudFeature.msg;/home/hooshang/OSSRP/cleancoded/src/infrastructure/msg/EmoProbArr.msg"
+messages_str = "/home/hooshang/OSSRP/cleancoded/src/infrastructure/msg/AudFeatures.msg;/home/hooshang/OSSRP/cleancoded/src/infrastructure/msg/EmoProbArr.msg"
 services_str = "/home/hooshang/OSSRP/cleancoded/src/infrastructure/srv/AudFeature.srv;/home/hooshang/OSSRP/cleancoded/src/infrastructure/srv/EmoProb.srv;/home/hooshang/OSSRP/cleancoded/src/infrastructure/srv/Gaze.srv;/home/hooshang/OSSRP/cleancoded/src/infrastructure/srv/Stt.srv;/home/hooshang/OSSRP/cleancoded/src/infrastructure/srv/Tts.srv"
 pkg_name = "infrastructure"
 dependencies_str = "std_msgs;audio_common_msgs;sensor_msgs"

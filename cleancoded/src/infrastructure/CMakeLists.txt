@@ -45,7 +45,7 @@ find_package(catkin REQUIRED COMPONENTS rospy audio_common_msgs sensor_msgs std_
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  AudFeature.msg
+  AudFeatures.msg
   EmoProbArr.msg
 )
 
@@ -162,7 +162,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/basics/image/CameraCapture.py
+  scripts/CameraCapture.py
   scripts/basics/image/landmarks_detection/pose.py
   scripts/basics/audio_capture.py
   scripts/services/image/gaze_detector_service.py
