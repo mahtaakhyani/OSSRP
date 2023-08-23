@@ -7,7 +7,7 @@ project(infrastructure)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS rospy audio_common_msgs sensor_msgs std_msgs message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -70,7 +70,9 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   std_msgs  # Or other packages containing msgs
-  audio_common_msg
+  audio_common_msgs
+  sensor_msgs
+ # infrastructure
 )
 
 ################################################
@@ -161,14 +163,13 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/basics/image/CameraCapture.py
-  scripts/basics/image/landmarks_detection/pose.py.py
-  scripts/basics/image/landmarks_detection/pose.py.py
+  scripts/basics/image/landmarks_detection/pose.py
   scripts/basics/audio_capture.py
-  scripts/services/gaze_detector_service.py
+  scripts/services/image/gaze_detector_service.py
   scripts/services/audio/text_to_speech.py
   scripts/services/audio/speech_to_text_server.py
-  scripts/services/audio/speech_emotion_analysis.py
-  scripts/services/audio/speech_feature_extraction.py
+  scripts/services/audio/speech_emotion_analysis_server.py
+  scripts/services/audio/speech_feature_extraction_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
