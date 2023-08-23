@@ -3,7 +3,7 @@
 # then it initiates a topic to publish the received features to the topic /audio_features as a custom message called AudFeature [which is located in "$(rospack find infrastructure)/msg"]
 
 import rospy
-from infrastructure.msg import AudFeature
+from infrastructure.msg import AudFeatures
 from infrastructure.srv import AudFeature as AudFeatureSrv
 from audio_common_msgs.msg import AudioDataStamped as AudioData
 
