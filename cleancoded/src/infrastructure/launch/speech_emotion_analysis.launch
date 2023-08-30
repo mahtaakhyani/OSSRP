@@ -1,0 +1,7 @@
+<!-- speech_emotion_analysis launch-->
+
+<!-- <launch>
+  <node pkg="speech_emotion_analysis" type="speech_emotion_analysis_node" name="speech_emotion_analysis_node" output="screen">
+    <param name="speech_emotion_analysis_node/param1" value="param1_value"/>
+    <param name="speech_emotion_analysis_node/param2" value="param2_value"/>
+  </node> -->

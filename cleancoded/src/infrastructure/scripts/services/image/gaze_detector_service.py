@@ -6,14 +6,29 @@ It receives the image data from the client and sends it to the gaze detection fu
 The output is the gaze position as a string through the Gaze service [which is located in "$(rospack find infrastructure)/srv"].
 """
 #!`/usr/bin/env python
-from cleancoded.src.infrastructure.scripts.tools.helper_modules.mathhelpers import relative, relativeT
+import importlib.util
 import math
-import numpy as np
-import cv2
-import rospy
-from sensor_msgs.msg import Image
-from infrastructor.srv import Gaze
+import os
 
+import cv2
+import numpy as np
+import rospkg
+import rospy
+from std_msgs.msg import List
+from infrastructor.srv import Gaze
+from infrastructure.scripts.tools.helper_modules.mathhelpers import (relative,
+                                                                     relativeT)
+from sensor_msgs.msg import Image
+
+pkg = rospkg.RosPack().get_path('infrastructure')
+
+module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules', 'mathhelpers.py')
+
+spec = importlib.util.spec_from_file_location("mathhelpers", module_path)
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+from mathhelpers import relative, relativeT
 
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,7 +454,7 @@ class GazeDetectorService(GazePosition):
     rospy.init_node('gaze_detector', anonymous=False)
     def __init__(self):
         rospy.Service('gaze_pose', Gaze, self.callback)
-        rospy.Subscriber("/image_raw/landmarked", Image, self.landmark_handler)
+        rospy.Subscriber("/image_cv2/landmarked", List, self.landmark_handler)
 
     def callback(self, frame):
         try:

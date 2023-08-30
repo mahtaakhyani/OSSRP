@@ -1,5 +1,7 @@
+# This node is responsible for calling the speech_to_text service and sending the audio data to it.
 # the pioneer node that subscribes to the audio data topic and send the audio data to speech to text server and receives the transcript as a String.
 # Then it initiates a topic to publish the received transcript to the topic /transcript as a String.
+#!/usr/bin/env python
 
 import rospy
 from std_msgs.msg import String
@@ -8,7 +10,7 @@ from audio_common_msgs.msg import AudioDataStamped as AudioData
 
 
 
-rospy.init_node('speech_to_text',anonymous=False)
+rospy.init_node('speech_to_text_node',anonymous=False)
 pub = rospy.Publisher('transcript', String, queue_size=10)
 
 def callservice(data):

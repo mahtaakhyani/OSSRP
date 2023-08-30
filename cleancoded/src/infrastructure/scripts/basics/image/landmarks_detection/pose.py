@@ -79,6 +79,8 @@ class MeshDetector():
 		# self.image = self.pointing(image)
 
 		pub = rospy.Publisher("/image_raw/landmarked", Image, queue_size=10)
+		pubcv = rospy.Publisher("/image_cv2/landmarked", List, queue_size=10)
+		pubcv.publish(self.image)
 		msg = self.convert_back(self.image)
 		pub.publish(msg)
 		# Returning the processed image back to the main module

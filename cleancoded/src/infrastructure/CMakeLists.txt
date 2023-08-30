@@ -72,7 +72,6 @@ generate_messages(
   std_msgs  # Or other packages containing msgs
   audio_common_msgs
   sensor_msgs
- # infrastructure
 )
 
 ################################################
