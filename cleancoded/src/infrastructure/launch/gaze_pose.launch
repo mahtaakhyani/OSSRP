@@ -1,5 +1,5 @@
 <!-- Gaze_pose launch -->
 
 <launch>
-    <node pkg="infrastructure" type="gaze_detector_service.py" name="gaze_pose" output="screen"/>
+    <node pkg="infrastructure" type="gaze_pose_node.py" name="gaze_pose" output="screen"/>
 </launch>
