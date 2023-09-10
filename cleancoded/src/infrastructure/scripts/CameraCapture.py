@@ -63,7 +63,7 @@ class CameraCapture:
         l = tem.list
         for i in range(len(l)):
             arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
-        rospy.loginfo("Converted the image to a list of 3D arrays")
+        # rospy.loginfo("Converted the image to a list of 3D arrays")
         arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
         frame_in_ros = cv_bridge.cv2_to_imgmsg(arrrrr) # convert the numpy array to a ROS Image message
         frame_in_ros.encoding = "rgb8" # set the encoding of the ROS Image message to rgb8

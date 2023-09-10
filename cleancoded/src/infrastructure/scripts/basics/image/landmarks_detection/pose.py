@@ -87,10 +87,10 @@ class MeshDetector():
 				obj=Array3D()
 				obj.data=j
 				tem.list.append(obj) # convert the image to a list of 3D arrays 
-		rospy.loginfo("Pose: Converted the image to a list of 3D arrays")
+		# rospy.loginfo("Pose: Converted the image to a list of 3D arrays")
 		arr = []
 		l = tem.list
-		print(type(tem))
+
 		for i in range(len(l)):
 			arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
 

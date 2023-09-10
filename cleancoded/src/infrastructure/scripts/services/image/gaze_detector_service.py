@@ -1,11 +1,11 @@
-"""
-This module is the server for the gaze detection service. 
-First, it subscribes to the extracted landmarkes from image frame topic and sends it to the gaze detection function.
-The main class of the service is GazeDetectorService which is a ROS service and it inherits from GazePosition class.
-It receives the image data from the client and sends it to the gaze detection function.
-The output is the gaze position as a string through the Gaze service [which is located in "$(rospack find infrastructure)/srv"].
-"""
-#!`/usr/bin/env python
+
+# This module is the server for the gaze detection service. 
+# First, it subscribes to the extracted landmarkes from image frame topic and sends it to the gaze detection function.
+# The main class of the service is GazeDetectorService which is a ROS service and it inherits from GazePosition class.
+# It receives the image data from the client and sends it to the gaze detection function.
+# The output is the gaze position as a string through the Gaze service [which is located in "$(rospack find infrastructure)/srv"].
+
+#!/usr/bin/env python
 import importlib.util
 import math
 import os
@@ -29,6 +29,7 @@ from mathhelpers import relative, relativeT
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class GazeTracking:
+    print('in the GazeTrack')
 
     right_pupil = ''
     left_pupil = ''
@@ -42,9 +43,11 @@ class GazeTracking:
     def gazedirection(self, data):
         self.points = data.landmark.list
         print('1')
-        print(data)
-        points = data
-        frame = data.frame.list
+        points = [list(i.data) for i in data.landmark.list]
+        points = np.array(points, dtype="float32")
+        fr = [list(i.data) for i in data.frame.list]
+        print(points.shape)
+        frame = np.array(fr, dtype="float32")
         """
         The gaze function gets an image and face landmarks from mediapipe framework.
         The function draws the gaze direction into the frame.
@@ -56,14 +59,14 @@ class GazeTracking:
         at (x,y) format
         '''
         image_points = np.array([
-            relative(points.landmark.list[4], frame.shape),  # Nose tip
-            relative(points.landmark.list[152], frame.shape),  # Chin
+            relative(points[4], frame.shape),  # Nose tip
+            relative(points[152], frame.shape),  # Chin
             # Left eye left corner
-            relative(points.landmark.list[263], frame.shape),
+            relative(points[263], frame.shape),
             # Right eye right corner
-            relative(points.landmark.list[33], frame.shape),
-            relative(points.landmark.list[287], frame.shape),  # Left Mouth corner
-            relative(points.landmark.list[57], frame.shape)  # Right mouth corner
+            relative(points[33], frame.shape),
+            relative(points[287], frame.shape),  # Left Mouth corner
+            relative(points[57], frame.shape)  # Right mouth corner
         ], dtype="double")
 
         '''
@@ -72,14 +75,14 @@ class GazeTracking:
         at (x,y,0) format
         '''
         image_points1 = np.array([
-            relativeT(points.landmark.list[4], frame.shape),  # Nose tip
-            relativeT(points.landmark.list[152], frame.shape),  # Chin
+            relativeT(points[4], frame.shape),  # Nose tip
+            relativeT(points[152], frame.shape),  # Chin
             # Left eye, left corner
-            relativeT(points.landmark.list[263], frame.shape),
+            relativeT(points[263], frame.shape),
             # Right eye, right corner
-            relativeT(points.landmark.list[33], frame.shape),
-            relativeT(points.landmark.list[287], frame.shape),  # Left Mouth corner
-            relativeT(points.landmark.list[57], frame.shape)  # Right mouth corner
+            relativeT(points[33], frame.shape),
+            relativeT(points[287], frame.shape),  # Left Mouth corner
+            relativeT(points[57], frame.shape)  # Right mouth corner
         ], dtype="double")
 
         # 3D model points.
@@ -118,8 +121,8 @@ class GazeTracking:
                                                                                 dist_coeffs, flags=cv2.SOLVEPNP_ITERATIVE)
 
         # 2d pupil location
-        self.left_pupil = relative(points.landmark.list[468], frame.shape)
-        self.right_pupil = relative(points.landmark.list[473], frame.shape)
+        self.left_pupil = relative(points[468], frame.shape)
+        self.right_pupil = relative(points[473], frame.shape)
 
         # Transformation between image point to world point
         _, transformation, _ = cv2.estimateAffine3D(
@@ -181,17 +184,17 @@ class GazeTracking:
             cv2.line(frame, pr1, pr2, (0, 0, 255), 1)
             cv2.circle(frame, pr1, 4, (0, 255, 0))
             cv2.circle(frame, pr2, 8, (0, 255, 0))
-            # print((relativeT(self.points.landmark.list[263], frame.shape))[:2])
+            # print((relativeT(self.points[263], frame.shape))[:2])
             # Draw circle on 3D projected head pose
             # cv2.circle(frame, (int(head_pose[0][0][0]),int(head_pose[0][0][1])), 14, (0,255,0))
             self.left_eye_left_corner = (
-                relativeT(points.landmark.list[263], frame.shape))[:2]
+                relativeT(points[263], frame.shape))[:2]
             self.left_eye_right_corner = (
-                relativeT(points.landmark.list[398], frame.shape))[:2]
+                relativeT(points[398], frame.shape))[:2]
             self.left_eye_top_corner = (
-                relativeT(points.landmark.list[374], frame.shape))[:2]
+                relativeT(points[374], frame.shape))[:2]
             self.left_eye_bottom_corner = (
-                relativeT(points.landmark.list[386], frame.shape))[:2]
+                relativeT(points[386], frame.shape))[:2]
 
     def feedback(self):
         try:
@@ -207,9 +210,11 @@ class GazeTracking:
 
 
 class HeadPosition(GazeTracking):
+    print('in the HeadPosition')
+
     def __init__(self, data):
         print('2')
-        gp = super().__init__(data)
+        gp = super().gazedirection(data)
         self.rotation_vector = gp.rotation_vector
         self.translation_vector = gp.translation_vector
 
@@ -227,17 +232,17 @@ class HeadPosition(GazeTracking):
             # Right mouth corner
             (150.0, -150.0, -125.0)
         ])
-        print(len(points.landmark.list))
+        print(len(points))
 
         image_points = np.array([
-            relativeT(points.landmark.list[4], img.shape),  # Nose tip
-            relativeT(points.landmark.list[152], img.shape),  # Chin
+            relativeT(points[4], img.shape),  # Nose tip
+            relativeT(points[152], img.shape),  # Chin
             # Left eye, left corner
-            relativeT(points.landmark.list[263], img.shape),
+            relativeT(points[263], img.shape),
             # Right eye, right corner
-            relativeT(points.landmark.list[33], img.shape),
-            relativeT(points.landmark.list[287], img.shape),  # Left Mouth corner
-            relativeT(points.landmark.list.list[57], img.shape)  # Right mouth corner
+            relativeT(points[33], img.shape),
+            relativeT(points[287], img.shape),  # Left Mouth corner
+            relativeT(points.list[57], img.shape)  # Right mouth corner
         ], dtype="double")
         # Camera internals
         focal_length = img.shape[1]
@@ -396,6 +401,7 @@ class HeadPosition(GazeTracking):
 # //////////////////////////////////////////////////////////////////////////////
 
 class GazePosition(HeadPosition):
+    print('in the GazePosition')
     def __init__(self, data):
         frame = data.frame
         print('3')
@@ -461,6 +467,7 @@ class GazeDetectorService(GazePosition):
         rospy.loginfo("gaze detector service successfully initiated")
 
     def callback(self, data):
+        print('callback check ---------------------------------------------------------------------')
         try:
             frame = data.frame
             super().__init__(data)

@@ -6,7 +6,7 @@
 	<include file="$(find usb_cam)/launch/usb_cam-test.launch"/>
 	<node pkg="infrastructure" type="CameraCapture.py" name="camera_capter_cv2" output="screen"/>
 	<node pkg="infrastructure" type="pose.py" name="landmark_detection" output="screen"/>
-	<!-- <include file="$(find infrastructure)/launch/gaze_pose.launch"/> -->
+	<include file="$(find infrastructure)/launch/gaze_pose.launch"/>
 
 	<!-- Streaming a video from the ROS server to the client -->
     <!-- <include file="$(find video_stream_opencv)/launch/camera.launch">
