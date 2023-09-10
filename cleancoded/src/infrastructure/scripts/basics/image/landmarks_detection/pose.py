@@ -7,7 +7,7 @@ import numpy as np
 from std_msgs.msg import Float64MultiArray
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
-from std_msgs.msg import List #????
+from infrastructure.msg import List, Array3D
 
 
 
@@ -75,13 +75,28 @@ class MeshDetector():
 		self.draw(self.right_hand_landmarks, radius=5)
 		self.draw(self.left_hand_landmarks, radius=5)
 		self.draw(self.pose_landmarks, thickness=1, radius=2, color=(0,255,255))
-		# Adding simple gridding system to each frame for furthur analysis
-		# self.image = self.pointing(image)
+		te = Array3D()
+		tem = List()
+		temp = list()
+		msg = List()
+		pub = rospy.Publisher('/image_raw/landmarked',Image,queue_size=10)
+		pubcv2 = rospy.Publisher('/image_cv2/landmarked', List, queue_size=10)
+		llll=self.image.tolist()
+		for i in llll:
+			for j in i:
+				obj=Array3D()
+				obj.data=j
+				tem.list.append(obj) # convert the image to a list of 3D arrays 
+		rospy.loginfo("Pose: Converted the image to a list of 3D arrays")
+		arr = []
+		l = tem.list
+		print(type(tem))
+		for i in range(len(l)):
+			arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
 
-		pub = rospy.Publisher("/image_raw/landmarked", Image, queue_size=10)
-		pubcv = rospy.Publisher("/image_cv2/landmarked", List, queue_size=10)
-		pubcv.publish(self.image)
-		msg = self.convert_back(self.image)
+		pubcv2.publish(tem)
+		arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
+		msg = self.convert_back(arrrrr)
 		pub.publish(msg)
 		# Returning the processed image back to the main module
 		return [self.face_landmarks,self.left_hand_landmarks,self.right_hand_landmarks,self.pose_landmarks]

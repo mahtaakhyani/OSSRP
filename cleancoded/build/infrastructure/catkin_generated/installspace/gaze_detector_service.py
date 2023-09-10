@@ -6,14 +6,25 @@ It receives the image data from the client and sends it to the gaze detection fu
 The output is the gaze position as a string through the Gaze service [which is located in "$(rospack find infrastructure)/srv"].
 """
 #!`/usr/bin/env python
-from cleancoded.src.infrastructure.scripts.tools.helper_modules.mathhelpers import relative, relativeT
+import importlib.util
 import math
-import numpy as np
-import cv2
-import rospy
-from sensor_msgs.msg import Image
-from infrastructor.srv import Gaze
+import os
+import sys
 
+import cv2
+import numpy as np
+import rospkg
+import rospy
+from infrastructure.msg import List
+from infrastructure.srv import Gaze
+from sensor_msgs.msg import Image
+
+pkg = rospkg.RosPack().get_path('infrastructure')
+module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+sys.path.append(module_path)
+
+
+from mathhelpers import relative, relativeT
 
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -439,26 +450,28 @@ class GazeDetectorService(GazePosition):
     rospy.init_node('gaze_detector', anonymous=False)
     def __init__(self):
         rospy.Service('gaze_pose', Gaze, self.callback)
-        rospy.Subscriber("/image_raw/landmarked", Image, self.landmark_handler)
+        rospy.loginfo("gaze detector service successfully initiated")
 
-    def callback(self, frame):
+    def callback(self, data):
+        print('callback')
         try:
-            super().__init__(frame, self.points)
+            frame = data.frame
+            super().__init__(frame, data)
             gazedir = super().__str__()
+            rospy.loginfo("returning the gaze direction to the client")
             return gazedir
 
         except BaseException as bex:
-            return rospy.ServiceException(bex)
+            rospy.loginfo(rospy.ServiceException(bex))
 
-    def landmark_handler(self, points):
-        self.points = points
-        return self.points
+
 
 
 # //////////////////////////////////////////////////////////////////////////////
 
 if __name__ == '__main__':
     try:
+        print('hey')
         GazeDetectorService()
         rospy.spin()
     except rospy.ROSInterruptException:

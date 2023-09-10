@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-from typing import Any
+#!/usr/bin/env python3
 import cv2
 import numpy as np
 import rospy
 from cv_bridge import CvBridge
 from sensor_msgs.msg import CameraInfo, Image
 from std_msgs.msg import Float64MultiArray, String
-from face_pkg.msg import Array3D,List
+from infrastructure.msg import List, Array3D
 
 
 class CameraCapture:
@@ -17,21 +16,23 @@ class CameraCapture:
     modif_image = np.zeros((640,480,3))
     rospy.init_node("opencv_client", anonymous=False) # initialize the node 
     pub = rospy.Publisher('/image_cv2',List,queue_size=10) # publish the image to the topic
+    
 
 
-    def __init__(self) -> None:
+    def __init__(self):
         
         rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo)  
-        rospy.Subscriber(
-            "/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**36
-        ) 
+        rospy.Subscriber("/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**19) 
+        rospy.loginfo("OK")
 
 
     def syncinfo(self, info):  # sync camera video stream info
         self.height = info.height
         self.width = info.width
+        # rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
     
     def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
+    
         cv_bridge = CvBridge()
         # try:
         frame_in_cv2 = cv_bridge.imgmsg_to_cv2(data, desired_encoding="passthrough") 
@@ -44,7 +45,7 @@ class CameraCapture:
         self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
 
 
-        te = Array3D() 
+        te = Array3D()
         tem = List()
         temp = list()
         msg = List()
@@ -55,10 +56,11 @@ class CameraCapture:
                     obj=Array3D()
                     obj.data=j
                     tem.list.append(obj) # convert the image to a list of 3D arrays 
-        
+        rospy.loginfo("Converted the image to a list of 3D arrays")
         cv_bridge=CvBridge()
         arr = []
         l = tem.list
+        print(type(tem))
         for i in range(len(l)):
             arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
 
@@ -73,7 +75,7 @@ class CameraCapture:
         if cv2window:  # whether to show the frames in an opencv window apart from ROS image_view or not
             cv2.imshow("output window", self.modif_image)
         
-        self.pub.publish(tem)
+        self.pub.publish(arr)
 
 
 if __name__ == "__main__": # main function

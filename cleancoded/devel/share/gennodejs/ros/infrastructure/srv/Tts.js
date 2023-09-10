@@ -52,7 +52,7 @@ class TtsRequest {
 
   static getMessageSize(object) {
     let length = 0;
-    length += object.text.length;
+    length += _getByteLength(object.text);
     return length + 4;
   }
 

@@ -1,12 +1,11 @@
-#!/usr/bin/env python
-from typing import Any
+#!/usr/bin/env python3
 import cv2
 import numpy as np
 import rospy
 from cv_bridge import CvBridge
 from sensor_msgs.msg import CameraInfo, Image
 from std_msgs.msg import Float64MultiArray, String
-from face_pkg.msg import Array3D,List
+from infrastructure.msg import List, Array3D
 
 
 class CameraCapture:
@@ -17,21 +16,24 @@ class CameraCapture:
     modif_image = np.zeros((640,480,3))
     rospy.init_node("opencv_client", anonymous=False) # initialize the node 
     pub = rospy.Publisher('/image_cv2',List,queue_size=10) # publish the image to the topic
+    
 
 
-    def __init__(self) -> None:
+    def __init__(self):
         
         rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo)  
-        rospy.Subscriber(
-            "/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**36
-        ) 
+        rospy.Subscriber("/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**19) 
+        rospy.loginfo("OK")
+        rospy.spin()
 
 
     def syncinfo(self, info):  # sync camera video stream info
         self.height = info.height
         self.width = info.width
+        #rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
     
-    def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
+    def convert_frame(self, data, cv2window=True): # convert the frame to a numpy array from ROS image
+    
         cv_bridge = CvBridge()
         # try:
         frame_in_cv2 = cv_bridge.imgmsg_to_cv2(data, desired_encoding="passthrough") 
@@ -61,7 +63,7 @@ class CameraCapture:
         l = tem.list
         for i in range(len(l)):
             arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
-
+        rospy.loginfo("Converted the image to a list of 3D arrays")
         arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
         frame_in_ros = cv_bridge.cv2_to_imgmsg(arrrrr) # convert the numpy array to a ROS Image message
         frame_in_ros.encoding = "rgb8" # set the encoding of the ROS Image message to rgb8
@@ -72,7 +74,7 @@ class CameraCapture:
 
         if cv2window:  # whether to show the frames in an opencv window apart from ROS image_view or not
             cv2.imshow("output window", self.modif_image)
-        
+ 
         self.pub.publish(tem)
 
 

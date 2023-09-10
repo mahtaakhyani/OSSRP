@@ -1,5 +1,4 @@
-<!-- Gaze_pose launch -->
-
+<?xml version="1.0"?>
 <launch>
     <node pkg="infrastructure" type="gaze_pose_node.py" name="gaze_pose" output="screen"/>
 </launch>

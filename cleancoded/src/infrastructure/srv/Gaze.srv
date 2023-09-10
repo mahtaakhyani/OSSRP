@@ -1,3 +1,4 @@
-sensor_msgs/Image  frame
+infrastructure/List  frame
+infrastructure/List landmark
 ---------
 string    gazedirection

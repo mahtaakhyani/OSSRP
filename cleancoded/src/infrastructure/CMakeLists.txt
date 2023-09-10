@@ -47,6 +47,8 @@ add_message_files(
   FILES
   AudFeatures.msg
   EmoProbArr.msg
+  List.msg
+  Array3D.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -164,6 +166,7 @@ catkin_install_python(PROGRAMS
   scripts/CameraCapture.py
   scripts/basics/image/landmarks_detection/pose.py
   scripts/basics/audio_capture.py
+  scripts/appliences/middleware/landmark_data_processing/gaze_pose_node.py
   scripts/services/image/gaze_detector_service.py
   scripts/services/audio/text_to_speech.py
   scripts/services/audio/speech_to_text_server.py

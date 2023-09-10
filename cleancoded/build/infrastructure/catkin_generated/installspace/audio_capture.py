@@ -16,7 +16,7 @@ class AudioCapture:
     
     CHUNK = 1024 
     FORMAT = pyaudio.paInt16 # 16 bit int sampling
-    CHANNELS = 1 # Mono
+    CHANNELS = 2 # Mono
     RATE = 16000 # Sampling Rate in Hz
     mic = pyaudio.PyAudio()
     

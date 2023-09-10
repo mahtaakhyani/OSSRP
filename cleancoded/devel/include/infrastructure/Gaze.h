@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::infrastructure::Gaze > {
   static const char* value()
   {
-    return "68e4c7f98788e4ad5c2b2412023bc55f";
+    return "4425003c508c848c14cd0ec254b7d1a6";
   }
 
   static const char* value(const ::infrastructure::Gaze&) { return value(); }

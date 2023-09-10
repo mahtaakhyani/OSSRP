@@ -8,14 +8,15 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
 #include <ros/builtin_message_traits.h>
 #include <ros/message_operations.h>
 
-#include <sensor_msgs/Image.h>
+#include <infrastructure/List.h>
+#include <infrastructure/List.h>
 
 namespace infrastructure
 {
@@ -25,17 +26,22 @@ struct GazeRequest_
   typedef GazeRequest_<ContainerAllocator> Type;
 
   GazeRequest_()
-    : frame()  {
+    : frame()
+    , landmark()  {
     }
   GazeRequest_(const ContainerAllocator& _alloc)
-    : frame(_alloc)  {
+    : frame(_alloc)
+    , landmark(_alloc)  {
   (void)_alloc;
     }
 
 
 
-   typedef  ::sensor_msgs::Image_<ContainerAllocator>  _frame_type;
+   typedef  ::infrastructure::List_<ContainerAllocator>  _frame_type;
   _frame_type frame;
+
+   typedef  ::infrastructure::List_<ContainerAllocator>  _landmark_type;
+  _landmark_type landmark;
 
 
 
@@ -66,7 +72,8 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::infrastructure::GazeRequest_<ContainerAllocator1> & lhs, const ::infrastructure::GazeRequest_<ContainerAllocator2> & rhs)
 {
-  return lhs.frame == rhs.frame;
+  return lhs.frame == rhs.frame &&
+    lhs.landmark == rhs.landmark;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -88,16 +95,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::GazeRequest_<ContainerAllocator> >
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::GazeRequest_<ContainerAllocator> const>
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::GazeRequest_<ContainerAllocator> >
   : TrueType
   { };
@@ -105,6 +102,16 @@ struct IsMessage< ::infrastructure::GazeRequest_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::GazeRequest_<ContainerAllocator> const>
   : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::GazeRequest_<ContainerAllocator> >
+  : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::GazeRequest_<ContainerAllocator> const>
+  : FalseType
   { };
 
 template <class ContainerAllocator>
@@ -123,12 +130,12 @@ struct MD5Sum< ::infrastructure::GazeRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "6897ffa073f098e62edfad95fcecacba";
+    return "03a5e114820f93697487d265eada7169";
   }
 
   static const char* value(const ::infrastructure::GazeRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x6897ffa073f098e6ULL;
-  static const uint64_t static_value2 = 0x2edfad95fcecacbaULL;
+  static const uint64_t static_value1 = 0x03a5e114820f9369ULL;
+  static const uint64_t static_value2 = 0x7487d265eada7169ULL;
 };
 
 template<class ContainerAllocator>
@@ -147,53 +154,15 @@ struct Definition< ::infrastructure::GazeRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "sensor_msgs/Image  frame\n"
+    return "infrastructure/List  frame\n"
+"infrastructure/List landmark\n"
 "\n"
 "================================================================================\n"
-"MSG: sensor_msgs/Image\n"
-"# This message contains an uncompressed image\n"
-"# (0, 0) is at top-left corner of image\n"
-"#\n"
-"\n"
-"Header header        # Header timestamp should be acquisition time of image\n"
-"                     # Header frame_id should be optical frame of camera\n"
-"                     # origin of frame should be optical center of camera\n"
-"                     # +x should point to the right in the image\n"
-"                     # +y should point down in the image\n"
-"                     # +z should point into to plane of the image\n"
-"                     # If the frame_id here and the frame_id of the CameraInfo\n"
-"                     # message associated with the image conflict\n"
-"                     # the behavior is undefined\n"
-"\n"
-"uint32 height         # image height, that is, number of rows\n"
-"uint32 width          # image width, that is, number of columns\n"
-"\n"
-"# The legal values for encoding are in file src/image_encodings.cpp\n"
-"# If you want to standardize a new string format, join\n"
-"# ros-users@lists.sourceforge.net and send an email proposing a new encoding.\n"
-"\n"
-"string encoding       # Encoding of pixels -- channel meaning, ordering, size\n"
-"                      # taken from the list of strings in include/sensor_msgs/image_encodings.h\n"
-"\n"
-"uint8 is_bigendian    # is this data bigendian?\n"
-"uint32 step           # Full row length in bytes\n"
-"uint8[] data          # actual matrix data, size is (step * rows)\n"
-"\n"
+"MSG: infrastructure/List\n"
+"infrastructure/Array3D[] list\n"
 "================================================================================\n"
-"MSG: std_msgs/Header\n"
-"# Standard metadata for higher-level stamped data types.\n"
-"# This is generally used to communicate timestamped data \n"
-"# in a particular coordinate frame.\n"
-"# \n"
-"# sequence ID: consecutively increasing ID \n"
-"uint32 seq\n"
-"#Two-integer timestamp that is expressed as:\n"
-"# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')\n"
-"# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')\n"
-"# time-handling sugar is provided by the client library\n"
-"time stamp\n"
-"#Frame this data is associated with\n"
-"string frame_id\n"
+"MSG: infrastructure/Array3D\n"
+"float64[] data\n"
 ;
   }
 
@@ -213,6 +182,7 @@ namespace serialization
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
       stream.next(m.frame);
+      stream.next(m.landmark);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -233,7 +203,10 @@ struct Printer< ::infrastructure::GazeRequest_<ContainerAllocator> >
   {
     s << indent << "frame: ";
     s << std::endl;
-    Printer< ::sensor_msgs::Image_<ContainerAllocator> >::stream(s, indent + "  ", v.frame);
+    Printer< ::infrastructure::List_<ContainerAllocator> >::stream(s, indent + "  ", v.frame);
+    s << indent << "landmark: ";
+    s << std::endl;
+    Printer< ::infrastructure::List_<ContainerAllocator> >::stream(s, indent + "  ", v.landmark);
   }
 };
 
