@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/mahta/OSSRP/cleancoded/build
 include infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt.dir/progress.make
 
 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt:
-	cd /home/mahta/OSSRP/cleancoded/build/infrastructure && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py infrastructure /home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Stt.srv audio_common_msgs/AudioData:audio_common_msgs/AudioDataStamped:std_msgs/Header
+	cd /home/mahta/OSSRP/cleancoded/build/infrastructure && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py infrastructure /home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Stt.srv audio_common_msgs/AudioDataStamped:std_msgs/Header:audio_common_msgs/AudioData
 
 _infrastructure_generate_messages_check_deps_Stt: infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt
 _infrastructure_generate_messages_check_deps_Stt: infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt.dir/build.make

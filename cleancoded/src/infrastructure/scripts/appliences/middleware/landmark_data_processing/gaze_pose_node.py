@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 import rospy
-from infrastructure.msg import List
+from infrastructure.msg import List, Landmarks
 from infrastructure.srv import Gaze
 from std_msgs.msg import String
 
@@ -35,5 +35,5 @@ def callservice(frame):
 
 
 if __name__ == '__main__':
-    rospy.Subscriber("/image_cv2/landmarked", List, landmark_handler)
+    rospy.Subscriber("/landmarks", Landmarks, landmark_handler)
     rospy.spin()

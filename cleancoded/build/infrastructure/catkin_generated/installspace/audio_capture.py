@@ -43,11 +43,15 @@ class AudioCapture:
 
         rospy.loginfo("Capturing Audio data...") #Source: Robot's microphone (not the client's)
         self.pub.publish(audio_data)
+        rospy.loginfo("Audio data captured and published on the topic /captured_audio")
+        return audio_data
 
     def stop(self):
         self.stream.stop_stream()
         self.stream.close()
         self.mic.terminate()
+        rospy.loginfo("Audio stream stopped and closed")
+        return self.stream
 
 
 

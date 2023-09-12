@@ -1,6 +1,6 @@
 # generated from genmsg/cmake/pkg-genmsg.context.in
 
-messages_str = "/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/AudFeatures.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/EmoProbArr.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/List.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/Array3D.msg"
+messages_str = "/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/AudFeatures.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/EmoProbArr.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/List.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/Array3D.msg;/home/mahta/OSSRP/cleancoded/src/infrastructure/msg/Landmarks.msg"
 services_str = "/home/mahta/OSSRP/cleancoded/src/infrastructure/srv/AudFeature.srv;/home/mahta/OSSRP/cleancoded/src/infrastructure/srv/EmoProb.srv;/home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Gaze.srv;/home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Stt.srv;/home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Tts.srv"
 pkg_name = "infrastructure"
 dependencies_str = "std_msgs;audio_common_msgs;sensor_msgs"

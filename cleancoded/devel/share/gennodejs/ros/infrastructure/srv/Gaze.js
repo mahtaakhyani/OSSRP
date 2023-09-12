@@ -12,6 +12,7 @@ const _arrayDeserializer = _deserializer.Array;
 const _finder = _ros_msg_utils.Find;
 const _getByteLength = _ros_msg_utils.getByteLength;
 let List = require('../msg/List.js');
+let Landmarks = require('../msg/Landmarks.js');
 
 //-----------------------------------------------------------
 
@@ -36,7 +37,7 @@ class GazeRequest {
         this.landmark = initObj.landmark
       }
       else {
-        this.landmark = new List();
+        this.landmark = new Landmarks();
       }
     }
   }
@@ -46,7 +47,7 @@ class GazeRequest {
     // Serialize message field [frame]
     bufferOffset = List.serialize(obj.frame, buffer, bufferOffset);
     // Serialize message field [landmark]
-    bufferOffset = List.serialize(obj.landmark, buffer, bufferOffset);
+    bufferOffset = Landmarks.serialize(obj.landmark, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -57,14 +58,14 @@ class GazeRequest {
     // Deserialize message field [frame]
     data.frame = List.deserialize(buffer, bufferOffset);
     // Deserialize message field [landmark]
-    data.landmark = List.deserialize(buffer, bufferOffset);
+    data.landmark = Landmarks.deserialize(buffer, bufferOffset);
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
     length += List.getMessageSize(object.frame);
-    length += List.getMessageSize(object.landmark);
+    length += Landmarks.getMessageSize(object.landmark);
     return length;
   }
 
@@ -75,14 +76,14 @@ class GazeRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '03a5e114820f93697487d265eada7169';
+    return '563138297254f9391391e1e861953236';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
     infrastructure/List  frame
-    infrastructure/List landmark
+    infrastructure/Landmarks landmark
     
     ================================================================================
     MSG: infrastructure/List
@@ -91,6 +92,12 @@ class GazeRequest {
     MSG: infrastructure/Array3D
     float64[] data
     
+    ================================================================================
+    MSG: infrastructure/Landmarks
+    string[] face
+    string[] left_hand
+    string[] right_hand
+    string[] pose
     `;
   }
 
@@ -108,10 +115,10 @@ class GazeRequest {
     }
 
     if (msg.landmark !== undefined) {
-      resolved.landmark = List.Resolve(msg.landmark)
+      resolved.landmark = Landmarks.Resolve(msg.landmark)
     }
     else {
-      resolved.landmark = new List()
+      resolved.landmark = new Landmarks()
     }
 
     return resolved;
@@ -194,6 +201,6 @@ class GazeResponse {
 module.exports = {
   Request: GazeRequest,
   Response: GazeResponse,
-  md5sum() { return '4425003c508c848c14cd0ec254b7d1a6'; },
+  md5sum() { return '205259182beb600563ab418d4957eb6b'; },
   datatype() { return 'infrastructure/Gaze'; }
 };

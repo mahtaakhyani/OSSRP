@@ -6,7 +6,8 @@ import mediapipe as mp
 import numpy as np
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
-from infrastructure.msg import List, Array3D
+from infrastructure.msg import List, Array3D, Landmarks
+from std_msgs.msg import String
 
 
 
@@ -44,13 +45,27 @@ class MeshDetector():
 		# rospy.loginfo("Pose: Got the image")
 		try:
 			self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
-			self.analyze(self.arrrrr)
+			landmarks_array = self.analyze(self.arrrrr)
 			rospy.loginfo("Pose: Analyzed the image")
+
+			landmarks_msg = Landmarks()
+			
+
+			print(list(landmarks_array[0]))
+			landmarks_msg.face = [str(i) for i in list(landmarks_array[0])]
+			landmarks_msg.left_hand = [str(i) for i in list(landmarks_array[1])]
+			landmarks_msg.right_hand = [str(i) for i in list(landmarks_array[2])]
+			landmarks_msg.pose = [str(i) for i in list(landmarks_array[3])]
+
+			landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
+			landmark_pub.publish(landmarks_msg)
+
+
 			return self.arrrrr
+
 		except Exception as e:
 			rospy.loginfo("Pose: Error in catching the image")
-			rospy.loginfo(e)
-			return e
+			return(e)
 		
 	def convert_back(self,_):
 		cv_bridge=CvBridge()
@@ -58,7 +73,6 @@ class MeshDetector():
 		frame_in_ros.encoding = "rgb8"
 		msg = Image()
 		msg = frame_in_ros
-		cv2.imwrite('testaki.jpg',_)
 		return msg
 
 
@@ -82,17 +96,20 @@ class MeshDetector():
 		self.left_hand_landmarks = (results.left_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS)
 		self.pose_landmarks = (results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS)
 
+
 		# Draw landmarks and connections between them
 		self.draw(self.face_landmarks, thickness=1, color=(125,125,125))
 		self.draw(self.right_hand_landmarks, radius=5)
 		self.draw(self.left_hand_landmarks, radius=5)
 		self.draw(self.pose_landmarks, thickness=1, radius=2, color=(0,255,255))
+
 		te = Array3D()
 		tem = List()
 		temp = list()
 		msg = List()
 		pub = rospy.Publisher('/image_raw/landmarked',Image,queue_size=10)
 		pubcv2 = rospy.Publisher('/image_cv2/landmarked', List, queue_size=10)
+
 		llll=self.image.tolist()
 		for i in llll:
 			for j in i:
@@ -111,7 +128,7 @@ class MeshDetector():
 		msg = self.convert_back(arrrrr)
 		pub.publish(msg)
 		# Returning the processed image back to the main module
-		return [self.face_landmarks,self.left_hand_landmarks,self.right_hand_landmarks,self.pose_landmarks]
+		return [results.face_landmarks,results.left_hand_landmarks,results.right_hand_landmarks,results.pose_landmarks]
 
 	def pointing(self, image):
 

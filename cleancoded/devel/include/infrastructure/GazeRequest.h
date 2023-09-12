@@ -16,7 +16,7 @@
 #include <ros/message_operations.h>
 
 #include <infrastructure/List.h>
-#include <infrastructure/List.h>
+#include <infrastructure/Landmarks.h>
 
 namespace infrastructure
 {
@@ -40,7 +40,7 @@ struct GazeRequest_
    typedef  ::infrastructure::List_<ContainerAllocator>  _frame_type;
   _frame_type frame;
 
-   typedef  ::infrastructure::List_<ContainerAllocator>  _landmark_type;
+   typedef  ::infrastructure::Landmarks_<ContainerAllocator>  _landmark_type;
   _landmark_type landmark;
 
 
@@ -130,12 +130,12 @@ struct MD5Sum< ::infrastructure::GazeRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "03a5e114820f93697487d265eada7169";
+    return "563138297254f9391391e1e861953236";
   }
 
   static const char* value(const ::infrastructure::GazeRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x03a5e114820f9369ULL;
-  static const uint64_t static_value2 = 0x7487d265eada7169ULL;
+  static const uint64_t static_value1 = 0x563138297254f939ULL;
+  static const uint64_t static_value2 = 0x1391e1e861953236ULL;
 };
 
 template<class ContainerAllocator>
@@ -155,7 +155,7 @@ struct Definition< ::infrastructure::GazeRequest_<ContainerAllocator> >
   static const char* value()
   {
     return "infrastructure/List  frame\n"
-"infrastructure/List landmark\n"
+"infrastructure/Landmarks landmark\n"
 "\n"
 "================================================================================\n"
 "MSG: infrastructure/List\n"
@@ -163,6 +163,13 @@ struct Definition< ::infrastructure::GazeRequest_<ContainerAllocator> >
 "================================================================================\n"
 "MSG: infrastructure/Array3D\n"
 "float64[] data\n"
+"\n"
+"================================================================================\n"
+"MSG: infrastructure/Landmarks\n"
+"string[] face\n"
+"string[] left_hand\n"
+"string[] right_hand\n"
+"string[] pose\n"
 ;
   }
 
@@ -206,7 +213,7 @@ struct Printer< ::infrastructure::GazeRequest_<ContainerAllocator> >
     Printer< ::infrastructure::List_<ContainerAllocator> >::stream(s, indent + "  ", v.frame);
     s << indent << "landmark: ";
     s << std::endl;
-    Printer< ::infrastructure::List_<ContainerAllocator> >::stream(s, indent + "  ", v.landmark);
+    Printer< ::infrastructure::Landmarks_<ContainerAllocator> >::stream(s, indent + "  ", v.landmark);
   }
 };
 

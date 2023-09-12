@@ -44,7 +44,7 @@ class CameraCapture:
             b = np.split(frame_in_cv2.reshape(new_a_shape), frame_in_cv2.shape[0]) 
             frame = np.array(b)
 
-            self.modif_image = cv2.resize(frame, (self.height, self.width)) # resize the image to the desired size which is the camera info size
+            self.modif_image = cv2.resize(frame, (480,640)) # resize the image to the desired size which is the camera info size
             self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
             self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
 
@@ -64,10 +64,13 @@ class CameraCapture:
             cv_bridge=CvBridge()
             arr = []
             l = tem.list
-            print(type(tem))
+
             for i in range(len(l)):
                 arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
 
+            self.pub.publish(arr)
+
+            
             arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
             frame_in_ros = cv_bridge.cv2_to_imgmsg(arrrrr) # convert the numpy array to a ROS Image message
             frame_in_ros.encoding = "rgb8" # set the encoding of the ROS Image message to rgb8
@@ -79,7 +82,6 @@ class CameraCapture:
             if cv2window:  # whether to show the frames in an opencv window apart from ROS image_view or not
                 cv2.imshow("output window", self.modif_image)
             
-            self.pub.publish(arr)
             rospy.loginfo("Published the image to the topic")
             return self.modif_image
         

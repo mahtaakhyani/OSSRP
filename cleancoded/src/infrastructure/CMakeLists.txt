@@ -49,6 +49,7 @@ add_message_files(
   EmoProbArr.msg
   List.msg
   Array3D.msg
+  Landmarks.msg
 )
 
 ## Generate services in the 'srv' folder

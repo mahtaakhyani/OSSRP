@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 import rospy
-from infrastructure.msg import List
+from infrastructure.msg import List, Landmarks
 from infrastructure.srv import Gaze
 from std_msgs.msg import String
 
@@ -11,25 +11,23 @@ from std_msgs.msg import String
 rospy.init_node('gaze_pose_node',anonymous=False)
 pub = rospy.Publisher('gaze_position/gaze_dir', String, queue_size=10)
 
-points = List()
 
 def landmark_handler(data_list):
-    points = data_list
+    global landmarks
+    landmarks = data_list
+    rospy.Subscriber('/image_cv2',List, callservice)
 
 
-def callservice(data):
+def callservice(frame):
     rospy.loginfo("waiting for gaze pose service to respond...")
     rospy.wait_for_service('gaze_pose')
     try:
         gazsrv = rospy.ServiceProxy('gaze_pose', Gaze)
         rospy.loginfo("gaze pose service responded.")
-        srv = Gaze()
-        srv.frame = data
-        srv.landmark = points
-        transcript = gazsrv(srv)
+        transcript = gazsrv(frame, landmarks)
         rospy.loginfo("gaze_pose server successfully responded with %s",transcript.gazedirection)
         rospy.loginfo("Publishing gaze position to /gaze_position/gaze_dir topic")
-        pub.publish(transcript)
+        pub.publish(transcript.gazedirection)
         
     except rospy.ServiceException as e:
         rospy.logerr("Service call failed: %s"%e)
@@ -37,6 +35,5 @@ def callservice(data):
 
 
 if __name__ == '__main__':
-    rospy.Subscriber("/image_cv2/landmarked", List, landmark_handler)
-    rospy.Subscriber('/image_cv2',List, callservice)
+    rospy.Subscriber("/landmarks", Landmarks, landmark_handler)
     rospy.spin()
