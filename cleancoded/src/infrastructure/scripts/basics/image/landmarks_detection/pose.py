@@ -4,7 +4,6 @@ import cv2
 import rospy
 import mediapipe as mp
 import numpy as np
-from std_msgs.msg import Float64MultiArray
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
 from infrastructure.msg import List, Array3D
@@ -29,7 +28,12 @@ class MeshDetector():
 
 	def syncinfo(self, info):  # sync camera video stream info
 		self.height = info.height
-		self.width = info.width		
+		self.width = info.width	
+		# rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
+		try:
+			return self.height, self.width
+		except:
+			pass	
 
 	def catch(self,_):
 		arr = []
@@ -37,8 +41,16 @@ class MeshDetector():
 		for i in range(len(l)):
 			arr.append(list(l[i].data))
         # sub.unregister()
-		self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
-		self.analyze(self.arrrrr)
+		# rospy.loginfo("Pose: Got the image")
+		try:
+			self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
+			self.analyze(self.arrrrr)
+			rospy.loginfo("Pose: Analyzed the image")
+			return self.arrrrr
+		except Exception as e:
+			rospy.loginfo("Pose: Error in catching the image")
+			rospy.loginfo(e)
+			return e
 		
 	def convert_back(self,_):
 		cv_bridge=CvBridge()

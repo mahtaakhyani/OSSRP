@@ -232,7 +232,6 @@ class HeadPosition(GazeTracking):
             # Right mouth corner
             (150.0, -150.0, -125.0)
         ])
-        print(len(points))
 
         image_points = np.array([
             relativeT(points[4], img.shape),  # Nose tip
@@ -372,6 +371,8 @@ class HeadPosition(GazeTracking):
         return (x, y)
 
     def head_rpy(self):
+        '''Returns a list containing the head pose as a dictionary of roll, pitch, yaw angles, 
+            and a string of the head pose direction'''
         head_rpy_dict = {'pitch': self.ang1, 'yaw': self.ang2}
         head_pos_str = ['Head:']
         if self.ang1 in range(-40, 40) and self.ang2 in range(-40, 40):
