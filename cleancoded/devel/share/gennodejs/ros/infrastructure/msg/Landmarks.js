@@ -11,6 +11,7 @@ const _deserializer = _ros_msg_utils.Deserialize;
 const _arrayDeserializer = _deserializer.Array;
 const _finder = _ros_msg_utils.Find;
 const _getByteLength = _ros_msg_utils.getByteLength;
+let geometry_msgs = _finder('geometry_msgs');
 
 //-----------------------------------------------------------
 
@@ -54,13 +55,29 @@ class Landmarks {
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type Landmarks
     // Serialize message field [face]
-    bufferOffset = _arraySerializer.string(obj.face, buffer, bufferOffset, null);
+    // Serialize the length for message field [face]
+    bufferOffset = _serializer.uint32(obj.face.length, buffer, bufferOffset);
+    obj.face.forEach((val) => {
+      bufferOffset = geometry_msgs.msg.Point.serialize(val, buffer, bufferOffset);
+    });
     // Serialize message field [left_hand]
-    bufferOffset = _arraySerializer.string(obj.left_hand, buffer, bufferOffset, null);
+    // Serialize the length for message field [left_hand]
+    bufferOffset = _serializer.uint32(obj.left_hand.length, buffer, bufferOffset);
+    obj.left_hand.forEach((val) => {
+      bufferOffset = geometry_msgs.msg.Point.serialize(val, buffer, bufferOffset);
+    });
     // Serialize message field [right_hand]
-    bufferOffset = _arraySerializer.string(obj.right_hand, buffer, bufferOffset, null);
+    // Serialize the length for message field [right_hand]
+    bufferOffset = _serializer.uint32(obj.right_hand.length, buffer, bufferOffset);
+    obj.right_hand.forEach((val) => {
+      bufferOffset = geometry_msgs.msg.Point.serialize(val, buffer, bufferOffset);
+    });
     // Serialize message field [pose]
-    bufferOffset = _arraySerializer.string(obj.pose, buffer, bufferOffset, null);
+    // Serialize the length for message field [pose]
+    bufferOffset = _serializer.uint32(obj.pose.length, buffer, bufferOffset);
+    obj.pose.forEach((val) => {
+      bufferOffset = geometry_msgs.msg.Point.serialize(val, buffer, bufferOffset);
+    });
     return bufferOffset;
   }
 
@@ -69,30 +86,42 @@ class Landmarks {
     let len;
     let data = new Landmarks(null);
     // Deserialize message field [face]
-    data.face = _arrayDeserializer.string(buffer, bufferOffset, null)
+    // Deserialize array length for message field [face]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.face = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.face[i] = geometry_msgs.msg.Point.deserialize(buffer, bufferOffset)
+    }
     // Deserialize message field [left_hand]
-    data.left_hand = _arrayDeserializer.string(buffer, bufferOffset, null)
+    // Deserialize array length for message field [left_hand]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.left_hand = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.left_hand[i] = geometry_msgs.msg.Point.deserialize(buffer, bufferOffset)
+    }
     // Deserialize message field [right_hand]
-    data.right_hand = _arrayDeserializer.string(buffer, bufferOffset, null)
+    // Deserialize array length for message field [right_hand]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.right_hand = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.right_hand[i] = geometry_msgs.msg.Point.deserialize(buffer, bufferOffset)
+    }
     // Deserialize message field [pose]
-    data.pose = _arrayDeserializer.string(buffer, bufferOffset, null)
+    // Deserialize array length for message field [pose]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.pose = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.pose[i] = geometry_msgs.msg.Point.deserialize(buffer, bufferOffset)
+    }
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
-    object.face.forEach((val) => {
-      length += 4 + _getByteLength(val);
-    });
-    object.left_hand.forEach((val) => {
-      length += 4 + _getByteLength(val);
-    });
-    object.right_hand.forEach((val) => {
-      length += 4 + _getByteLength(val);
-    });
-    object.pose.forEach((val) => {
-      length += 4 + _getByteLength(val);
-    });
+    length += 24 * object.face.length;
+    length += 24 * object.left_hand.length;
+    length += 24 * object.right_hand.length;
+    length += 24 * object.pose.length;
     return length + 16;
   }
 
@@ -103,16 +132,23 @@ class Landmarks {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '6571e14d514c06424ea80b7c30f04d5b';
+    return '58ff724fd227fb57ee478929cb224b52';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    string[] face
-    string[] left_hand
-    string[] right_hand
-    string[] pose
+    geometry_msgs/Point[] face
+    geometry_msgs/Point[] left_hand
+    geometry_msgs/Point[] right_hand
+    geometry_msgs/Point[] pose
+    ================================================================================
+    MSG: geometry_msgs/Point
+    # This contains the position of a point in free space
+    float64 x
+    float64 y
+    float64 z
+    
     `;
   }
 
@@ -123,28 +159,40 @@ class Landmarks {
     }
     const resolved = new Landmarks(null);
     if (msg.face !== undefined) {
-      resolved.face = msg.face;
+      resolved.face = new Array(msg.face.length);
+      for (let i = 0; i < resolved.face.length; ++i) {
+        resolved.face[i] = geometry_msgs.msg.Point.Resolve(msg.face[i]);
+      }
     }
     else {
       resolved.face = []
     }
 
     if (msg.left_hand !== undefined) {
-      resolved.left_hand = msg.left_hand;
+      resolved.left_hand = new Array(msg.left_hand.length);
+      for (let i = 0; i < resolved.left_hand.length; ++i) {
+        resolved.left_hand[i] = geometry_msgs.msg.Point.Resolve(msg.left_hand[i]);
+      }
     }
     else {
       resolved.left_hand = []
     }
 
     if (msg.right_hand !== undefined) {
-      resolved.right_hand = msg.right_hand;
+      resolved.right_hand = new Array(msg.right_hand.length);
+      for (let i = 0; i < resolved.right_hand.length; ++i) {
+        resolved.right_hand[i] = geometry_msgs.msg.Point.Resolve(msg.right_hand[i]);
+      }
     }
     else {
       resolved.right_hand = []
     }
 
     if (msg.pose !== undefined) {
-      resolved.pose = msg.pose;
+      resolved.pose = new Array(msg.pose.length);
+      for (let i = 0; i < resolved.pose.length; ++i) {
+        resolved.pose[i] = geometry_msgs.msg.Point.Resolve(msg.pose[i]);
+      }
     }
     else {
       resolved.pose = []

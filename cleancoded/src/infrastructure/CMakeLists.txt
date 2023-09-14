@@ -164,7 +164,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/CameraCapture.py
+  scripts/basics/image/CameraCapture.py
   scripts/basics/image/landmarks_detection/pose.py
   scripts/basics/audio_capture.py
   scripts/appliences/middleware/landmark_data_processing/gaze_pose_node.py

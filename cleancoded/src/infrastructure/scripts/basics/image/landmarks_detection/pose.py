@@ -8,6 +8,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
 from infrastructure.msg import List, Array3D, Landmarks
 from std_msgs.msg import String
+from geometry_msgs.msg import Point
 
 
 
@@ -38,34 +39,68 @@ class MeshDetector():
 
 	def catch(self,_):
 		arr = []
-		l = _.list
+		l = _.data
 		for i in range(len(l)):
 			arr.append(list(l[i].data))
         # sub.unregister()
-		# rospy.loginfo("Pose: Got the image")
-		try:
-			self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
-			landmarks_array = self.analyze(self.arrrrr)
-			rospy.loginfo("Pose: Analyzed the image")
-
-			landmarks_msg = Landmarks()
-			
-
-			print(list(landmarks_array[0]))
-			landmarks_msg.face = [str(i) for i in list(landmarks_array[0])]
-			landmarks_msg.left_hand = [str(i) for i in list(landmarks_array[1])]
-			landmarks_msg.right_hand = [str(i) for i in list(landmarks_array[2])]
-			landmarks_msg.pose = [str(i) for i in list(landmarks_array[3])]
-
-			landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
-			landmark_pub.publish(landmarks_msg)
+		rospy.loginfo("Pose: Got the image")
+		self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
+		landmarks_array = self.analyze(self.arrrrr)
+		rospy.loginfo("Pose: Analyzed the image")
+		
+		face_points = []
+		if landmarks_array[0]:
+			for point in landmarks_array[0].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				face_points.append(point_sub_msg)
 
 
-			return self.arrrrr
+		lhand_points = []
+		if landmarks_array[1]:
+			for point in landmarks_array[1].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				lhand_points.append(point_sub_msg)
 
-		except Exception as e:
-			rospy.loginfo("Pose: Error in catching the image")
-			return(e)
+
+		rhand_points = []
+		if landmarks_array[2]:
+			for point in landmarks_array[2].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				rhand_points.append(point_sub_msg)
+
+		pose_points = []
+		if landmarks_array[3]:
+			for point in landmarks_array[0].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				pose_points.append(point_sub_msg)
+
+		landmarks_msg = Landmarks()
+		landmarks_msg.face = face_points
+		landmarks_msg.left_hand = lhand_points
+		landmarks_msg.right_hand = rhand_points
+		landmarks_msg.pose = pose_points
+
+		print(landmarks_msg)
+
+		
+		landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
+		landmark_pub.publish(landmarks_msg)
+
+
+		return self.arrrrr
+
 		
 	def convert_back(self,_):
 		cv_bridge=CvBridge()
@@ -115,10 +150,10 @@ class MeshDetector():
 			for j in i:
 				obj=Array3D()
 				obj.data=j
-				tem.list.append(obj) # convert the image to a list of 3D arrays 
+				tem.data.append(obj) # convert the image to a list of 3D arrays 
 		# rospy.loginfo("Pose: Converted the image to a list of 3D arrays")
 		arr = []
-		l = tem.list
+		l = tem.data
 
 		for i in range(len(l)):
 			arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS

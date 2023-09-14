@@ -76,7 +76,7 @@ class GazeRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '563138297254f9391391e1e861953236';
+    return '8bb7563e20192114b78508b7a91451b0';
   }
 
   static messageDefinition() {
@@ -87,17 +87,24 @@ class GazeRequest {
     
     ================================================================================
     MSG: infrastructure/List
-    infrastructure/Array3D[] list
+    infrastructure/Array3D[] data
     ================================================================================
     MSG: infrastructure/Array3D
     float64[] data
     
     ================================================================================
     MSG: infrastructure/Landmarks
-    string[] face
-    string[] left_hand
-    string[] right_hand
-    string[] pose
+    geometry_msgs/Point[] face
+    geometry_msgs/Point[] left_hand
+    geometry_msgs/Point[] right_hand
+    geometry_msgs/Point[] pose
+    ================================================================================
+    MSG: geometry_msgs/Point
+    # This contains the position of a point in free space
+    float64 x
+    float64 y
+    float64 z
+    
     `;
   }
 
@@ -201,6 +208,6 @@ class GazeResponse {
 module.exports = {
   Request: GazeRequest,
   Response: GazeResponse,
-  md5sum() { return '205259182beb600563ab418d4957eb6b'; },
+  md5sum() { return 'c34a27d7d61a85ce5f08ee39e1c1aa1a'; },
   datatype() { return 'infrastructure/Gaze'; }
 };

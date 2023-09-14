@@ -19,24 +19,24 @@ class List {
   constructor(initObj={}) {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
-      this.list = null;
+      this.data = null;
     }
     else {
-      if (initObj.hasOwnProperty('list')) {
-        this.list = initObj.list
+      if (initObj.hasOwnProperty('data')) {
+        this.data = initObj.data
       }
       else {
-        this.list = [];
+        this.data = [];
       }
     }
   }
 
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type List
-    // Serialize message field [list]
-    // Serialize the length for message field [list]
-    bufferOffset = _serializer.uint32(obj.list.length, buffer, bufferOffset);
-    obj.list.forEach((val) => {
+    // Serialize message field [data]
+    // Serialize the length for message field [data]
+    bufferOffset = _serializer.uint32(obj.data.length, buffer, bufferOffset);
+    obj.data.forEach((val) => {
       bufferOffset = Array3D.serialize(val, buffer, bufferOffset);
     });
     return bufferOffset;
@@ -46,19 +46,19 @@ class List {
     //deserializes a message object of type List
     let len;
     let data = new List(null);
-    // Deserialize message field [list]
-    // Deserialize array length for message field [list]
+    // Deserialize message field [data]
+    // Deserialize array length for message field [data]
     len = _deserializer.uint32(buffer, bufferOffset);
-    data.list = new Array(len);
+    data.data = new Array(len);
     for (let i = 0; i < len; ++i) {
-      data.list[i] = Array3D.deserialize(buffer, bufferOffset)
+      data.data[i] = Array3D.deserialize(buffer, bufferOffset)
     }
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
-    object.list.forEach((val) => {
+    object.data.forEach((val) => {
       length += Array3D.getMessageSize(val);
     });
     return length + 4;
@@ -71,13 +71,13 @@ class List {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'ff61f15ae9ce7e4a9953c07b8d2a2270';
+    return '72cb3ba2313f1afdb0932a688ee31bc1';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    infrastructure/Array3D[] list
+    infrastructure/Array3D[] data
     ================================================================================
     MSG: infrastructure/Array3D
     float64[] data
@@ -91,14 +91,14 @@ class List {
       msg = {};
     }
     const resolved = new List(null);
-    if (msg.list !== undefined) {
-      resolved.list = new Array(msg.list.length);
-      for (let i = 0; i < resolved.list.length; ++i) {
-        resolved.list[i] = Array3D.Resolve(msg.list[i]);
+    if (msg.data !== undefined) {
+      resolved.data = new Array(msg.data.length);
+      for (let i = 0; i < resolved.data.length; ++i) {
+        resolved.data[i] = Array3D.Resolve(msg.data[i]);
       }
     }
     else {
-      resolved.list = []
+      resolved.data = []
     }
 
     return resolved;

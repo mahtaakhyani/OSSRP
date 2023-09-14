@@ -130,12 +130,12 @@ struct MD5Sum< ::infrastructure::GazeRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "563138297254f9391391e1e861953236";
+    return "8bb7563e20192114b78508b7a91451b0";
   }
 
   static const char* value(const ::infrastructure::GazeRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x563138297254f939ULL;
-  static const uint64_t static_value2 = 0x1391e1e861953236ULL;
+  static const uint64_t static_value1 = 0x8bb7563e20192114ULL;
+  static const uint64_t static_value2 = 0xb78508b7a91451b0ULL;
 };
 
 template<class ContainerAllocator>
@@ -159,17 +159,23 @@ struct Definition< ::infrastructure::GazeRequest_<ContainerAllocator> >
 "\n"
 "================================================================================\n"
 "MSG: infrastructure/List\n"
-"infrastructure/Array3D[] list\n"
+"infrastructure/Array3D[] data\n"
 "================================================================================\n"
 "MSG: infrastructure/Array3D\n"
 "float64[] data\n"
 "\n"
 "================================================================================\n"
 "MSG: infrastructure/Landmarks\n"
-"string[] face\n"
-"string[] left_hand\n"
-"string[] right_hand\n"
-"string[] pose\n"
+"geometry_msgs/Point[] face\n"
+"geometry_msgs/Point[] left_hand\n"
+"geometry_msgs/Point[] right_hand\n"
+"geometry_msgs/Point[] pose\n"
+"================================================================================\n"
+"MSG: geometry_msgs/Point\n"
+"# This contains the position of a point in free space\n"
+"float64 x\n"
+"float64 y\n"
+"float64 z\n"
 ;
   }
 

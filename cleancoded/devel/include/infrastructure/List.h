@@ -25,17 +25,17 @@ struct List_
   typedef List_<ContainerAllocator> Type;
 
   List_()
-    : list()  {
+    : data()  {
     }
   List_(const ContainerAllocator& _alloc)
-    : list(_alloc)  {
+    : data(_alloc)  {
   (void)_alloc;
     }
 
 
 
-   typedef std::vector< ::infrastructure::Array3D_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::infrastructure::Array3D_<ContainerAllocator> >> _list_type;
-  _list_type list;
+   typedef std::vector< ::infrastructure::Array3D_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::infrastructure::Array3D_<ContainerAllocator> >> _data_type;
+  _data_type data;
 
 
 
@@ -66,7 +66,7 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::infrastructure::List_<ContainerAllocator1> & lhs, const ::infrastructure::List_<ContainerAllocator2> & rhs)
 {
-  return lhs.list == rhs.list;
+  return lhs.data == rhs.data;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -123,12 +123,12 @@ struct MD5Sum< ::infrastructure::List_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "ff61f15ae9ce7e4a9953c07b8d2a2270";
+    return "72cb3ba2313f1afdb0932a688ee31bc1";
   }
 
   static const char* value(const ::infrastructure::List_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xff61f15ae9ce7e4aULL;
-  static const uint64_t static_value2 = 0x9953c07b8d2a2270ULL;
+  static const uint64_t static_value1 = 0x72cb3ba2313f1afdULL;
+  static const uint64_t static_value2 = 0xb0932a688ee31bc1ULL;
 };
 
 template<class ContainerAllocator>
@@ -147,7 +147,7 @@ struct Definition< ::infrastructure::List_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "infrastructure/Array3D[] list\n"
+    return "infrastructure/Array3D[] data\n"
 "================================================================================\n"
 "MSG: infrastructure/Array3D\n"
 "float64[] data\n"
@@ -169,7 +169,7 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
-      stream.next(m.list);
+      stream.next(m.data);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -188,13 +188,13 @@ struct Printer< ::infrastructure::List_<ContainerAllocator> >
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::infrastructure::List_<ContainerAllocator>& v)
   {
-    s << indent << "list[]" << std::endl;
-    for (size_t i = 0; i < v.list.size(); ++i)
+    s << indent << "data[]" << std::endl;
+    for (size_t i = 0; i < v.data.size(); ++i)
     {
-      s << indent << "  list[" << i << "]: ";
+      s << indent << "  data[" << i << "]: ";
       s << std::endl;
       s << indent;
-      Printer< ::infrastructure::Array3D_<ContainerAllocator> >::stream(s, indent + "    ", v.list[i]);
+      Printer< ::infrastructure::Array3D_<ContainerAllocator> >::stream(s, indent + "    ", v.data[i]);
     }
   }
 };

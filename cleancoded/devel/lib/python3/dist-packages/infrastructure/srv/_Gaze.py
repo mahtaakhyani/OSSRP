@@ -6,10 +6,11 @@ python3 = True if sys.hexversion > 0x03000000 else False
 import genpy
 import struct
 
+import geometry_msgs.msg
 import infrastructure.msg
 
 class GazeRequest(genpy.Message):
-  _md5sum = "563138297254f9391391e1e861953236"
+  _md5sum = "8bb7563e20192114b78508b7a91451b0"
   _type = "infrastructure/GazeRequest"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """infrastructure/List  frame
@@ -17,17 +18,24 @@ infrastructure/Landmarks landmark
 
 ================================================================================
 MSG: infrastructure/List
-infrastructure/Array3D[] list
+infrastructure/Array3D[] data
 ================================================================================
 MSG: infrastructure/Array3D
 float64[] data
 
 ================================================================================
 MSG: infrastructure/Landmarks
-string[] face
-string[] left_hand
-string[] right_hand
-string[] pose"""
+geometry_msgs/Point[] face
+geometry_msgs/Point[] left_hand
+geometry_msgs/Point[] right_hand
+geometry_msgs/Point[] pose
+================================================================================
+MSG: geometry_msgs/Point
+# This contains the position of a point in free space
+float64 x
+float64 y
+float64 z
+"""
   __slots__ = ['frame','landmark']
   _slot_types = ['infrastructure/List','infrastructure/Landmarks']
 
@@ -68,9 +76,9 @@ string[] pose"""
     :param buff: buffer, ``StringIO``
     """
     try:
-      length = len(self.frame.list)
+      length = len(self.frame.data)
       buff.write(_struct_I.pack(length))
-      for val1 in self.frame.list:
+      for val1 in self.frame.data:
         length = len(val1.data)
         buff.write(_struct_I.pack(length))
         pattern = '<%sd'%length
@@ -78,35 +86,23 @@ string[] pose"""
       length = len(self.landmark.face)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.face:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.left_hand)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.left_hand:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.right_hand)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.right_hand:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.pose)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.pose:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -126,7 +122,7 @@ string[] pose"""
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.frame.list = []
+      self.frame.data = []
       for i in range(0, length):
         val1 = infrastructure.msg.Array3D()
         start = end
@@ -137,66 +133,50 @@ string[] pose"""
         s = struct.Struct(pattern)
         end += s.size
         val1.data = s.unpack(str[start:end])
-        self.frame.list.append(val1)
+        self.frame.data.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.face = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.face.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.left_hand = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.left_hand.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.right_hand = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.right_hand.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.pose = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.pose.append(val1)
       return self
     except struct.error as e:
@@ -210,9 +190,9 @@ string[] pose"""
     :param numpy: numpy python module
     """
     try:
-      length = len(self.frame.list)
+      length = len(self.frame.data)
       buff.write(_struct_I.pack(length))
-      for val1 in self.frame.list:
+      for val1 in self.frame.data:
         length = len(val1.data)
         buff.write(_struct_I.pack(length))
         pattern = '<%sd'%length
@@ -220,35 +200,23 @@ string[] pose"""
       length = len(self.landmark.face)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.face:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.left_hand)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.left_hand:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.right_hand)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.right_hand:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
       length = len(self.landmark.pose)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.pose:
-        length = len(val1)
-        if python3 or type(val1) == unicode:
-          val1 = val1.encode('utf-8')
-          length = len(val1)
-        buff.write(struct.Struct('<I%ss'%length).pack(length, val1))
+        _x = val1
+        buff.write(_get_struct_3d().pack(_x.x, _x.y, _x.z))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -269,7 +237,7 @@ string[] pose"""
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.frame.list = []
+      self.frame.data = []
       for i in range(0, length):
         val1 = infrastructure.msg.Array3D()
         start = end
@@ -280,66 +248,50 @@ string[] pose"""
         s = struct.Struct(pattern)
         end += s.size
         val1.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
-        self.frame.list.append(val1)
+        self.frame.data.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.face = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.face.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.left_hand = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.left_hand.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.right_hand = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.right_hand.append(val1)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       self.landmark.pose = []
       for i in range(0, length):
+        val1 = geometry_msgs.msg.Point()
+        _x = val1
         start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        start = end
-        end += length
-        if python3:
-          val1 = str[start:end].decode('utf-8', 'rosmsg')
-        else:
-          val1 = str[start:end]
+        end += 24
+        (_x.x, _x.y, _x.z,) = _get_struct_3d().unpack(str[start:end])
         self.landmark.pose.append(val1)
       return self
     except struct.error as e:
@@ -349,6 +301,12 @@ _struct_I = genpy.struct_I
 def _get_struct_I():
     global _struct_I
     return _struct_I
+_struct_3d = None
+def _get_struct_3d():
+    global _struct_3d
+    if _struct_3d is None:
+        _struct_3d = struct.Struct("<3d")
+    return _struct_3d
 # This Python file uses the following encoding: utf-8
 """autogenerated by genpy from infrastructure/GazeResponse.msg. Do not edit."""
 import codecs
@@ -478,6 +436,6 @@ def _get_struct_I():
     return _struct_I
 class Gaze(object):
   _type          = 'infrastructure/Gaze'
-  _md5sum = '205259182beb600563ab418d4957eb6b'
+  _md5sum = 'c34a27d7d61a85ce5f08ee39e1c1aa1a'
   _request_class  = GazeRequest
   _response_class = GazeResponse

@@ -7,7 +7,6 @@ b216b4c3bceb5d12abbb8fcc76aa597d /home/mahta/OSSRP/cleancoded/devel/include/infr
 006bbdbeb01100546ca952112d089628 /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/Gaze.h
 847dafe777e0447faddc13907ac38949 /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/Landmarks.h
 7b222a9c0dd29fc225ec2fcdb244cc09 /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/List.h
-0c81b41037556f59837aed4fd2fc2a5a /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/StringArray.h
 b91656b48b0ed84382585272c4f24653 /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/Stt.h
 58511d379153e5dddf7430dcde975dd0 /home/mahta/OSSRP/cleancoded/devel/include/infrastructure/Tts.h
 bc68f16413d62acfbd67dcf8c1938817 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/_Array3D.py
@@ -15,7 +14,6 @@ bc68f16413d62acfbd67dcf8c1938817 /home/mahta/OSSRP/cleancoded/devel/lib/python3/
 281b4c71d61751a533a5a868bc12c6ea /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/_EmoProbArr.py
 72fb142a889a54c09a0374a106cf9eb2 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/_Landmarks.py
 fb331b69b9225a8b8b5b72b90d96e5a6 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/_List.py
-26b30ce3da6c071c41dae9e15ec84b9c /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/_StringArray.py
 2ffc7b49ef883ee437b8275d0dcb1335 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/msg/__init__.py
 17c796ed0364c99b46821e91c2688047 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/srv/_AudFeature.py
 64c5a7148658e91c1a06909f70176527 /home/mahta/OSSRP/cleancoded/devel/lib/python3/dist-packages/infrastructure/srv/_EmoProb.py
@@ -28,7 +26,6 @@ fdfacc67641a35ad36f9f7d702882ccd /home/mahta/OSSRP/cleancoded/devel/lib/python3/
 91b6715b91a82e70a180c527f17d1666 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/EmoProbArr.lisp
 07d3941d7995e6fc270b42af6dc9bea4 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/Landmarks.lisp
 f64464199e9c6966699e876055701272 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/List.lisp
-f7675e712644ecdfe504fe7e51cdc452 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/StringArray.lisp
 27b348978258348192f4cf4dde72a4a2 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/AudFeature.lisp
 4c5a0e3fd836894b26cbebed576c627e /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/EmoProb.lisp
 f190b926edc69534388f75c5b74084b0 /home/mahta/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/Gaze.lisp
@@ -39,7 +36,6 @@ f190b926edc69534388f75c5b74084b0 /home/mahta/OSSRP/cleancoded/devel/share/common
 e83bc147d670641f610574fb579d9bff /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/EmoProbArr.js
 1459b5e6d282ab34b00d35d8b3e4e973 /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/Landmarks.js
 3244a993b6e08cc721a72a4d4dc2013b /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/List.js
-c182aa0dde04039798ca69d6fc524246 /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/StringArray.js
 b633aa89b6d4954566aec9f8e52b057b /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/AudFeature.js
 c5426b0d79c5578d7ec1016e60e81a96 /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/EmoProb.js
 0c44f8b3bcf9c551eef363ab1835e982 /home/mahta/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/Gaze.js
@@ -51,7 +47,6 @@ c7f153c07b38b42ca0d317a5cae4163f /home/mahta/OSSRP/cleancoded/devel/share/roseus
 db896fd8abf68f85fadad47de2145363 /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/EmoProbArr.l
 c08e4bf702ce09aad3795604b6fbd8c1 /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/Landmarks.l
 3bfee6a981038b40882b8b6d3164c6cd /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/List.l
-af78139d7001ce9cadf4af8063199b9e /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/StringArray.l
 559ebcf03cac4fbeed210c4bfd363f4d /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/AudFeature.l
 0a91c1780c44d5c7fac33e6c93d776a5 /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/EmoProb.l
 0dbf541e3882b52883a87c68348a760f /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/Gaze.l
@@ -59,15 +54,15 @@ af78139d7001ce9cadf4af8063199b9e /home/mahta/OSSRP/cleancoded/devel/share/roseus
 fc0dd35f21b2893ff34517d80673d862 /home/mahta/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/Tts.l
 aa5411e8b69e1216c6d68c199d8239c9 CMakeFiles/clean_test_results
 41f69fc0d0c69d6d80d938c3b0f360f9 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Array3D
-7b0f50f7de4946585e912aa8a146f92c infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_AudFeature
+e4c241096275dc7ee4e04843a9282d71 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_AudFeature
 a3393ff7698c12283f05cc0c32f960fe infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_AudFeatures
-7059b07f74fb03880c25a7b018ed8079 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_EmoProb
+9f196cb46236f276d6762eeeb203f82d infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_EmoProb
 b1626c6e1b3f69cbc03473c8f1070526 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_EmoProbArr
-b4de2840cd58fe7a4e03a80cdbbf3c7d infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze
-db709339d6225e68e99ffb6ed876b61e infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Landmarks
+38d5f29f5ddf1cb9fd6581884a126d8e infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze
+ec01b323bc9f9aae8f73a75e2481a574 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Landmarks
 4f5d28e1d51e63ba57683f737c559b95 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_List
-48dbf70c543cc2c039c301f687f123fc infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt
-738b1a4cee87cbdd16bd4572fbc29280 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Tts
+bbd2d373c24a08d71e29889525afe9c7 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Stt
+9bc8d84a281ebad7793b51592fd1c2de infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Tts
 adf38d5f26874e640109cb30c0058bed infrastructure/CMakeFiles/infrastructure_generate_messages_cpp
 adf38d5f26874e640109cb30c0058bed infrastructure/CMakeFiles/infrastructure_generate_messages_eus
 adf38d5f26874e640109cb30c0058bed infrastructure/CMakeFiles/infrastructure_generate_messages_lisp

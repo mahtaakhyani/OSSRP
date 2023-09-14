@@ -15,6 +15,8 @@ pub = rospy.Publisher('gaze_position/gaze_dir', String, queue_size=10)
 def landmark_handler(data_list):
     global landmarks
     landmarks = data_list
+    print(landmarks)
+    rospy.loginfo('landmarks recieved')
     rospy.Subscriber('/image_cv2',List, callservice)
 
 

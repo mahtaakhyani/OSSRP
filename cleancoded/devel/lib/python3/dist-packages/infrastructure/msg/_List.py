@@ -9,15 +9,15 @@ import struct
 import infrastructure.msg
 
 class List(genpy.Message):
-  _md5sum = "ff61f15ae9ce7e4a9953c07b8d2a2270"
+  _md5sum = "72cb3ba2313f1afdb0932a688ee31bc1"
   _type = "infrastructure/List"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """infrastructure/Array3D[] list
+  _full_text = """infrastructure/Array3D[] data
 ================================================================================
 MSG: infrastructure/Array3D
 float64[] data
 """
-  __slots__ = ['list']
+  __slots__ = ['data']
   _slot_types = ['infrastructure/Array3D[]']
 
   def __init__(self, *args, **kwds):
@@ -28,7 +28,7 @@ float64[] data
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       list
+       data
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -37,10 +37,10 @@ float64[] data
     if args or kwds:
       super(List, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
-      if self.list is None:
-        self.list = []
+      if self.data is None:
+        self.data = []
     else:
-      self.list = []
+      self.data = []
 
   def _get_types(self):
     """
@@ -54,9 +54,9 @@ float64[] data
     :param buff: buffer, ``StringIO``
     """
     try:
-      length = len(self.list)
+      length = len(self.data)
       buff.write(_struct_I.pack(length))
-      for val1 in self.list:
+      for val1 in self.data:
         length = len(val1.data)
         buff.write(_struct_I.pack(length))
         pattern = '<%sd'%length
@@ -72,13 +72,13 @@ float64[] data
     if python3:
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
-      if self.list is None:
-        self.list = None
+      if self.data is None:
+        self.data = None
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.list = []
+      self.data = []
       for i in range(0, length):
         val1 = infrastructure.msg.Array3D()
         start = end
@@ -89,7 +89,7 @@ float64[] data
         s = struct.Struct(pattern)
         end += s.size
         val1.data = s.unpack(str[start:end])
-        self.list.append(val1)
+        self.data.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -102,9 +102,9 @@ float64[] data
     :param numpy: numpy python module
     """
     try:
-      length = len(self.list)
+      length = len(self.data)
       buff.write(_struct_I.pack(length))
-      for val1 in self.list:
+      for val1 in self.data:
         length = len(val1.data)
         buff.write(_struct_I.pack(length))
         pattern = '<%sd'%length
@@ -121,13 +121,13 @@ float64[] data
     if python3:
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
-      if self.list is None:
-        self.list = None
+      if self.data is None:
+        self.data = None
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.list = []
+      self.data = []
       for i in range(0, length):
         val1 = infrastructure.msg.Array3D()
         start = end
@@ -138,7 +138,7 @@ float64[] data
         s = struct.Struct(pattern)
         end += s.size
         val1.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
-        self.list.append(val1)
+        self.data.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill

@@ -52,23 +52,22 @@ class CameraCapture:
             te = Array3D()
             tem = List()
             temp = list()
-            msg = List()
             pub = rospy.Publisher('/testaki',Image,queue_size=10)
             llll=self.modif_image.tolist()
             for i in llll:
                 for j in i:
                         obj=Array3D()
                         obj.data=j
-                        tem.list.append(obj) # convert the image to a list of 3D arrays 
+                        tem.data.append(obj) # convert the image to a list of 3D arrays 
             rospy.loginfo("Converted the image to a list of 3D arrays")
             cv_bridge=CvBridge()
             arr = []
-            l = tem.list
+            l = tem.data
 
             for i in range(len(l)):
-                arr.append(list(l[i].data)) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
+                arr.append(l[i].data) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
 
-            self.pub.publish(arr)
+            self.pub.publish(tem)
 
             
             arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array

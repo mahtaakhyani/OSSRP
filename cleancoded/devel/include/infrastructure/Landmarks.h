@@ -15,6 +15,10 @@
 #include <ros/builtin_message_traits.h>
 #include <ros/message_operations.h>
 
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
+#include <geometry_msgs/Point.h>
 
 namespace infrastructure
 {
@@ -39,16 +43,16 @@ struct Landmarks_
 
 
 
-   typedef std::vector<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>> _face_type;
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::geometry_msgs::Point_<ContainerAllocator> >> _face_type;
   _face_type face;
 
-   typedef std::vector<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>> _left_hand_type;
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::geometry_msgs::Point_<ContainerAllocator> >> _left_hand_type;
   _left_hand_type left_hand;
 
-   typedef std::vector<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>> _right_hand_type;
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::geometry_msgs::Point_<ContainerAllocator> >> _right_hand_type;
   _right_hand_type right_hand;
 
-   typedef std::vector<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>> _pose_type;
+   typedef std::vector< ::geometry_msgs::Point_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::geometry_msgs::Point_<ContainerAllocator> >> _pose_type;
   _pose_type pose;
 
 
@@ -140,12 +144,12 @@ struct MD5Sum< ::infrastructure::Landmarks_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "6571e14d514c06424ea80b7c30f04d5b";
+    return "58ff724fd227fb57ee478929cb224b52";
   }
 
   static const char* value(const ::infrastructure::Landmarks_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x6571e14d514c0642ULL;
-  static const uint64_t static_value2 = 0x4ea80b7c30f04d5bULL;
+  static const uint64_t static_value1 = 0x58ff724fd227fb57ULL;
+  static const uint64_t static_value2 = 0xee478929cb224b52ULL;
 };
 
 template<class ContainerAllocator>
@@ -164,10 +168,16 @@ struct Definition< ::infrastructure::Landmarks_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "string[] face\n"
-"string[] left_hand\n"
-"string[] right_hand\n"
-"string[] pose\n"
+    return "geometry_msgs/Point[] face\n"
+"geometry_msgs/Point[] left_hand\n"
+"geometry_msgs/Point[] right_hand\n"
+"geometry_msgs/Point[] pose\n"
+"================================================================================\n"
+"MSG: geometry_msgs/Point\n"
+"# This contains the position of a point in free space\n"
+"float64 x\n"
+"float64 y\n"
+"float64 z\n"
 ;
   }
 
@@ -212,25 +222,33 @@ struct Printer< ::infrastructure::Landmarks_<ContainerAllocator> >
     for (size_t i = 0; i < v.face.size(); ++i)
     {
       s << indent << "  face[" << i << "]: ";
-      Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.face[i]);
+      s << std::endl;
+      s << indent;
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.face[i]);
     }
     s << indent << "left_hand[]" << std::endl;
     for (size_t i = 0; i < v.left_hand.size(); ++i)
     {
       s << indent << "  left_hand[" << i << "]: ";
-      Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.left_hand[i]);
+      s << std::endl;
+      s << indent;
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.left_hand[i]);
     }
     s << indent << "right_hand[]" << std::endl;
     for (size_t i = 0; i < v.right_hand.size(); ++i)
     {
       s << indent << "  right_hand[" << i << "]: ";
-      Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.right_hand[i]);
+      s << std::endl;
+      s << indent;
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.right_hand[i]);
     }
     s << indent << "pose[]" << std::endl;
     for (size_t i = 0; i < v.pose.size(); ++i)
     {
       s << indent << "  pose[" << i << "]: ";
-      Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.pose[i]);
+      s << std::endl;
+      s << indent;
+      Printer< ::geometry_msgs::Point_<ContainerAllocator> >::stream(s, indent + "    ", v.pose[i]);
     }
   }
 };
