@@ -51,3 +51,14 @@
 
 **List of developed ROS config files:**
 - None -
+
+**List of developed ROS nodes:**
+- opencv_client
+- audio_recorder
+- speech_emotion_analysis_server
+- audio_feature_extractor
+- FaceEmotionAnalysis
+- landmark_detection
+- gaze_detector
+- speech_to_text_server
+- text_to_speech_server

@@ -150,6 +150,7 @@ class EmotionCommandController(APIView):
         }
         # print(self.requested_expression)
         '''
+            (Passes the user-selected emotion's data to the robot)
             Taking in the latest user-commanded facial expression(emotion) through CoreReqHandler       and returning the corresponding String to the client in the form of JSON data.
             (Data is being sent on the URL:/reqcli)
             -Which here the client would be the android app sending requests to the server to
