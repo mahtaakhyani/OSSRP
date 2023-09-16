@@ -3,7 +3,7 @@ from statistics import mode
 import random
 from deepface import DeepFace
 import rospy
-from face_pkg.msg import Array2D,Array3D,Emotion,List
+from infrastructure.msg import FaceEmotions, List, EmoProbArr 
 from sensor_msgs.msg import CameraInfo,Image
 import numpy as np
 import mediapipe as mp
@@ -31,10 +31,10 @@ class FaceDetection():
         self.img = None
         self.face_width = None
         self.global_dominant_emotion = []
-        self.submsg = Emotion()
-        self.msg = Array2D()
+        self.submsg = EmoProbArr()
+        self.msg = FaceEmotions()
         rospy.init_node('FaceEmotionAnalysis',anonymous=False)
-        self.pub = rospy.Publisher('/face_emotions',Array2D, queue_size=10)
+        self.pub = rospy.Publisher('/face_emotions',FaceEmotions, queue_size=10)
         rospy.Subscriber('/image_cv2',List,self.catch)
 
         rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
@@ -123,7 +123,7 @@ class FaceDetection():
         temp = []
 
         for item in sorted_values:
-            self.submsg = Emotion()
+            self.submsg = EmoProbArr()
             self.submsg.name, self.submsg.probability = item[0], float(round(item[1],6))
             temp.append(self.submsg)
             print(temp)

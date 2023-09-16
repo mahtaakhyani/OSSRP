@@ -50,6 +50,7 @@ add_message_files(
   List.msg
   Array3D.msg
   Landmarks.msg
+  FaceEmotions.msg
 )
 
 ## Generate services in the 'srv' folder

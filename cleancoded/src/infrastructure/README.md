@@ -5,7 +5,7 @@
 - /image_cv2 -> image converted to cv2
 - /image_raw/landmarked -> image with landmarks in ROS Image format
 - /image_cv2/landmarked -> image with landmarks in cv2 format
-- /gaze_pose -> gaze pose in custom msg format called 'Gaze'
+- /gaze_pose -> gaze pose in String format
   
 <!-- **** Audio Processing **** -->
 - /audio_features -> audio features in custom msg format called 'AudFeatures' (see below)
@@ -30,6 +30,10 @@
 **List of developed ROS msg files:**
 - AudFeatures.msg
 - EmoProbArr.msg
+- Landmarks.msg
+- List.msg
+- Array3D.msg
+
 
 ***List of developed ROS srv files:**
 - AudFeature.srv
@@ -60,5 +64,7 @@
 - FaceEmotionAnalysis
 - landmark_detection
 - gaze_detector
+- gaze_pose_node
 - speech_to_text_server
 - text_to_speech_server
+- speech_to_text_node
