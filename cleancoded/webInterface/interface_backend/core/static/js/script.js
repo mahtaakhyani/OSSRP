@@ -138,6 +138,7 @@ window.addEventListener('load', (event) => {
   // get_ip();
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
+  console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');
   });})
   // Creating the camera subscriber ------------------
   var cam_reciever = new ROSLIB.Topic({
