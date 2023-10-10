@@ -3,39 +3,39 @@ function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-// Fetching server ip address ---------------------
+// Fetching server ip address --------------------- * DOESN'T WORK !
 // -----------------------------------------------
 
-function get_ip() {
-  $.ajax({
-    type: "GET",
-    url: request_server_ip, 
-    success: function(response) {
-      host = response.ip;
-      console.log('Settings have successfully set [Jetson local ip address = '+host+']');
-    },
-    error: function(error) {
-      console.log(error, "IP address could not be fetched. Setting IP address to 'localhost'");
-      host = 'localhost';
+// function get_ip() {
+//   $.ajax({
+//     type: "GET",
+//     url: request_server_ip, 
+//     success: function(response) {
+//       host = response.ip;
+//       console.log('Settings have successfully set [Jetson local ip address = '+host+']');
+//     },
+//     error: function(error) {
+//       console.log(error, "IP address could not be fetched. Setting IP address to 'localhost'");
+//       host = 'localhost';
 
-    },
-    // while the function is running, the page will be in a loading state
-    beforeSend: function() {
-      console.log("Loading server IP...");
-    },
-    // when the function is completed, the page will be in a normal state
-    complete: function() {
-      console.log("Fetching server IP Done");
-      set_variables(host);
+//     },
+//     // while the function is running, the page will be in a loading state
+//     beforeSend: function() {
+//       console.log("Loading server IP...");
+//     },
+//     // when the function is completed, the page will be in a normal state
+//     complete: function() {
+//       console.log("Fetching server IP Done");
+//       set_variables(host);
 
-    }
-  });
-}
+//     }
+//   });
+// }
 
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host;
+var host = '192.168.43.250';
 var port = '5353';
 var android_port = 8080;
 var face_url_id = '';
