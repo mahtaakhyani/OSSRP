@@ -36,8 +36,8 @@ function sleep (time) {
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
 var host = '192.168.43.250';
-var port = '5353';
-var android_port = '5353';
+var port = '8000';
+var android_port = '8000';
 var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
