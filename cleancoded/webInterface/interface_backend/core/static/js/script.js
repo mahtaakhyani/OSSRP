@@ -135,7 +135,7 @@ ros.on('close', function() {
 
 // On page load, below settings will be applied or executed.
 window.addEventListener('load', (event) => {
-  get_ip();
+  // get_ip();
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   });})
