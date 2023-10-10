@@ -37,7 +37,7 @@ function sleep (time) {
 // ---------------------------------
 var host = '192.168.43.250';
 var port = '8000';
-var android_port = '8000';
+var android_port = '8080';
 var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
