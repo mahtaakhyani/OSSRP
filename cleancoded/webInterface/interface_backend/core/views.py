@@ -19,9 +19,9 @@ sys.path.insert(0, ws_dir)
 
 from core.serializers import *
 from core.models import *
-# from soundsapp.models import *
-# import parrot_control.serializers as serializers
-# from parrot_control.views import ParrotCommandController
+from soundHandler.models import *
+import serialHandler.serializers as serializers
+from serialHandler.views import ParrotCommandController
 
 
 class MainViewTemp(APIView):
@@ -29,14 +29,14 @@ class MainViewTemp(APIView):
            
             # print(voices_uri)
             emdb = EmotionModel.objects.all().order_by('-id')[0:]
-            # sdb = Song.objects.all().order_by('-id')[0:]
+            sdb = Song.objects.all().order_by('-id')[0:]
             # print(EmotionModel.objects.all()[1].sound.path())
-            # parrot_serializers_to_parse = ParrotCommandController().get(request)
+            parrot_serializers_to_parse = ParrotCommandController().get(request)
             return TemplateResponse(request, 
                 'Modified_files/Page-1.html',
              {'emotions':emdb,
-                # 'voices':sdb,
-                # 'p_commands':parrot_serializers_to_parse
+                'voices':sdb,
+                'p_commands':parrot_serializers_to_parse
                 }) #Sending the data to the template for rendering
 
 #------------------------------- Emotion handling ----------------------------------------
