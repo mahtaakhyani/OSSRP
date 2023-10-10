@@ -4,7 +4,7 @@ from serialHandler.models import *
 
 class CommandCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.CommandCategory
+        model = CommandCategory
         fields = ('identifier', 'button_color', 'display_order')
         read_only_fields = ('identifier', 'button_color', 'display_order')
 
@@ -12,7 +12,7 @@ class CommandCategorySerializer(serializers.ModelSerializer):
 class ParrotCommandSerializer(serializers.ModelSerializer):
     category = CommandCategorySerializer(many=False, read_only=True)
     class Meta:
-        model = models.ParrotCommand
+        model = ParrotCommand
         fields = ('id', 'name','interface_button_emoji', 'title', 'category', 'tag', 'perform_time', 'priority', 'parrot_0', 'parrot_1')
         read_only_fields = ('id', 'name','interface_button_emoji', 'title', 'category', 'tag', 'perform_time', 'priority', 'parrot_0', 'parrot_1')
 
