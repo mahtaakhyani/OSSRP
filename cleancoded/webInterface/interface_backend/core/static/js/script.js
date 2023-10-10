@@ -415,20 +415,20 @@ function motion(element) {
 // // -----------------
 // // Audio Player for the web interface
 // // -----------------
-// function playAudio(input) { 
-//   $(".play_btn")[0].currentTime = 0;
+function playAudio(input) { 
+  $(".play_btn")[0].currentTime = 0;
   
-//   if ($(input).hasClass("active") ) {
-//     $(input).removeClass("active");
+  if ($(input).hasClass("active") ) {
+    $(input).removeClass("active");
     
-//   } 
-//   else {
-//     $(".play_btn").removeClass("active");
-//     $(input).addClass("active"); 
+  } 
+  else {
+    $(".play_btn").removeClass("active");
+    $(input).addClass("active"); 
        
 
-//     }
-//   }
+    }
+  }
 
 
 
