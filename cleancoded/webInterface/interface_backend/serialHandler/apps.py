@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class SerialhandlerConfig(AppConfig):
-    name = 'serialHandler'
+class ParrotControlConfig(AppConfig):
+    name = 'parrot_control'

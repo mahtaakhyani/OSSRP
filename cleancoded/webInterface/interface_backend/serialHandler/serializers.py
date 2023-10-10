@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from parrot_control import models
+from cleancoded.webInterface.interface_backend.serialHandler import models
 
 
 class CommandCategorySerializer(serializers.ModelSerializer):
