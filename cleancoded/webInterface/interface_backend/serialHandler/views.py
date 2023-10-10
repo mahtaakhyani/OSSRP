@@ -8,9 +8,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.views import APIView
 
-from cleancoded.webInterface.interface_backend.serialHandler import models
+from . import models
 # from parrot_control.parrot_gateway import parrot as parrot_gateway
-import parrot_control.serializers as serializers
+from . import serializers
 from django.views.generic import TemplateView
 from django.template.response import TemplateResponse
 

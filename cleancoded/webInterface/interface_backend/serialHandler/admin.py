@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cleancoded.webInterface.interface_backend.serialHandler import models as website_models
+from . import models as website_models
 
 
 admin.site.register(website_models.ParrotCommand)

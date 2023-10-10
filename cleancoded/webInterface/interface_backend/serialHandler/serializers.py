@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cleancoded.webInterface.interface_backend.serialHandler import models
+from serialHandler.models import *
 
 
 class CommandCategorySerializer(serializers.ModelSerializer):

@@ -1,6 +1,6 @@
 from django.conf.urls import url,include
 from django.urls import path, re_path
-from parrot_control import views
+from . import views
 from rest_framework.routers import SimpleRouter
 
 # router = SimpleRouter()
