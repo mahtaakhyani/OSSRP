@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-# from soundsapp.models import Song
+from soundHandler.models import Song
 
 # Create your models here.
 class EmotionModel(models.Model):
