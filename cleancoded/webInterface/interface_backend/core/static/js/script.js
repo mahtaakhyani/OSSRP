@@ -37,7 +37,7 @@ function sleep (time) {
 // ---------------------------------
 var host = '192.168.43.250';
 var port = '5353';
-var android_port = 8080;
+var android_port = '8080';
 var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
@@ -87,20 +87,20 @@ function set_variables(host) {
 
 // Log Side Menu
 // -----------------
-var $logmenu = document.querySelector('.logmenu');
-console.stdlog = console.log.bind(console);
-console.logs = [];
-console.log = function(){
-    console.logs.push(Array.from(arguments));
-    console.stdlog.apply(console, arguments);
-}
-$logmenu.addEventListener('click', function(e) {
-  var item = document.createElement('li');
-  item.setAttribute('id','item');
-  $('#log').add(item);
-  $('#log').toggle('display');
-  document.getElementById("log").innerHTML = console.logs.slice(-3) + '\n'+console.logs.slice(-2);
-} );
+// var $logmenu = document.querySelector('.logmenu');
+// console.stdlog = console.log.bind(console);
+// console.logs = [];
+// console.log = function(){
+//     console.logs.push(Array.from(arguments));
+//     console.stdlog.apply(console, arguments);
+// }
+// $logmenu.addEventListener('click', function(e) {
+//   var item = document.createElement('li');
+//   item.setAttribute('id','item');
+//   $('#log').add(item);
+//   $('#log').toggle('display');
+//   document.getElementById("log").innerHTML = console.logs.slice(-3) + '\n'+console.logs.slice(-2);
+// } );
 
 
 
@@ -136,6 +136,7 @@ ros.on('close', function() {
 // On page load, below settings will be applied or executed.
 window.addEventListener('load', (event) => {
   // get_ip();
+  set_variables(host);
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');
