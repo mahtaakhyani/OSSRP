@@ -29,7 +29,7 @@ class FaceDetection():
         self.face_cascade_name = None
         self.face_cascade = None
         self.img = None
-        self.face_width = None
+        self.face_w idth = None
         self.global_dominant_emotion = []
         self.submsg = EmoProbArr()
         self.msg = FaceEmotions()
