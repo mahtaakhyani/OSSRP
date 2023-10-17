@@ -1,6 +1,13 @@
 from pyax12.connection import Connection
-from serial_port_handler import Search_for_the_serial_port as port_in_use
 import time
+import rospkg
+import sys, os
+
+pkg = rospkg.RosPack().get_path('infrastructure')
+module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+sys.path.append(module_path)
+
+from serial_port_handler import Search_for_the_serial_port as port_in_use
 
 
 
@@ -10,23 +17,27 @@ class Dynamixel():
     def __init__(self):
         # Dynamixel serial port
         dynamixel_serial_port = port_in_use()
-        self.baud_rate = 1000000
+        self.baud_rates = [9600,57600,115200,1000000,2000000,3000000]
         self.timeout = 20
         # Connect to the serial port
-        self.serial_connection = Connection(
+        for baud_rate in self.baud_rates:
+            self.serial_connection = Connection(
             port=dynamixel_serial_port,
-             baudrate=self.baud_rate, 
+             baudrate=baud_rate, 
              timeout=self.timeout,
              waiting_time=0.02, rpi_gpio=False)
         
-        print('Connected to the serial port')
-        scan_results = self.scan()
+            print('Connected to the serial port')
+            try:
+                scan_results = self.scan()
+                print('Scanning for connected Dynamixel units...','\n','Baudrate:',baud_rate)
+            except BaseException as e:
+                print(e)
         
     
 
     def scan(self):
         # Ping the dynamixel unit(s)
-        print('Scanning for connected Dynamixel units...')
         
         self.control_table = []
         connected_baudrates = []

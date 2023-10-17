@@ -42,3 +42,5 @@ deep_fake/first-order-model-master/first-order-model-master/.dockerignore
 CMakeCache.txt
 *.in
 cleancoded/src/infrastructure/scripts/tools/audio_common
+cleancoded/build
+cleancoded/devel

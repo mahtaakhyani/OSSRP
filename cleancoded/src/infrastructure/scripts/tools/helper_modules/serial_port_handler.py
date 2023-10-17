@@ -11,10 +11,9 @@ timeout=100
 def Search_for_the_serial_port():
     global serial_port_in_use
 
-    if args.__getattribute__('port'):
-        serial_port_in_use = args.__getattribute__('port')
+    if True:
+        serial_port_in_use = '/dev/ttyUSB0'
         print('serial_port_in_use set to ',serial_port_in_use)
-        return serial_port_in_use
 
     available_ports = [tuple(p) for p in list(serial.tools.list_ports.comports())]
     
