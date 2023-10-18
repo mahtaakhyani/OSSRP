@@ -51,6 +51,8 @@ add_message_files(
   Array3D.msg
   Landmarks.msg
   FaceEmotions.msg
+  DynaTwist.msg
+  Exp.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -174,6 +176,7 @@ catkin_install_python(PROGRAMS
   scripts/services/audio/speech_to_text_server.py
   scripts/services/audio/speech_emotion_analysis_server.py
   scripts/services/audio/speech_feature_extraction_server.py
+  scripts/basics/motion/dynamixel_controller/DynaControl.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

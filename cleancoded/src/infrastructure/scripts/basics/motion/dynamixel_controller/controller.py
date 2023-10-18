@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # import rospy
 import time
-from dynatest import Dynamixel as dyna
+from infrastructure.scripts.tests.dynatest import Dynamixel as dyna
 import argparse
 # import motor_driver as md
 # from face_pkg.msg import Motor

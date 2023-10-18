@@ -34,6 +34,7 @@ class Dynamixel():
             except BaseException as e:
                 print(e)
         
+        self.gotodegree(scan_results,60)
     
 
     def scan(self):

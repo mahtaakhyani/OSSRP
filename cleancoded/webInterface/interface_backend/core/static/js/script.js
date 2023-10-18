@@ -53,10 +53,12 @@ var publish_motion_topic = '/web_motion_publisher';
 var camera_img_topic = '/camera/image_raw';
 var listen_exp_topic = '/py_exp_publisher';
 var listen_motion_topic = '/cmd_vel_listener';
+var dyna_topic = '/cmd_vel/dyna'
 // Messages
-var exp_msg_type = 'face_pkg/Exp';
+var exp_msg_type = 'infrastructure/Exp';
 var motion_msg_type = 'geometry_msgs/Twist';
 var camera_img_msg_type = 'sensor_msgs/Image';
+var dyna_msg_type = 'infrastructure/DynaTwist'
 // - - - ROS - - -
 var robot_ws;
 
@@ -82,6 +84,7 @@ function set_variables(host) {
                 '\n/head_cmd_vel to publish motion commands on');
 
   }
+  set_variables(host)
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -137,10 +140,119 @@ ros.on('close', function() {
 window.addEventListener('load', (event) => {
   // get_ip();
   set_variables(host);
+  cmd_vel_listener = new ROSLIB.Topic({
+    ros : ros,
+    name : dyna_topic,
+    messageType : dyna_msg_type
+  });
+  cmd_vel_listener.subscribe(function(message) {
+    console.log('Received message on ' + dyna_Topic + ' for ' + message.joint);
+  });
+  
+  move = function (angular,position, joint) {
+    var twist = new ROSLIB.Message({
+      linear: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      angular: {
+        x: parseFloat(angular),
+        y: 0,
+        z: 0
+      }
+    });
+    var dyna_twist = new ROSLIB.Message({
+      speed: twist,
+      position: parseInt(position),
+      joint: joint
+    });
+    cmd_vel_listener.publish(dyna_twist);
+  }
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');
-  });})
+  $('.bt_left').click(function(){
+    $('.perso').animate({
+  left: '-=60'
+});
+});
+$('.bt_right').click(function(){
+    $('.perso').animate({
+  left: '+=60'
+});
+});
+$('.bt_top').click(function(){
+    $('.perso').animate({
+  top: '-=60'
+});
+});
+$('.bt_bottom').click(function(){
+$('.perso').animate({
+  top: '+=60'
+});
+});
+});
+$('.bt_head_left').click(function(){
+  $('.eve .head .face').animate({
+  left: '-=4'
+  });
+  move(60,50,'neck')
+
+});
+$('.bt_head_right').click(function(){
+$('.eve .head .face').animate({
+left: '+=4'
+});
+});
+$('.bt_head_top').click(function(){
+$('.eve .head .face').animate({
+top: '-=4'
+});
+});
+$('.bt_head_bottom').click(function(){
+$('.eve .head .face').animate({
+top: '+=4'
+});
+});
+$('.bt_rhand_top').click(function () {
+$('.eve .body:before').css('transform', 'rotate(-34deg)');
+});
+
+$(document).keydown(function(key) {
+switch (key.which) {
+case 37:
+    $('.perso').stop().animate({
+        left: '-=60'
+    });
+    break;
+case 38:
+    $('.perso').stop().animate({
+        top: '-=60'
+    });
+    break;
+case 39:
+    $('.perso').stop().animate({
+        left: '+=60'
+    }); 
+    break;
+case 40:
+    $('.perso').stop().animate({
+        top: '+=60'
+    });
+    break;
+}
+});  
+});
+
+// -----------------
+// Creating new Topic for expressions data
+// -----------------
+var dyna_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : dyna_topic,
+  messageType : dyna_msg_type
+});
   // Creating the camera subscriber ------------------
   var cam_reciever = new ROSLIB.Topic({
     ros : ros,

@@ -6,6 +6,8 @@ let List = require('./List.js');
 let AudFeatures = require('./AudFeatures.js');
 let FaceEmotions = require('./FaceEmotions.js');
 let Array3D = require('./Array3D.js');
+let DynaTwist = require('./DynaTwist.js');
+let Exp = require('./Exp.js');
 let EmoProbArr = require('./EmoProbArr.js');
 
 module.exports = {
@@ -14,5 +16,7 @@ module.exports = {
   AudFeatures: AudFeatures,
   FaceEmotions: FaceEmotions,
   Array3D: Array3D,
+  DynaTwist: DynaTwist,
+  Exp: Exp,
   EmoProbArr: EmoProbArr,
 };
