@@ -5,7 +5,7 @@ import time
 import rospkg
 import sys, os
 from std_msgs.msg import String
-from infrastructure.msg import DynaTwist
+from infrastructure.msg import DynaTwist, DynaStatus
 pkg = rospkg.RosPack().get_path('infrastructure')
 module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
 sys.path.append(module_path)
@@ -16,7 +16,7 @@ from serial_port_handler import Search_for_the_serial_port as port_in_use
 
 class DynaControl:
     rospy.init_node("dynamixel_control", anonymous=False) # initialize the node 
-    pub = rospy.Publisher('/dyna_status',String,queue_size=10) # publish the image to the topic
+    pub = rospy.Publisher('/dyna_status',DynaStatus,queue_size=10) # publish the dynamixel status to the topic
 
     def __init__(self):
         self.connected_ids = self.scan()
@@ -37,7 +37,9 @@ class DynaControl:
     def scan(self):
          # Dynamixel serial port
         dynamixel_serial_port = port_in_use()
-        self.baud_rates = [1000000]
+        self.baud_rates = [1000000] # If you don't know the baud rate, add 9000, 57600, 115200, 1000000, 
+                                        # 2000000, 3000000, 4000000, and 4500000 to this list.
+                                        #    This will make the Dynamixel module scan function try each baud rate to find the connected Dynamixel unit(s).
         self.timeout = 20
         self.control_table = []
         connected_baudrates = []
@@ -73,7 +75,7 @@ class DynaControl:
     def gotodegree(self, data):
         rospy.loginfo("recieved a movement command")
         speed = int(data.speed.angular.x) # the speed must be given via the angular velocity of the Twist msg (NOT linear) and necessarily for the roll rotation
-        position = int(data.position)
+        dposition = int(data.position) # the requested movement value (aka. how much the joint should move from its current position)
         degrees=True # the requested position value is considered in degrees
         req_joint = data.joint # the requested joint's name (head, neck, rhand, or lhand)
         # Check which id is for the requested joint
@@ -81,25 +83,46 @@ class DynaControl:
         for joint in self.joint_id_lists:
             if joint[0] == req_joint:
                 dynamixel_id = joint[1]
-        print(0)
         # try:
-        # current = self.currentposition(dynamixel_id, degrees=degrees)
-        print(1)
+        current = self.currentposition(dynamixel_id, degrees=degrees)
+        
+        match req_joint: # get the preferred limits for the requested joint (the limits are based on the robot's anatomy and can be changed if needed)
+            case 'head':
+                min_position = 0
+                max_position = 150
+            case 'neck':
+                min_position = 0
+                max_position = 150
+            case 'rhand':
+                min_position = -100
+                max_position = 50
+            case 'lhand':
+                min_position = -100
+                max_position = 50
+
+        # FAIL SAFE: making sure that the respective position for the requested joint is within the factory limits of that specific Dynamixel unit to prevent overloading
         control_table = self.serial_connection.get_control_table_tuple(dynamixel_id)
         for d in control_table:
             if d[0] == 'cw_angle_limit':
-                min_position = float(d[1][:4])
+                min_position_factory = float(d[1][:4])
             if d[0] == 'ccw_angle_limit':    
-                max_position = float(d[1][:3])
-        print(2)
-        if min_position < position < max_position:
-            goal_position = position
-        elif position < min_position:
-            goal_position = position
-        else:
-            goal_position = position
+                max_position_factory = float(d[1][:3])
 
-        rospy.loginfo('Moving to position: ', position)
+            if min_position<min_position_factory:
+                min_position = min_position_factory
+            if max_position>max_position_factory:
+                max_position = max_position_factory
+        # END OF FAIL SAFE
+
+        # Set the goal position to the requested position if it is within the preferred limits, otherwise set it to the preferred limits
+        if min_position < current+dposition < max_position:
+            goal_position = current+dposition
+        elif current+dposition < min_position:
+            goal_position = min_position
+        else:
+            goal_position = max_position
+
+        rospy.loginfo('Moving to position: ', dposition)
         # Go to the specified position in degrees
         self.serial_connection.goto(dynamixel_id, goal_position, speed=speed, degrees=degrees)
 
@@ -107,6 +130,11 @@ class DynaControl:
         while True:
             time.sleep(0.1)
             if self.is_moving_status(dynamixel_id=dynamixel_id):
+                # current = self.currentposition(dynamixel_id, degrees=degrees)
+                # msg = DynaStatus()
+                # msg.joint = req_joint
+                # msg.position = current
+                # self.pub.publish(msg)
                 break
             else: pass
         # except BaseException as e:

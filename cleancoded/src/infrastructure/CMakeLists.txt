@@ -53,6 +53,7 @@ add_message_files(
   FaceEmotions.msg
   DynaTwist.msg
   Exp.msg
+  DynaStatus.msg
 )
 
 ## Generate services in the 'srv' folder

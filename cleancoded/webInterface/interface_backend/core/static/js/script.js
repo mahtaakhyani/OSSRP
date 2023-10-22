@@ -53,12 +53,14 @@ var publish_motion_topic = '/web_motion_publisher';
 var camera_img_topic = '/camera/image_raw';
 var listen_exp_topic = '/py_exp_publisher';
 var listen_motion_topic = '/cmd_vel_listener';
-var dyna_topic = '/cmd_vel/dyna'
+var dyna_topic = '/cmd_vel/dyna';
+var listen_dyna_status_topic = '/dyna_status';
 // Messages
 var exp_msg_type = 'infrastructure/Exp';
 var motion_msg_type = 'geometry_msgs/Twist';
 var camera_img_msg_type = 'sensor_msgs/Image';
 var dyna_msg_type = 'infrastructure/DynaTwist'
+var dyna_status_msg_type = 'infrastructure/DynaStatus'
 // - - - ROS - - -
 var robot_ws;
 
@@ -140,109 +142,79 @@ ros.on('close', function() {
 window.addEventListener('load', (event) => {
   // get_ip();
   set_variables(host);
-  cmd_vel_listener = new ROSLIB.Topic({
-    ros : ros,
-    name : dyna_topic,
-    messageType : dyna_msg_type
-  });
-  cmd_vel_listener.subscribe(function(message) {
-    console.log('Received message on ' + dyna_Topic + ' for ' + message.joint);
-  });
-  
-  move = function (angular,position, joint) {
-    var twist = new ROSLIB.Message({
-      linear: {
-        x: 0,
-        y: 0,
-        z: 0
-      },
-      angular: {
-        x: parseFloat(angular),
-        y: 0,
-        z: 0
-      }
-    });
-    var dyna_twist = new ROSLIB.Message({
-      speed: twist,
-      position: parseInt(position),
-      joint: joint
-    });
-    cmd_vel_listener.publish(dyna_twist);
-  }
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
-  console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');
+  console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');  
   $('.bt_left').click(function(){
     $('.perso').animate({
   left: '-=60'
-});
-});
-$('.bt_right').click(function(){
+  });
+  });
+  $('.bt_right').click(function(){
     $('.perso').animate({
   left: '+=60'
-});
-});
-$('.bt_top').click(function(){
+  });
+  });
+  $('.bt_top').click(function(){
     $('.perso').animate({
   top: '-=60'
-});
-});
-$('.bt_bottom').click(function(){
-$('.perso').animate({
+  });
+  });
+  $('.bt_bottom').click(function(){
+  $('.perso').animate({
   top: '+=60'
-});
-});
-});
-$('.bt_head_left').click(function(){
+  });
+  });
+  $('.bt_head_left').click(function(){
   $('.eve .head .face').animate({
   left: '-=4'
   });
-  move(60,50,'neck')
-
-});
-$('.bt_head_right').click(function(){
-$('.eve .head .face').animate({
-left: '+=4'
-});
-});
-$('.bt_head_top').click(function(){
-$('.eve .head .face').animate({
-top: '-=4'
-});
-});
-$('.bt_head_bottom').click(function(){
-$('.eve .head .face').animate({
-top: '+=4'
-});
-});
-$('.bt_rhand_top').click(function () {
-$('.eve .body:before').css('transform', 'rotate(-34deg)');
-});
-
-$(document).keydown(function(key) {
-switch (key.which) {
-case 37:
+  
+  });
+  $('.bt_head_right').click(function(){
+  $('.eve .head .face').animate({
+  left: '+=4'
+  });
+  });
+  $('.bt_head_top').click(function(){
+  $('.eve .head .face').animate({
+  top: '-=4'
+  });
+  });
+  $('.bt_head_bottom').click(function(){
+  $('.eve .head .face').animate({
+  top: '+=4'
+  });
+  });
+  $('.bt_rhand_top').click(function () {
+  $('.eve .body:before').css('transform', 'rotate(-34deg)');
+  });
+  
+  $(document).keydown(function(key) {
+  switch (key.which) {
+  case 37:
     $('.perso').stop().animate({
         left: '-=60'
     });
     break;
-case 38:
+  case 38:
     $('.perso').stop().animate({
         top: '-=60'
     });
     break;
-case 39:
+  case 39:
     $('.perso').stop().animate({
         left: '+=60'
     }); 
     break;
-case 40:
+  case 40:
     $('.perso').stop().animate({
         top: '+=60'
     });
     break;
-}
-});  
+  }
+  });
+});
 });
 
 // -----------------
@@ -509,22 +481,108 @@ motion_Topic.subscribe(function(message) {
   
 });
 
+var cmd_vel_listener = new ROSLIB.Topic({
+  ros : ros,
+  name : dyna_topic,
+  messageType : dyna_msg_type
+});
+
+cmd_vel_listener.subscribe(function(message) {
+  console.log('Received message on ' + dyna_Topic + ' for ' + message.joint);
+});
+
 // // -----------------
 // // Publishing manual movement commands from the user interface(not from the keyboard) on /cmd_vel_web topic
 // // -----------------
 var motion_Topic = new ROSLIB.Topic({
   ros : ros,
-  name : publish_motion_topic,
-  messageType : motion_msg_type
+  name : listen_dyna_status_topic,
+  messageType : dyna_status_msg_type
 });
 
-function motion(element) {
-  var twist = new ROSLIB.Message({
-   element
-  });
-  cmdVel.publish(twist);
+var current_pos;
+var current_id;
+motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
+  console.log('Received message on ' + listen_dyna_status_topic.name + ': ' + message.id + ':' + message.position);
+  current_pos = message.position;
+  current_id = message.id;
+  document.getElementById(current_id).innerHTML = current_id;
+  document.getElementById(current_pos).innerHTML = current_pos;
+}); 
+function get_speed(){
+  var speed = document.getElementById("speed").value;
+  return speed;
 }
 
+// the function that will be called from the move_keys function when the user clicks on the move buttons
+function move(position, joint) { 
+  angular = get_speed();
+  console.log(position, joint)
+  // the position is in degrees and is how much the joint will move from its current position
+  console.log('Moving '+joint+' '+position+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+
+  // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
+  var twist = new ROSLIB.Message({
+    linear: {
+      x: 0,
+      y: 0,
+      z: 0
+    },
+    angular: {
+      x: parseFloat(angular),
+      y: 0,
+      z: 0
+    }
+  });
+
+  var dyna_twist = new ROSLIB.Message({
+    speed: twist,
+    position: parseInt(position),
+    joint: joint
+  });
+  cmd_vel_listener.publish(dyna_twist);
+};
+
+
+// the function that will be called when the user clicks on the move buttons
+function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, down, left, right
+  if (joint == 'head'){
+    if (pos == 'up'){
+      move(20,'head');
+    }
+    else if (pos == 'down'){
+      move(-20,'head');
+    }
+  }
+  else if (joint == 'neck'){
+    if (pos == 'left'){
+      move(-20,'neck');
+    }
+    else if (pos == 'right'){
+      move(20,'neck');
+    }
+  }
+  else if (joint == 'rhand'){
+    if (pos == 'up'){
+      move(20,'rhand');
+    }
+    else if (pos == 'down'){
+      move(-20,'rhand');
+    }
+  }
+  else if (joint == 'lhand'){
+    if (pos == 'up'){
+      move(20,'lhand');
+    }
+    else if (pos == 'down'){
+      move(-20,'lhand');
+    }
+  }
+}
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // // -----------------
 // // Audio Player for the web interface
@@ -569,7 +627,7 @@ function drop(ev) {
       $(this).find("p").addClass("sclone_p");
       $(this).css('display', 'inline-grid');
       $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
-      $(this).find("input").attr("id", state_var + "_clone");
+      $(this).find("input").attr("class", state_var + "_clone");
       var del_btn = document.createElement("i");
       del_btn.setAttribute("class","bi bi-x-lg del_btn");
       del_btn.setAttribute("onclick","clear_item(this)");
@@ -583,11 +641,12 @@ function drop(ev) {
 
   function auto_run(){
     // click all buttons that end with "clone" in order with a delay of 1 second
-      $(".dest_list li input[id$='clone']").each(function(i) {
+      $(".dest_list li input[class$='clone']").each(function(i) {
         $(this).removeClass("active");
         $(this).delay(5000 * i).queue(function() {
           $(this).addClass("active");
-          exp_face(this);
+          $(this).click();
+          $(this).dequeue();
           });
 
       });
@@ -648,3 +707,21 @@ function submitWizardForm(data) {
       //     + ': '
       //     + result.sum);
       // });
+
+      // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // // <----------------------------------------- END OF SERVICES ----------------------------------------->
+      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      // // <----------------------------------------- CAMERA VIEWER ----------------------------------------->
+      // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // get handle for video placeholder
+      img = document.getElementById('rgb-canvas');
+      // Populate video source 
+      img.src = "http://" + robot_IP + ":8181/stream?topic=/camera/image_raw";
+
+      // ----------------------------------------------------------------------------------------------------------
+      // // <----------------------------------------- END OF CAMERA VIEWER ----------------------------------------->
+      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    

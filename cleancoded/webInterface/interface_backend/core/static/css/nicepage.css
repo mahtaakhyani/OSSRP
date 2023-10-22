@@ -18484,6 +18484,7 @@ a.pswp__share--download:hover {
   position: relative;
   align-items: flex-end;
 }
+
 .u-list-control {
   display: flex;
   position: relative;
@@ -37195,7 +37196,7 @@ a.u-link.u-text-hover-grey-90:hover {
         .u-button-style.u-border-custom-color-7
         {
           min-width: -webkit-fill-available;
-          border-color: #332c29 !important;
+          border-color: #332c29 ;
           color: #000000 !important;
           background-color: #ffbb00 !important;
           font-size: 20px;
