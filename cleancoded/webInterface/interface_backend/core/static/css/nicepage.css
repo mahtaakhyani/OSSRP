@@ -18520,9 +18520,13 @@ a.pswp__share--download:hover {
 
 .dest_list li input {
   background-color: white !important;
+  height: 20px !important;
+  width: 20px !important;
+  top: -31px !important;
 }
 .dest_list li input.active {
   background-color: #00eaff !important;
+
 }
 #myalert {
   position:fixed;

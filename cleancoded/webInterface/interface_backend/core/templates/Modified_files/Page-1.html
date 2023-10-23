@@ -82,7 +82,7 @@
       <div class="u-layout-row u-align-left u-clearfix u-expanded-width-xs u-gutter-12 u-layout-spacing-left-right u-layout-wrap u-layout-wrap-1">
       <div class="u-layout-row" style="margin-right: 20px;">
         <div class="u-layout-col">
-        <div class=" u-layout-col u-clearfix u-expanded-width-xs u-gutter-14 u-layout-spacing-left-right u-layout-wrap u-layout-wrap-2">
+        <div class="u-size-30 u-layout-col u-clearfix u-expanded-width-xs u-gutter-14 u-layout-spacing-left-right u-layout-wrap u-layout-wrap-2" style="    max-height: 400px; width:-webkit-fill-available;">
         <div class="u-gutter-0 u-layout">
           <div class="u-layout-col">
             <div class="u-expanded-width u-tab-links-align-left u-tabs u-tabs-1">
@@ -94,16 +94,14 @@
                 <li class="u-tab-item" role="presentation">
                   <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d35" href="#tab-3d35" role="tab" aria-controls="tab-3d35" aria-selected="true">Camera</a>
                 </li>
-                <li class="u-tab-item" role="presentation">
-                  <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d36" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">Localization</a>
-                </li>
+               
               
               </ul>
               <div class="u-tab-content">
-                <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-3d34" role="tabpanel" aria-labelledby="link-tab-3d34">
-                  <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0" style="">
-                    <div class="embed-responsive">
-                      <video id="vidsrc" class="embed-responsive-item" loop="true" playsinline="">
+                <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-tab-active u-tab-pane u-white u-tab-pane-1" id="tab-3d34" role="tabpanel" aria-labelledby="link-tab-3d34">
+                  <div class="u-absolute-hcenter u-align-left u-border-6 u-border-white u-expanded u-left-0" style="height: 310px; background-color: white;">
+                    <div class="embed-responsive"style=" height: -webkit-fill-available;">
+                      <video id="vidsrc" class="embed-responsive-item"  loop="true" playsinline="">
                         <source  src="" type="video/mp4">
                         <p>Your browser does not support HTML5 video.</p>
                       </video>
@@ -128,8 +126,51 @@
               </div>
             </div>
           </div>
+          
         </div>
+        
         </div>
+        <div class="u-layout-col" style="width: max-content;">
+          <div class="u-layout-row">
+            <div class="u-layout-col">
+              <div class="u-size-80">
+                <div class="u-layout-row">
+                  <div class="u-align-center u-container-style u-layout-cell u-radius-16 u-shape-round u-size-60 u-white u-layout-cell-0" style="    max-height: 200px;">
+                    <div class="u-border-1 u-border-white u-container-layout u-container-layout-1">
+                      <h4 class="u-text u-text-1">Text-To-Speech</h4>
+                        <!-- the text to speech input -->
+                        <div class="u-form u-form-1">
+                            <div class="u-form-group u-form-name">
+                              <input type="text" 
+                              placeholder="Enter your Text" 
+                              id="tts_text" 
+                              name="text" 
+                              class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
+                            </div>
+                            <div class="u-align-center u-form-group u-form-submit">
+                              <input type="submit" 
+                              value="submit" 
+                              onclick="tts();"
+                              class="bt bt_head_left u-align-center u-border-3 u-border-custom-color-7 u-border-hover-palette-1-light-1 u-btn u-btn-round u-button-style u-none u-radius-50 u-btn-1">
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="u-size-15 u-layout-col">
+              <div class="u-layout-row">
+                <div class=" u-layout-col u-clearfix u-expanded-width-xs u-gutter-14 u-layout-spacing-left-right u-layout-wrap u-layout-wrap-2">
+                  <div class=" u-layout-col" >
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
        </div>
       <div class="u-layout-row" style="margin-right: -20%;">
         <div class="u-size-30 u-layout-col u-clearfix u-expanded-width-xs u-gutter-14 u-layout-spacing-left-right u-layout-wrap u-layout-wrap-2">
@@ -630,18 +671,18 @@
               </div>
             </div>
       </div>
-    </div>
-    <div class="perso">
-      <div class="eve">
-        <div class="head">
-    <div class="face"></div>
-        </div>
-        <div class="body">
-    <div class="headshadow"></div>
-        </div>
       </div>
-      <div class="shadow"></div>
-  </div>
+      <div class="perso dragable">
+        <div class="eve">
+          <div class="head">
+      <div class="face"></div>
+          </div>
+          <div class="body">
+      <div class="headshadow"></div>
+          </div>
+        </div>
+        <div class="shadow"></div>
+      </div>
   
   
     <div>
@@ -650,6 +691,8 @@
         <div class="spacer"></div>
         <ul id="log"><li class="item"></li></ul>
       </div>
+      
+
       <div class="alert alert-info alert-dismissible" id="myAlert">
         <a href="#" class="close" onclick="$(this).parent().fadeOut(250);">&times;</a>
         <strong>Move The Robot!  </strong>Use the arrow keys to move the robot. Use WASD keys to tilt the head up/left/down/right relatively.

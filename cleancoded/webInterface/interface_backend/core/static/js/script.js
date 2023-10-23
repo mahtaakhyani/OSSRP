@@ -55,12 +55,17 @@ var listen_exp_topic = '/py_exp_publisher';
 var listen_motion_topic = '/cmd_vel_listener';
 var dyna_topic = '/cmd_vel/dyna';
 var listen_dyna_status_topic = '/dyna_status';
+var tts_topic = '/tts';
 // Messages
 var exp_msg_type = 'infrastructure/Exp';
 var motion_msg_type = 'geometry_msgs/Twist';
 var camera_img_msg_type = 'sensor_msgs/Image';
 var dyna_msg_type = 'infrastructure/DynaTwist'
-var dyna_status_msg_type = 'infrastructure/DynaStatus'
+var dyna_status_msg_type = 'infrastructure/DynaStatus';
+var tts_msg_type = 'infrastructure/TTS';
+// Services
+var tts_srv_type = 'infrastructure/Tts';
+
 // - - - ROS - - -
 var robot_ws;
 
@@ -457,6 +462,32 @@ function update_exp(ids) {
 // // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- TEXT-TO-SPEECH ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function tts() {
+  var text = document.getElementById("tts_text").value;
+
+  new ROSLIB.Service({
+      ros : ros,
+      name : tts_topic,
+      serviceType : tts_srv_type
+    });
+  
+    var request = new ROSLIB.ServiceRequest({
+      text : text,
+    });
+  
+    speech_to_text_client.callService(request, function(result) {
+      console.log('Service called successfully.');
+    });
+}
+
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF TEXT-TO-SPEECH ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------------- MOTION HANDLING --------------------------------------------->
