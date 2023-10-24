@@ -19,17 +19,17 @@ class DynaControl:
     pub = rospy.Publisher('/dyna_status',DynaStatus,queue_size=10) # publish the dynamixel status to the topic
 
     def __init__(self):
-        self.connected_ids = self.scan()
-        joints = ['rhand','lhand','neck','head']
-        # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<150 -> face forward=90 |-> more than 150 is NOT possible at all -> -150|__0__|150
-        default_ids = [3,6,4,1]
-        if len(self.connected_ids)==4:
-            self.joint_id_lists = [[j,i] for j,i in zip(joints, self.connected_ids)]
-        else:
-            self.joint_id_lists = [[j,i] for j,i in zip(joints, default_ids)]
-        self.joint_id_lists = [[j,i] for j,i in zip(joints, self.connected_ids)]
+        # self.connected_ids = self.scan()
+        # joints = ['rhand','lhand','neck','head']
+        # # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<150 -> face forward=90 |-> more than 150 is NOT possible at all -> -150|__0__|150
+        # default_ids = [3,6,4,1]
+        # if len(self.connected_ids)==4:
+        #     self.joint_id_lists = [[j,i] for j,i in zip(joints, self.connected_ids)]
+        # else:
+        #     self.joint_id_lists = [[j,i] for j,i in zip(joints, default_ids)]
+        # self.joint_id_lists = [[j,i] for j,i in zip(joints, self.connected_ids)]
 
-        rospy.loginfo(self.joint_id_lists)
+        # rospy.loginfo(self.joint_id_lists)
         rospy.Subscriber("/cmd_vel/dyna", DynaTwist, self.gotodegree)  
         rospy.loginfo("Successfully subscribed to /cmd_vel/dyna. \n Waiting for commands.")
 
@@ -85,18 +85,18 @@ class DynaControl:
                 dynamixel_id = joint[1]
         # try:
         current = self.currentposition(dynamixel_id, degrees=degrees)
-        
-        match req_joint: # get the preferred limits for the requested joint (the limits are based on the robot's anatomy and can be changed if needed)
-            case 'head':
+
+        # get the preferred limits for the requested joint (the limits are based on the robot's anatomy and can be changed if needed)
+        if req_joint== 'head':
                 min_position = 0
                 max_position = 150
-            case 'neck':
+        if req_joint== 'neck':
                 min_position = 0
                 max_position = 150
-            case 'rhand':
+        if req_joint== 'rhand':
                 min_position = -100
                 max_position = 50
-            case 'lhand':
+        if req_joint== 'lhand':
                 min_position = -100
                 max_position = 50
 

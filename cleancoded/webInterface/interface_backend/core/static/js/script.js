@@ -35,7 +35,7 @@ function sleep (time) {
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = '192.168.43.250';
+var host = '192.168.100.11';
 var port = '8000';
 var android_port = '8080';
 var face_url_id = '';
@@ -469,7 +469,7 @@ function update_exp(ids) {
 function tts() {
   var text = document.getElementById("tts_text").value;
 
-  new ROSLIB.Service({
+  var speech_to_text_client = ROSLIB.Service({
       ros : ros,
       name : tts_topic,
       serviceType : tts_srv_type
@@ -512,15 +512,7 @@ motion_Topic.subscribe(function(message) {
   
 });
 
-var cmd_vel_listener = new ROSLIB.Topic({
-  ros : ros,
-  name : dyna_topic,
-  messageType : dyna_msg_type
-});
 
-cmd_vel_listener.subscribe(function(message) {
-  console.log('Received message on ' + dyna_Topic + ' for ' + message.joint);
-});
 
 // // -----------------
 // // Publishing manual movement commands from the user interface(not from the keyboard) on /cmd_vel_web topic
@@ -547,6 +539,15 @@ function get_speed(){
 
 // the function that will be called from the move_keys function when the user clicks on the move buttons
 function move(position, joint) { 
+  var cmd_vel_listener = new ROSLIB.Topic({
+    ros : ros,
+    name : dyna_topic,
+    messageType : dyna_msg_type
+  });
+  
+  cmd_vel_listener.subscribe(function(message) {
+    console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
+  });
   angular = get_speed();
   console.log(position, joint)
   // the position is in degrees and is how much the joint will move from its current position
@@ -572,6 +573,7 @@ function move(position, joint) {
     joint: joint
   });
   cmd_vel_listener.publish(dyna_twist);
+  console.log(dyna_twist)
 };
 
 

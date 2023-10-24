@@ -8,14 +8,14 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
 #include <ros/builtin_message_traits.h>
 #include <ros/message_operations.h>
 
-#include <audio_common_msgs/AudioDataStamped.h>
+#include <audio_common_msgs/AudioData.h>
 
 namespace infrastructure
 {
@@ -34,7 +34,7 @@ struct TtsResponse_
 
 
 
-   typedef  ::audio_common_msgs::AudioDataStamped_<ContainerAllocator>  _speech_type;
+   typedef  ::audio_common_msgs::AudioData_<ContainerAllocator>  _speech_type;
   _speech_type speech;
 
 
@@ -88,16 +88,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::TtsResponse_<ContainerAllocator> >
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::TtsResponse_<ContainerAllocator> const>
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::TtsResponse_<ContainerAllocator> >
   : TrueType
   { };
@@ -105,6 +95,16 @@ struct IsMessage< ::infrastructure::TtsResponse_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::TtsResponse_<ContainerAllocator> const>
   : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::TtsResponse_<ContainerAllocator> >
+  : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::TtsResponse_<ContainerAllocator> const>
+  : FalseType
   { };
 
 template <class ContainerAllocator>
@@ -123,12 +123,12 @@ struct MD5Sum< ::infrastructure::TtsResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "a3684913b519453068fe78aa64f28912";
+    return "17bac3472f989c850bf73ced5a271756";
   }
 
   static const char* value(const ::infrastructure::TtsResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xa3684913b5194530ULL;
-  static const uint64_t static_value2 = 0x68fe78aa64f28912ULL;
+  static const uint64_t static_value1 = 0x17bac3472f989c85ULL;
+  static const uint64_t static_value2 = 0x0bf73ced5a271756ULL;
 };
 
 template<class ContainerAllocator>
@@ -147,28 +147,7 @@ struct Definition< ::infrastructure::TtsResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "audio_common_msgs/AudioDataStamped speech\n"
-"\n"
-"================================================================================\n"
-"MSG: audio_common_msgs/AudioDataStamped\n"
-"std_msgs/Header header\n"
-"audio_common_msgs/AudioData audio\n"
-"\n"
-"================================================================================\n"
-"MSG: std_msgs/Header\n"
-"# Standard metadata for higher-level stamped data types.\n"
-"# This is generally used to communicate timestamped data \n"
-"# in a particular coordinate frame.\n"
-"# \n"
-"# sequence ID: consecutively increasing ID \n"
-"uint32 seq\n"
-"#Two-integer timestamp that is expressed as:\n"
-"# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')\n"
-"# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')\n"
-"# time-handling sugar is provided by the client library\n"
-"time stamp\n"
-"#Frame this data is associated with\n"
-"string frame_id\n"
+    return "audio_common_msgs/AudioData speech\n"
 "\n"
 "================================================================================\n"
 "MSG: audio_common_msgs/AudioData\n"
@@ -212,7 +191,7 @@ struct Printer< ::infrastructure::TtsResponse_<ContainerAllocator> >
   {
     s << indent << "speech: ";
     s << std::endl;
-    Printer< ::audio_common_msgs::AudioDataStamped_<ContainerAllocator> >::stream(s, indent + "  ", v.speech);
+    Printer< ::audio_common_msgs::AudioData_<ContainerAllocator> >::stream(s, indent + "  ", v.speech);
   }
 };
 

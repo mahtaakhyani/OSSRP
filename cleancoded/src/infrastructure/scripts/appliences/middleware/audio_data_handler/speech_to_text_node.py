@@ -5,7 +5,7 @@
 
 import rospy
 from std_msgs.msg import String
-from infrastructure.msg import Stt
+from infrastructure.srv import Stt
 from audio_common_msgs.msg import AudioDataStamped as AudioData
 
 

@@ -1,0 +1,12 @@
+<!-- text_to_speech launch -->
+
+<launch>
+  <node pkg="infrastructure"
+   type="text_to_speech_node.py" 
+   name="text_to_speech_node" 
+   output="screen"/>
+   <node pkg="infrastructure"
+   type="text_to_speech_server.py" 
+   name="text_to_speech_server" 
+   output="screen"/>
+</launch>

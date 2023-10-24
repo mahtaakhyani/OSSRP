@@ -6,7 +6,7 @@ It subscribes to the topic /text_to_speech/text and publishes the audio data to 
     (In other words, The web interface publishes the text to the topic /text_to_speech/text 
         and the robot plays the audio data from the topic /text_to_speech/audio_data)
 """
-from hazmtest import FarsGPT2
+# from hazmtest import FarsGPT2
 import asyncio
 import os
 import random
@@ -16,6 +16,7 @@ from edge_tts import VoicesManager
 import rospy
 from std_msgs.msg import String
 from infrastructure.srv import Tts
+from audio_common_msgs.msg import AudioData
 
 
 class TextToSpeechServer:
@@ -24,19 +25,24 @@ class TextToSpeechServer:
 
     def __init__(self):
         rospy.init_node('text_to_speech_server', anonymous=False)
-        s = rospy.Service('speech_to_text', Tts, self.callback)
-        rospy.loginfo("Ready to convert speech to text.")
+        s = rospy.Service('text_to_speech', Tts, self.callback)
+        rospy.loginfo("Ready to convert text to speech.")
 
     def callback(self, data):
-        text = data.data
-        audio = self.text_to_speech(text)
-        return audio
+        rospy.loginfo('Recieved the service call. Processing...')
+        text = data.text
+        audio = asyncio.run(self.text_to_speech(text))
+        result_msg = AudioData()
+        result_msg.data = audio
+        # print(type(audio))
+        rospy.loginfo('Processed the data. Sending back the results.')
+        return result_msg
 
     async def text_to_speech(self, text):
         voices = await VoicesManager.create()
         # voice = voices.find(Gender="Female", Language="fa")
         voice = voices.find(Name=self.voice_name)
-        rospy.log_info(voice, '\n\n', text)
+        rospy.loginfo(voice)
         # Also supports Locales
         # voice = voices.find(Gender="Female", Locale="es-AR") #Automated language-based voice selection
 
@@ -61,8 +67,8 @@ if __name__ == "__main__":
     try:
         tts = TextToSpeechServer()
         rospy.spin()
-    except rospy.ROSInterruptException:
-
+    except rospy.ROSInterruptException as e:
+        rospy.logdebug(e)
 
 
 

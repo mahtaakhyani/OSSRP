@@ -172,8 +172,10 @@ catkin_install_python(PROGRAMS
   scripts/basics/image/landmarks_detection/pose.py
   scripts/basics/audio_capture.py
   scripts/appliences/middleware/landmark_data_processing/gaze_pose_node.py
+  scripts/appliences/middleware/audio_data_handler/speech_feature_extraction_node.py
+  scripts/appliences/middleware/audio_data_handler/text_to_speech_node.py
   scripts/services/image/gaze_detector_service.py
-  scripts/services/audio/text_to_speech.py
+  scripts/services/audio/text_to_speech_server.py
   scripts/services/audio/speech_to_text_server.py
   scripts/services/audio/speech_emotion_analysis_server.py
   scripts/services/audio/speech_feature_extraction_server.py

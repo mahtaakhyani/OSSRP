@@ -1,7 +1,9 @@
 <!-- speech_to_text launch -->
 
-<!-- <launch>
+<launch>
   <node pkg="speech_to_text" type="speech_to_text_node" name="speech_to_text_node" output="screen">
     <param name="speech_to_text_node/param1" value="param1_value"/>
     <param name="speech_to_text_node/param2" value="param2_value"/>
-  </node> -->
+  </node>
+</launch>
+  

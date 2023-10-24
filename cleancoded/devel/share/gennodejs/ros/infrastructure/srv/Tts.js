@@ -52,7 +52,7 @@ class TtsRequest {
 
   static getMessageSize(object) {
     let length = 0;
-    length += object.text.length;
+    length += _getByteLength(object.text);
     return length + 4;
   }
 
@@ -102,7 +102,7 @@ class TtsResponse {
         this.speech = initObj.speech
       }
       else {
-        this.speech = new audio_common_msgs.msg.AudioDataStamped();
+        this.speech = new audio_common_msgs.msg.AudioData();
       }
     }
   }
@@ -110,7 +110,7 @@ class TtsResponse {
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type TtsResponse
     // Serialize message field [speech]
-    bufferOffset = audio_common_msgs.msg.AudioDataStamped.serialize(obj.speech, buffer, bufferOffset);
+    bufferOffset = audio_common_msgs.msg.AudioData.serialize(obj.speech, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -119,13 +119,13 @@ class TtsResponse {
     let len;
     let data = new TtsResponse(null);
     // Deserialize message field [speech]
-    data.speech = audio_common_msgs.msg.AudioDataStamped.deserialize(buffer, bufferOffset);
+    data.speech = audio_common_msgs.msg.AudioData.deserialize(buffer, bufferOffset);
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
-    length += audio_common_msgs.msg.AudioDataStamped.getMessageSize(object.speech);
+    length += audio_common_msgs.msg.AudioData.getMessageSize(object.speech);
     return length;
   }
 
@@ -136,34 +136,13 @@ class TtsResponse {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'a3684913b519453068fe78aa64f28912';
+    return '17bac3472f989c850bf73ced5a271756';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    audio_common_msgs/AudioDataStamped speech
-    
-    ================================================================================
-    MSG: audio_common_msgs/AudioDataStamped
-    std_msgs/Header header
-    audio_common_msgs/AudioData audio
-    
-    ================================================================================
-    MSG: std_msgs/Header
-    # Standard metadata for higher-level stamped data types.
-    # This is generally used to communicate timestamped data 
-    # in a particular coordinate frame.
-    # 
-    # sequence ID: consecutively increasing ID 
-    uint32 seq
-    #Two-integer timestamp that is expressed as:
-    # * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
-    # * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
-    # time-handling sugar is provided by the client library
-    time stamp
-    #Frame this data is associated with
-    string frame_id
+    audio_common_msgs/AudioData speech
     
     ================================================================================
     MSG: audio_common_msgs/AudioData
@@ -179,10 +158,10 @@ class TtsResponse {
     }
     const resolved = new TtsResponse(null);
     if (msg.speech !== undefined) {
-      resolved.speech = audio_common_msgs.msg.AudioDataStamped.Resolve(msg.speech)
+      resolved.speech = audio_common_msgs.msg.AudioData.Resolve(msg.speech)
     }
     else {
-      resolved.speech = new audio_common_msgs.msg.AudioDataStamped()
+      resolved.speech = new audio_common_msgs.msg.AudioData()
     }
 
     return resolved;
@@ -192,6 +171,6 @@ class TtsResponse {
 module.exports = {
   Request: TtsRequest,
   Response: TtsResponse,
-  md5sum() { return '5472fa1e288096c040d45f324f300123'; },
+  md5sum() { return '32b04ab27e111935c7e979243abf2412'; },
   datatype() { return 'infrastructure/Tts'; }
 };

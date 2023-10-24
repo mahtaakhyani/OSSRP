@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::infrastructure::Tts > {
   static const char* value()
   {
-    return "5472fa1e288096c040d45f324f300123";
+    return "32b04ab27e111935c7e979243abf2412";
   }
 
   static const char* value(const ::infrastructure::Tts&) { return value(); }
