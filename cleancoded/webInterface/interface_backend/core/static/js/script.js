@@ -55,7 +55,6 @@ var listen_exp_topic = '/py_exp_publisher';
 var listen_motion_topic = '/cmd_vel_listener';
 var dyna_topic = '/cmd_vel/dyna';
 var listen_dyna_status_topic = '/dyna_status';
-var tts_topic = '/tts';
 // Messages
 var exp_msg_type = 'infrastructure/Exp';
 var motion_msg_type = 'geometry_msgs/Twist';
@@ -64,6 +63,7 @@ var dyna_msg_type = 'infrastructure/DynaTwist'
 var dyna_status_msg_type = 'infrastructure/DynaStatus';
 var tts_msg_type = 'infrastructure/TTS';
 // Services
+var tts_service = 'text_to_speech';
 var tts_srv_type = 'infrastructure/Tts';
 
 // - - - ROS - - -
@@ -469,9 +469,9 @@ function update_exp(ids) {
 function tts() {
   var text = document.getElementById("tts_text").value;
 
-  var speech_to_text_client = ROSLIB.Service({
+  var speech_to_text_client = new ROSLIB.Service({
       ros : ros,
-      name : tts_topic,
+      name : tts_service,
       serviceType : tts_srv_type
     });
   
