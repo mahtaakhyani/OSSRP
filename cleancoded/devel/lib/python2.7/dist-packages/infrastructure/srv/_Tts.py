@@ -134,41 +134,19 @@ import genpy
 import struct
 
 import audio_common_msgs.msg
-import std_msgs.msg
 
 class TtsResponse(genpy.Message):
-  _md5sum = "a3684913b519453068fe78aa64f28912"
+  _md5sum = "17bac3472f989c850bf73ced5a271756"
   _type = "infrastructure/TtsResponse"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """audio_common_msgs/AudioDataStamped speech
-
-================================================================================
-MSG: audio_common_msgs/AudioDataStamped
-std_msgs/Header header
-audio_common_msgs/AudioData audio
-
-================================================================================
-MSG: std_msgs/Header
-# Standard metadata for higher-level stamped data types.
-# This is generally used to communicate timestamped data 
-# in a particular coordinate frame.
-# 
-# sequence ID: consecutively increasing ID 
-uint32 seq
-#Two-integer timestamp that is expressed as:
-# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
-# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
-# time-handling sugar is provided by the client library
-time stamp
-#Frame this data is associated with
-string frame_id
+  _full_text = """audio_common_msgs/AudioData speech
 
 ================================================================================
 MSG: audio_common_msgs/AudioData
 uint8[] data
 """
   __slots__ = ['speech']
-  _slot_types = ['audio_common_msgs/AudioDataStamped']
+  _slot_types = ['audio_common_msgs/AudioData']
 
   def __init__(self, *args, **kwds):
     """
@@ -188,9 +166,9 @@ uint8[] data
       super(TtsResponse, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioDataStamped()
+        self.speech = audio_common_msgs.msg.AudioData()
     else:
-      self.speech = audio_common_msgs.msg.AudioDataStamped()
+      self.speech = audio_common_msgs.msg.AudioData()
 
   def _get_types(self):
     """
@@ -204,15 +182,7 @@ uint8[] data
     :param buff: buffer, ``StringIO``
     """
     try:
-      _x = self
-      buff.write(_get_struct_3I().pack(_x.speech.header.seq, _x.speech.header.stamp.secs, _x.speech.header.stamp.nsecs))
-      _x = self.speech.header.frame_id
-      length = len(_x)
-      if python3 or type(_x) == unicode:
-        _x = _x.encode('utf-8')
-        length = len(_x)
-      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
-      _x = self.speech.audio.data
+      _x = self.speech.data
       length = len(_x)
       # - if encoded as a list instead, serialize as bytes instead of string
       if type(_x) in [list, tuple]:
@@ -231,27 +201,14 @@ uint8[] data
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioDataStamped()
+        self.speech = audio_common_msgs.msg.AudioData()
       end = 0
-      _x = self
-      start = end
-      end += 12
-      (_x.speech.header.seq, _x.speech.header.stamp.secs, _x.speech.header.stamp.nsecs,) = _get_struct_3I().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       start = end
       end += length
-      if python3:
-        self.speech.header.frame_id = str[start:end].decode('utf-8', 'rosmsg')
-      else:
-        self.speech.header.frame_id = str[start:end]
-      start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.speech.audio.data = str[start:end]
+      self.speech.data = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -264,15 +221,7 @@ uint8[] data
     :param numpy: numpy python module
     """
     try:
-      _x = self
-      buff.write(_get_struct_3I().pack(_x.speech.header.seq, _x.speech.header.stamp.secs, _x.speech.header.stamp.nsecs))
-      _x = self.speech.header.frame_id
-      length = len(_x)
-      if python3 or type(_x) == unicode:
-        _x = _x.encode('utf-8')
-        length = len(_x)
-      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
-      _x = self.speech.audio.data
+      _x = self.speech.data
       length = len(_x)
       # - if encoded as a list instead, serialize as bytes instead of string
       if type(_x) in [list, tuple]:
@@ -292,27 +241,14 @@ uint8[] data
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioDataStamped()
+        self.speech = audio_common_msgs.msg.AudioData()
       end = 0
-      _x = self
-      start = end
-      end += 12
-      (_x.speech.header.seq, _x.speech.header.stamp.secs, _x.speech.header.stamp.nsecs,) = _get_struct_3I().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
       start = end
       end += length
-      if python3:
-        self.speech.header.frame_id = str[start:end].decode('utf-8', 'rosmsg')
-      else:
-        self.speech.header.frame_id = str[start:end]
-      start = end
-      end += 4
-      (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.speech.audio.data = str[start:end]
+      self.speech.data = str[start:end]
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -321,14 +257,8 @@ _struct_I = genpy.struct_I
 def _get_struct_I():
     global _struct_I
     return _struct_I
-_struct_3I = None
-def _get_struct_3I():
-    global _struct_3I
-    if _struct_3I is None:
-        _struct_3I = struct.Struct("<3I")
-    return _struct_3I
 class Tts(object):
   _type          = 'infrastructure/Tts'
-  _md5sum = '5472fa1e288096c040d45f324f300123'
+  _md5sum = '32b04ab27e111935c7e979243abf2412'
   _request_class  = TtsRequest
   _response_class = TtsResponse

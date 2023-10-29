@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.8
 
 """
 This module is the server for the text-to-speech service. 
@@ -60,7 +60,7 @@ class TextToSpeechServer:
                     return message["data"]
                 else:
                     rospy.logerr("Error in Microsoft Edge text to speech service") 
-                    return None
+                    return []
 
 
 if __name__ == "__main__":

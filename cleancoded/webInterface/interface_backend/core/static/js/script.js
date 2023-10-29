@@ -35,7 +35,7 @@ function sleep (time) {
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = '192.168.100.11';
+var host = '192.168.43.250';
 var port = '8000';
 var android_port = '8080';
 var face_url_id = '';
@@ -517,28 +517,19 @@ motion_Topic.subscribe(function(message) {
 // // -----------------
 // // Publishing manual movement commands from the user interface(not from the keyboard) on /cmd_vel_web topic
 // // -----------------
-var motion_Topic = new ROSLIB.Topic({
-  ros : ros,
-  name : listen_dyna_status_topic,
-  messageType : dyna_status_msg_type
-});
 
-var current_pos;
-var current_id;
-motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
-  console.log('Received message on ' + listen_dyna_status_topic.name + ': ' + message.id + ':' + message.position);
-  current_pos = message.position;
-  current_id = message.id;
-  document.getElementById(current_id).innerHTML = current_id;
-  document.getElementById(current_pos).innerHTML = current_pos;
-}); 
 function get_speed(){
   var speed = document.getElementById("speed").value;
   return speed;
 }
 
+function get_degrees(){
+  var degrees = document.getElementById("degrees").value;
+  return degrees;
+}
+
 // the function that will be called from the move_keys function when the user clicks on the move buttons
-function move(position, joint) { 
+function move(cw, joint) { 
   var cmd_vel_listener = new ROSLIB.Topic({
     ros : ros,
     name : dyna_topic,
@@ -549,9 +540,10 @@ function move(position, joint) {
     console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
   });
   angular = get_speed();
-  console.log(position, joint)
+  degree = get_degrees()*cw;
+  console.log(degree, joint)
   // the position is in degrees and is how much the joint will move from its current position
-  console.log('Moving '+joint+' '+position+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+  console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
 
   // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
   var twist = new ROSLIB.Message({
@@ -569,11 +561,27 @@ function move(position, joint) {
 
   var dyna_twist = new ROSLIB.Message({
     speed: twist,
-    position: parseInt(position),
+    position: parseInt(degree),
     joint: joint
   });
   cmd_vel_listener.publish(dyna_twist);
   console.log(dyna_twist)
+
+  var motion_Topic = new ROSLIB.Topic({
+    ros : ros,
+    name : listen_dyna_status_topic,
+    messageType : dyna_status_msg_type
+  });
+  
+  var current_pos;
+  var current_id;
+  motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
+    console.log('Received message on ' + listen_dyna_status_topic + ': ' + message.joint + ':' + message.position);
+    current_pos = message.position;
+    current_id = message.joint;
+    document.getElementById('current_id').innerHTML = current_id;
+    document.getElementById('current_pos').innerHTML = current_pos;
+  }); 
 };
 
 
@@ -581,34 +589,34 @@ function move(position, joint) {
 function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, down, left, right
   if (joint == 'head'){
     if (pos == 'up'){
-      move(20,'head');
+      move(1,'head');
     }
     else if (pos == 'down'){
-      move(-20,'head');
+      move(-1,'head');
     }
   }
   else if (joint == 'neck'){
     if (pos == 'left'){
-      move(-20,'neck');
+      move(-1,'neck');
     }
     else if (pos == 'right'){
-      move(20,'neck');
+      move(1,'neck');
     }
   }
   else if (joint == 'rhand'){
     if (pos == 'up'){
-      move(20,'rhand');
+      move(1,'rhand');
     }
     else if (pos == 'down'){
-      move(-20,'rhand');
+      move(-1,'rhand');
     }
   }
   else if (joint == 'lhand'){
     if (pos == 'up'){
-      move(20,'lhand');
+      move(1,'lhand');
     }
     else if (pos == 'down'){
-      move(-20,'lhand');
+      move(-1,'lhand');
     }
   }
 }

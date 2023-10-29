@@ -117,7 +117,7 @@
                 <div class="u-container-style  u-layout-cell u-radius-16 u-shape-round u-size-30 u-uploaded-video u-video u-video-contain u-video-1 u-tab-pane u-white u-tab-pane-1" id="tab-3d35" role="tabpanel" aria-labelledby="link-tab-3d35">
                   <div class="u-absolute-hcenter u-align-left u-background-video u-border-6 u-border-white u-expanded u-left-0" style="">
                     <div class="embed-responsive">
-                      <img id="rgb-canvas" class="embed-responsive-item" src="http://localhost:8181/stream?topic=/camera/image_raw">
+                      <img id="rgb-canvas" class="embed-responsive-item" src="http://192.168.43.250:8080/stream?topic=/image_raw">
                         <p>Unable to load camera frames.</p>
                     </img>
                     </div>
@@ -348,11 +348,20 @@
                 </div>
                 <div class="u-size-30">
                   <div class="u-layout-row">
-                    <div class="u-align-center u-container-style u-layout-cell u-radius-16 u-shape-round u-size-60 u-white u-layout-cell-3 " style="height: 300px;">
+                    <div class="u-align-center u-container-style u-layout-cell u-radius-16 u-shape-round u-size-60 u-white u-layout-cell-3 " style="height: 350px;">
                       <div class="u-border-1 u-border-white u-container-layout u-container-layout-1" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <h4 class="u-text u-text-1">Controls</h4>
                         <div class="row" style="    display: flex;
-                        justify-content: space-between;"><div class="col-1"><p id="current_id">Null</p></div>
+                        justify-content: space-between; width: 240px; padding-left: 100px;">
+                        <div class="col-1"><h4 class="u-text u-text-1">Controls</h4></div>
+                        <div class="col-2"><input type="button" value="reset" id="reset" style="
+                        border-radius: 50%;
+                        width: 30px;
+                        height: 30px;
+                        font-size: xx-small;
+                        padding: 0;
+                        background-color: #ff5d5d;"></div></div>
+                        <div class="row" style="    display: flex;
+                        justify-content: space-between; width: 240px; padding-left: 40px;"><div class="col-1"><p id="current_id">Null</p></div>
                         <div class="col-2">
                             <p id="current_pos">Null</p>
                         </div>
@@ -366,14 +375,28 @@
                           <input type="range" min="1" max="100" value="60" class="slider" id="speed">
                           <p>Speed: <span id="demo"></span></p>
                         </div>
+                        <div class="slidecontainer" style="
+                        width: 70%;
+                        display: grid;
+                        justify-content: end;
+                    ">
+                          <input type="range" min="1" max="100" value="20" class="slider" id="degrees">
+                          <p>Degrees: <span id="deg"></span></p>
+                        </div>
                         <!-- js for the slider -->
                         <script>
                           var slider = document.getElementById("speed");
+                          var slider_deg = document.getElementById("degrees");
                           var output = document.getElementById("demo");
+                          var output_deg = document.getElementById("deg");
                           output.innerHTML = slider.value;
+                          output_deg.innerHTML = slider_deg.value;
                           
                           slider.oninput = function() {
                             output.innerHTML = this.value;
+                          }
+                          slider_deg.oninput = function() {
+                            output_deg.innerHTML = this.value;
                           }
                         </script>
                         <div class="u-align-center u-list u-list-1 scrollable">

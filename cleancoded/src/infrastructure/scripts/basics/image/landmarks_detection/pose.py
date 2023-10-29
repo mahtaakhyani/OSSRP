@@ -1,5 +1,5 @@
+#!/usr/bin/env python3.8
 # Import Libraries
-from typing import Any
 import cv2
 import rospy
 import mediapipe as mp

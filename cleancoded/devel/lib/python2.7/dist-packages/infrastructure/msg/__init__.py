@@ -1,5 +1,6 @@
 from ._Array3D import *
 from ._AudFeatures import *
+from ._DynaStatus import *
 from ._DynaTwist import *
 from ._EmoProbArr import *
 from ._Exp import *
