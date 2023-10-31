@@ -41,10 +41,12 @@ class GazeTracking:
   
     def gazedirection(self, data):
         self.points = data.landmark.face
-        print('1')
         points = data.landmark.face
-        fr = [list(i.data) for i in data.frame.data]
-        self.frame = np.array(fr, dtype="float32")
+        arr = []
+        l = data.frame.data
+        for i in range(len(l)):
+            arr.append(list(l[i].data))
+        self.frame= np.array(arr, dtype=np.uint8).reshape((640,480,3))
         
         # The gaze function gets an image and face landmarks from mediapipe self.framework.
         # The function draws the gaze direction into the self.frame.
@@ -125,6 +127,7 @@ class GazeTracking:
         # self.right_pupil = relative(points[473], self.frame.shape)
         self.left_pupil = (points[468].x,points[468].y)
         self.right_pupil = (points[473].x, points[473].y)
+        print('left pupil',self.left_pupil)
         
         # Transformation between image point to world point
         _, transformation, _ = cv2.estimateAffine3D(
@@ -151,9 +154,11 @@ class GazeTracking:
             p1 = (int(self.left_pupil[0]), int(self.left_pupil[1]))
             self.p1 = p1
             p2 = (int(gaze[0]), int(gaze[1]))
-            # cv2.line(self.frame, p1, p2, (0, 0, 255), 1)
-            # cv2.circle(self.frame, p1, 4, (0, 255, 0))
-            # cv2.circle(self.frame, p2, 8, (0, 255, 0))
+
+            cv2.line(self.frame, p1, p2, (0, 0, 255), 1)
+            self.convert_back(self.frame)
+            cv2.circle(self.frame, p1, 4, (0, 255, 0))
+            cv2.circle(self.frame, p2, 8, (0, 255, 0))
     # ///////////////////////////////////////////////////////////////////////
 
             pupilr_world_cord = transformation @ np.array(
@@ -177,13 +182,14 @@ class GazeTracking:
             # Draw gaze line into screen
             pr1 = (int(self.right_pupil[0]), int(self.right_pupil[1]))
             self.pr1 = pr1
+            sl = -1*(self.gaze[1]/self.gaze[0])
+            print('sl',sl)
             pr2 = (int(self.gaze[0]), int(self.gaze[1]))
             cv2.line(self.frame, pr1, pr2, (0, 0, 255), 1)
             cv2.circle(self.frame, pr1, 4, (0, 255, 0))
             cv2.circle(self.frame, pr2, 8, (0, 255, 0))
-            cv2.imwrite('te.jpg',self.frame)
             # Draw circle on 3D projected head pose
-            # cv2.circle(self.frame, (int(head_pose[0][0][0]),int(head_pose[0][0][1])), 14, (0,255,0))
+            cv2.circle(self.frame, (int(head_pose[0][0][0]),int(head_pose[0][0][1])), 14, (0,255,0))
             self.left_eye_left_corner = (
                 relativeT(points[263], [480,640]))[:2]
             self.left_eye_right_corner = (
@@ -341,23 +347,35 @@ class GazeTracking:
         self.eye_height = tuple(
             i-j for i, j in zip(self.top_corner, self.bottom_corner))[1]
 
-        if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) < -1):
+        if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) <= 0):
             self.pupil_dir = "right"  # """Returns true if the user is looking to the right"""
-        elif bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) > 1):
+        if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) >= 0):
             self.pupil_dir = 'left'  # """Returns true if the user is looking to the left"""
 
 
-        if bool(math.fabs(math.fabs(self.right_center[1]-self.bottom_corner[1]) - self.eye_height/2) >= 1):
+        if bool(math.fabs(math.fabs(self.right_center[1]-self.bottom_corner[1]) - self.eye_height/2) >= 0):
             self.pupil_dir_y = " up"  # """Returns true if the user is looking to the right"""
-        else:
+        if bool(math.fabs(math.fabs(self.right_center[1]-self.bottom_corner[1]) - self.eye_height/2) < 0):
             self.pupil_dir_y = ' down'  # """Returns true if the user is looking to the left"""
-
+        gaze_rpy_dict = {'right eye corner': self.left_center, '\n eye height/2': self.eye_height/2}
+        print(gaze_rpy_dict,'\n\n\n\n\n')
+        
         if self.pupil_dir in hp and self.pupil_dir_y in hp:
             return [self.pupil_dir+self.pupil_dir_y]
 
         else:
             return [self.pupil_dir+self.pupil_dir_y,' with head being ',hp]
-
+    
+    def convert_back(self,cv2_img):
+        pub = rospy.Publisher('/gaze_frame',Image,queue_size=10)
+        ros_image = Image()
+        ros_image.header.stamp = rospy.Time.now()
+        ros_image.height = cv2_img.shape[0]
+        ros_image.width = cv2_img.shape[1]
+        ros_image.encoding = "bgr8"
+        ros_image.step = cv2_img.shape[1] * 3
+        ros_image.data = np.array(cv2_img).tobytes()		
+        pub.publish(ros_image)
 
 # class HeadPosition(GazeTracking):
 #     print('in the HeadPosition')
@@ -604,7 +622,6 @@ class GazeDetectorService():
         print('callback check ---------------------------------------------------------------------')
         try:
             gazedir = GazeTracking().gazedirection(data)
-            print(gazedir)
             rospy.loginfo("returning the gaze direction to the client")
             return gazedir
 
@@ -618,7 +635,6 @@ class GazeDetectorService():
 
 if __name__ == '__main__':
     try:
-        print('hey')
         GazeDetectorService()
         rospy.spin()
     except rospy.ROSInterruptException:

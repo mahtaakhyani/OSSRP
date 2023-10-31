@@ -37,13 +37,22 @@ class CameraCapture:
     
     def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
     
-        cv_bridge = CvBridge()
+        # cv_bridge = CvBridge()
         try:
-            frame_in_cv2 = cv_bridge.imgmsg_to_cv2(data, desired_encoding="passthrough") 
-            new_a_shape = (-1,) + frame_in_cv2.shape[2:] # to get rid of the first dimension
-            b = np.split(frame_in_cv2.reshape(new_a_shape), frame_in_cv2.shape[0]) 
-            frame = np.array(b)
+            encoding = data.encoding
+            data = data.data
+            # Convert image data to numpy array
+            np_arr = np.frombuffer(data, np.uint8)
+            cv2_img = np_arr.reshape((self.height, self.width, -1))
 
+            # Convert image encoding if necessary
+            if encoding != 'bgr8':
+                cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
+            # frame_in_cv2 = cv_bridge.imgmsg_to_cv2(data, desired_encoding="passthrough") 
+            # new_a_shape = (-1,) + frame_in_cv2.shape[2:] # to get rid of the first dimension
+            # b = np.split(frame_in_cv2.reshape(new_a_shape), frame_in_cv2.shape[0]) 
+            # frame = np.array(b)
+            frame = cv2_img
             self.modif_image = cv2.resize(frame, (480,640)) # resize the image to the desired size which is the camera info size
             self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
             self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
@@ -70,13 +79,13 @@ class CameraCapture:
             self.pub.publish(tem)
 
             
-            arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
-            frame_in_ros = cv_bridge.cv2_to_imgmsg(arrrrr) # convert the numpy array to a ROS Image message
-            frame_in_ros.encoding = "rgb8" # set the encoding of the ROS Image message to rgb8
+            # arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
+            # frame_in_ros = cv_bridge.cv2_to_imgmsg(arrrrr) # convert the numpy array to a ROS Image message
+            # frame_in_ros.encoding = "rgb8" # set the encoding of the ROS Image message to rgb8
 
-            msg = Image() # create a new ROS Image message
-            msg = frame_in_ros # assign the ROS Image message to the new ROS Image message we created
-            pub.publish(msg) # publish the ROS Image message to the topic
+            # msg = Image() # create a new ROS Image message
+            # msg = frame_in_ros # assign the ROS Image message to the new ROS Image message we created
+            # pub.publish(msg) # publish the ROS Image message to the topic
 
             if cv2window:  # whether to show the frames in an opencv window apart from ROS image_view or not
                 cv2.imshow("output window", self.modif_image)

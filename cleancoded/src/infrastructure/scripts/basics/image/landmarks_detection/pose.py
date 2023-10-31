@@ -5,7 +5,6 @@ import rospy
 import mediapipe as mp
 import numpy as np
 from sensor_msgs.msg import Image, CameraInfo
-from cv_bridge import CvBridge
 from infrastructure.msg import List, Array3D, Landmarks
 from std_msgs.msg import String
 from geometry_msgs.msg import Point
@@ -92,8 +91,6 @@ class MeshDetector():
 		landmarks_msg.right_hand = rhand_points
 		landmarks_msg.pose = pose_points
 
-		print(landmarks_msg)
-
 		
 		landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
 		landmark_pub.publish(landmarks_msg)
@@ -102,13 +99,15 @@ class MeshDetector():
 		return self.arrrrr
 
 		
-	def convert_back(self,_):
-		cv_bridge=CvBridge()
-		frame_in_ros = cv_bridge.cv2_to_imgmsg(_)
-		frame_in_ros.encoding = "rgb8"
-		msg = Image()
-		msg = frame_in_ros
-		return msg
+	def convert_back(self,cv2_img):
+		ros_image = Image()
+		ros_image.header.stamp = rospy.Time.now()
+		ros_image.height = cv2_img.shape[0]
+		ros_image.width = cv2_img.shape[1]
+		ros_image.encoding = "bgr8"
+		ros_image.step = cv2_img.shape[1] * 3
+		ros_image.data = np.array(cv2_img).tostring()		
+		return ros_image
 
 
 	def analyze(self,frame): #landmarks dtection -> face+pose+hands

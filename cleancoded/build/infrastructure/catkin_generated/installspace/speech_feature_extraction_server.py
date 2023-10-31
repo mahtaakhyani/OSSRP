@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 """
 This module is the server for the audio feature extraction service. 
  The output is the extracted features as a list of floats in a custom message called AudFeature [which is located in "$(rospack find infrastructure)/srv"]
