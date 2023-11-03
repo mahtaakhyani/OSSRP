@@ -35,9 +35,11 @@ function sleep (time) {
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = '192.168.43.250';
+var host = 'localhost';
+var android_host = '192.168.100.6';
 var port = '8000';
 var android_port = '8080';
+var rosbridge_port = '9090';
 var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
@@ -71,46 +73,45 @@ var robot_ws;
 
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
-function set_variables(host) {
+function set_variables(host,android_host) {
     // - - - Django Server - - - 
     django_base_url = 'http://' + host + ':' + port ;
     request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
     publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
-    android_server_url = 'http://' + host + ':' + android_port + '/android_server';
+    android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
     console.log('Android Server is listening on: '+android_server_url+
                 '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
-    
-    
+  
     // - - - ROS - - -
     // Workspace
-   rosbridge_port = '9090';
-   robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
-  console.log('ROSBridge websocket is listening on: '+robot_ws+
-              '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
+    robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
+    console.log('ROSBridge websocket is listening on: '+robot_ws+
+                '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
                 +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
                 '\n/head_cmd_vel to publish motion commands on');
 
   }
-  set_variables(host)
+
+  set_variables(host,android_host);
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Log Side Menu
 // -----------------
-// var $logmenu = document.querySelector('.logmenu');
-// console.stdlog = console.log.bind(console);
-// console.logs = [];
-// console.log = function(){
-//     console.logs.push(Array.from(arguments));
-//     console.stdlog.apply(console, arguments);
-// }
-// $logmenu.addEventListener('click', function(e) {
-//   var item = document.createElement('li');
-//   item.setAttribute('id','item');
-//   $('#log').add(item);
-//   $('#log').toggle('display');
-//   document.getElementById("log").innerHTML = console.logs.slice(-3) + '\n'+console.logs.slice(-2);
-// } );
+var $logmenu = document.querySelector('.logmenu');
+console.stdlog = console.log.bind(console);
+console.logs = [];
+console.log = function(){
+    console.logs.push(Array.from(arguments));
+    console.stdlog.apply(console, arguments);
+}
+$logmenu.addEventListener('click', function(e) {
+  var item = document.createElement('li');
+  item.setAttribute('id','item');
+  $('#log').add(item);
+  $('#log').toggle('display');
+  document.getElementById("log").innerHTML = console.logs.slice(-3) + '\n'+console.logs.slice(-2);
+} );
 
 
 
