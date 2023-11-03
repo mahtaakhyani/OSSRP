@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/mahta/OSSRP/cleancoded/build
 include infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze.dir/progress.make
 
 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze:
-	cd /home/mahta/OSSRP/cleancoded/build/infrastructure && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py infrastructure /home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Gaze.srv infrastructure/Array3D:infrastructure/Landmarks:geometry_msgs/Point:infrastructure/List
+	cd /home/mahta/OSSRP/cleancoded/build/infrastructure && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py infrastructure /home/mahta/OSSRP/cleancoded/src/infrastructure/srv/Gaze.srv geometry_msgs/Point:sensor_msgs/Image:std_msgs/Header:infrastructure/Landmarks
 
 _infrastructure_generate_messages_check_deps_Gaze: infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze
 _infrastructure_generate_messages_check_deps_Gaze: infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Gaze.dir/build.make

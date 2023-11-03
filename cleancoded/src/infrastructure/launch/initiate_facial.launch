@@ -4,7 +4,7 @@
 	
 	<remap from="/usb_cam/image_raw" to="/image_raw"/>
 	<include file="$(find usb_cam)/launch/usb_cam-test.launch"/>
-	<node pkg="infrastructure" type="CameraCapture.py" name="camera_capter_cv2" output="screen"/>
+	<!-- <node pkg="infrastructure" type="CameraCapture.py" name="camera_capter_cv2" output="screen"/> -->
 	<node pkg="infrastructure" type="pose.py" name="landmark_detection"/>
 	<include file="$(find infrastructure)/launch/gaze_pose.launch"/>
 	<node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen"/>

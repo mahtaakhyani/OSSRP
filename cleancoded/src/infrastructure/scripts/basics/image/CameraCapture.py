@@ -64,7 +64,6 @@ class CameraCapture:
                         obj.data=j
                         tem.data.append(obj) # convert the image to a list of 3D arrays 
             rospy.loginfo("Converted the image to a list of 3D arrays")
-            cv_bridge=CvBridge()
             arr = []
             l = tem.data
 

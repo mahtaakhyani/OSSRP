@@ -5,6 +5,7 @@ import rospy
 from infrastructure.msg import List, Landmarks
 from infrastructure.srv import Gaze
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
 
 
 
@@ -15,9 +16,10 @@ pub = rospy.Publisher('gaze_position/gaze_dir', String, queue_size=10)
 def landmark_handler(data_list):
     global landmarks
     landmarks = data_list
-    print(landmarks)
     rospy.loginfo('landmarks recieved')
-    rospy.Subscriber('/image_cv2',List, callservice)
+    # rospy.Subscriber('/image_cv2',List, callservice)
+    rospy.Subscriber("/image_raw", Image, callservice, callback_args=False, queue_size=1, buff_size=2**19) 
+
 
 
 def callservice(frame):
