@@ -5,7 +5,8 @@ from soundHandler.models import Song
 # Create your models here.
 class EmotionModel(models.Model):
     face = models.CharField(max_length= 25, blank=True, default= "normal", null=False, unique=True) #Types : normal , laugh, upset, surprise, shy
-    face_video_url = models.CharField(max_length=200, blank=True, default="http://172.18.133.241:3000/mahta.mp4", null=False)
+    face_video_url = models.CharField(max_length=200, blank=True, default="<localhost_ip>:8000/api/stream?path=media/videos/<your_video_name.format>", null=False)
+    video_file = models.FileField(upload_to='videos', blank=True,null=True)
     sound = models.ForeignKey(Song, on_delete=models.CASCADE, blank=True, null=True)
     choices_tuple = (
         ('😂','😂'), ('🙄','🙄'), ('😄','😄'),

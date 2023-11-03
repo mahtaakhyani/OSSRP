@@ -20,6 +20,7 @@ from django.urls.conf import include
 urlpatterns = [
     path('admin', admin.site.urls),
     path('',include('core.urls')),
+    path('api/', include('sage_stream.api.urls')),
     path('wizard',include('setupWizard.urls')),
     # path('parrot',include('serialHandler.urls'))
 ]
