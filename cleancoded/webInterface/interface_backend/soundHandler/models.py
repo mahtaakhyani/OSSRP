@@ -5,8 +5,8 @@ from django.core.files.storage import Storage
 class Song(models.Model):
     title= models.CharField(max_length=20,default='Unknown')
     description = models.TextField(max_length=50, blank=True, null=True)
+    audio_link = models.CharField(max_length=200,blank=True,null=True,  default="http://<localhost_ip>:8000/api/stream?path=media/sounds/<your_audio_path>")
     audio_file = models.FileField(upload_to='sounds/', blank=True,null=True)
-    audio_link = models.CharField(max_length=200,blank=True,null=True,  default="localhost:8000/api/stream?path=media/sounds/<your_audio_path>")
     duration=models.CharField(max_length=20,default='Unknown')
     
     # def path(self):

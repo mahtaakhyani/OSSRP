@@ -295,11 +295,11 @@
                                   <div class="u-icon u-text-custom-color-7 u-container-layout u-similar-container u-container-layout-3">
                                     <li class="u-align-left " style="padding-bottom: 0.5%;"  id="robot_audio{{sound.id}}" draggable="true" ondragstart="drag(event,this.id)">
                                       <audio id="robot_audio{{sound.id}}" class="fc-media" style="width: 100%;">
-                                        <source src="{% if sound.audio_file %}{{sound.audio_file}}{% else %}{{sound.url}}{% endif %}"
+                                        <source src="{{sound.url}}"
                                               type="audio/mp3"/>
                                       </audio>
                                       <input id="robot_audio{{sound.id}}" 
-                                      value="{% if sound.audio_file %}{{sound.audio_file}}{% else %}{{sound.url}}{% endif %}"
+                                      value="{{sound.url}}"
                                       class="play_btn"
                                       onclick="exp_sound(this);" type="button"></input>
                                     
