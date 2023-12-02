@@ -8,6 +8,11 @@
   width: 100%;
 }
 
+html, body {
+  height: auto; /* or min-height */
+  overflow: scroll;
+  }
+
 .u-section-1 .u-layout-wrap-1 {
   width: -webkit-fill-available;
   margin: 33px 0 0 0;
@@ -278,7 +283,7 @@
   }
 
   .u-section-1 .u-list-1 {
-    width: 245px;
+    width: 310px;
   }
 
   .u-section-1 .u-repeater-1 {
@@ -403,7 +408,7 @@
   }
 
   .u-section-1 .u-layout-cell-2 {
-    min-height: 458px;
+    min-height: 300px;
   }
 
   .u-section-1 .u-text-2 {
@@ -411,7 +416,7 @@
   }
 
   .u-section-1 .u-tabs-1 {
-    min-height: 375px;
+    min-height: 236px;
     margin-top: 8px;
   }
 
@@ -441,6 +446,26 @@
   .u-section-1 .u-video-1 {
     min-height: 273px;
     order: 0;
+  }
+
+  #tts {
+    display: none;
+  }
+
+  .perso.dragable {
+    display: none;
+  }
+
+  #ddropp {
+    display: none;
+  }
+
+  .joycontainer {
+    display: none;
+  }
+
+  #parrot {
+    display: none;
   }
 }
 
