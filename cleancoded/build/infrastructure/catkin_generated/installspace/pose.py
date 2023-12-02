@@ -27,49 +27,7 @@ class MeshDetector():
 		# rospy.Subscriber('/image_cv2',List,self.catch)
 		rospy.Subscriber("/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**19) 
 	
-	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
-		try:
-			encoding = data.encoding
-			data = data.data
-			# Convert image data to numpy array
-			np_arr = np.frombuffer(data, np.uint8)
-			cv2_img = np_arr.reshape((self.height, self.width, -1))
-
-			# Convert image encoding if necessary
-			if encoding != 'bgr8':
-							cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
-			frame = cv2_img
-			self.modif_image = cv2.resize(frame, (480,640)) # resize the image to the desired size which is the camera info size
-			self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
-			self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
-
-
-			te = Array3D()
-			tem = List()
-			temp = list()
-			pub = rospy.Publisher('/testaki',Image,queue_size=10)
-			llll=self.modif_image.tolist()
-			for i in llll:
-				for j in i:
-						obj=Array3D()
-						obj.data=j
-						tem.data.append(obj) # convert the image to a list of 3D arrays 
-			rospy.loginfo("Converted the image to a list of 3D arrays")
-			arr = []
-			l = tem.data
-
-			for i in range(len(l)):
-							arr.append(l[i].data) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
-			
-		
-			self.catch(tem)
-						
-		except Exception as e:
-			rospy.logerr("Error: %s"%e)
-			return e
-
-
-
+	
 	def syncinfo(self, info):  # sync camera video stream info
 		self.height = info.height
 		self.width = info.width	
@@ -78,6 +36,44 @@ class MeshDetector():
 			return self.height, self.width
 		except:
 			pass	
+	
+	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
+			try:
+				encoding = data.encoding
+				data = data.data
+				# Convert image data to numpy array
+				np_arr = np.frombuffer(data, np.uint8)
+				cv2_img = np_arr.reshape((self.height, self.width, -1))
+
+				# Convert image encoding if necessary
+				if encoding != 'bgr8':
+								cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
+				frame = cv2_img
+				self.modif_image = cv2.resize(frame, (self.height, self.width)) # resize the image to the desired size which is the camera info size
+				self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
+				self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
+
+
+				tem = List()
+				llll=self.modif_image.tolist()
+				for i in llll:
+					for j in i:
+							obj=Array3D()
+							obj.data=j
+							tem.data.append(obj) # convert the image to a list of 3D arrays 
+				rospy.loginfo("Converted the image to a list of 3D arrays")
+				arr = []
+				l = tem.data
+
+				for i in range(len(l)):
+								arr.append(l[i].data) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
+				
+			
+				self.catch(tem)
+							
+			except Exception as e:
+				rospy.logerr("Error: %s"%e)
+				return e
 
 	def catch(self,_):
 		arr = []

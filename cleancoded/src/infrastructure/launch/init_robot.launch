@@ -13,7 +13,7 @@
     <!-- <include file="$(find infrastructure)/launch/speech_emotion_analysis.launch"/> -->
 
 <!-- Controlling the motors -->
-    <!-- <node pkg="infrastructure" type="controller.py" name="motors_controller" output="screen"/> -->
+    <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen"/>
     
 
 
@@ -24,6 +24,7 @@
 
 <!-- Changing rosbridge node's topic name from default to "web_interface" -->
     <remap from="rosbridge_websocket" to="web_interface"/>
+
 
 
 

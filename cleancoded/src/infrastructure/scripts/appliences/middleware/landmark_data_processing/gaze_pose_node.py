@@ -1,5 +1,5 @@
-# This node is responsible for calling the gaze_pose service and sending the audio data to it.
 #!/usr/bin/env python
+# This node is responsible for calling the gaze_pose service and sending the audio data to it.
 
 import rospy
 from infrastructure.msg import List, Landmarks

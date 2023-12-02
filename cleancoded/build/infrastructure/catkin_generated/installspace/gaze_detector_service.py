@@ -17,7 +17,7 @@ import rospkg
 import rospy
 from infrastructure.msg import List, Array3D
 from infrastructure.srv import Gaze
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CameraInfo
 
 pkg = rospkg.RosPack().get_path('infrastructure')
 module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
@@ -38,15 +38,18 @@ class GazeTracking:
 
 	translation_vector = ''
 	rotation_vector = ''
+	height = 480
+	width = 640
+
   
 	def gazedirection(self, data):
 		self.points = data.landmark.face
 		points = data.landmark.face
 		arr = []
-		l = data.frame.data
+		l = self.convert_frame(data.frame).data
 		for i in range(len(l)):
 			arr.append(list(l[i].data))
-		self.frame= np.array(arr, dtype=np.uint8).reshape((640,480,3))
+		self.frame= np.array(arr, dtype=np.uint8).reshape((self.width, self.height,3))
 		
 		# The gaze function gets an image and face landmarks from mediapipe self.framework.
 		# The function draws the gaze direction into the self.frame.
@@ -57,34 +60,31 @@ class GazeTracking:
 		# at (x,y) format
 
 		self.image_points = np.array([
-			relative(points[4], [480,640]),  # Nose tip
-			relative(points[152], [480,640]),  # Chin
+			relative(points[4], [self.height, self.width]),  # Nose tip
+			relative(points[152], [self.height, self.width]),  # Chin
 			# Left eye left corner
-			relative(points[263], [480,640]),
+			relative(points[263], [self.height, self.width]),
 			# Right eye right corner
-			relative(points[33], [480,640]),
-			relative(points[287], [480,640]),  # Left Mouth corner
-			relative(points[57], [480,640])  # Right mouth corner
+			relative(points[33], [self.height, self.width]),
+			relative(points[287], [self.height, self.width]),  # Left Mouth corner
+			relative(points[57], [self.height, self.width])  # Right mouth corner
 		], dtype="double")
 		print('self.image_points done')
 
-		# self.image_points = np.array([points[4],points[152],points[263],points[33],points[287],points[57]],dtype='float64')
-		# self.image_points1 = np.array(rel([points[4],points[152],points[263],points[33],points[287],points[57]]),dtype='float64')
-
-	   
+   
 		# 2D image points.
 		# relativeT takes mediapipe self.points that is normalized to [-1, 1] and returns image self.points
 		# at (x,y,0) format
 	   
 		self.image_points1 = np.array([
-			relativeT(points[4], [480,640]),  # Nose tip
-			relativeT(points[152], [480,640]),  # Chin
+			relativeT(points[4], [self.height, self.width]),  # Nose tip
+			relativeT(points[152], [self.height, self.width]),  # Chin
 			# Left eye, left corner
-			relativeT(points[263], [480,640]),
+			relativeT(points[263], [self.height, self.width]),
 			# Right eye, right corner
-			relativeT(points[33], [480,640]),
-			relativeT(points[287], [480,640]),  # Left Mouth corner
-			relativeT(points[57], [480,640])  # Right mouth corner
+			relativeT(points[33], [self.height, self.width]),
+			relativeT(points[287], [self.height, self.width]),  # Left Mouth corner
+			relativeT(points[57], [self.height, self.width])  # Right mouth corner
 		], dtype="double")
 
 		print('self.image_points1 done.' )
@@ -108,25 +108,23 @@ class GazeTracking:
 
 		
 		# camera matrix estimation
-		self.focal_length = 640
-		self.center = (640 / 2, 480 / 2)
+		self.focal_length = self.width
+		self.center = (self.width / 2, self.height / 2)
 		self.camera_matrix = np.array(
 			[[self.focal_length, 0, self.center[0]],
 			 [0, self.focal_length, self.center[1]],
 			 [0, 0, 1]], dtype="double"
 		)
 		# Draw a circle on the self.frame self.center
-		# cv2.circle(self.frame, tuple([int(i) for i in self.center]), 5, 255,0,0)
 
 		self.dist_coeffs = np.zeros((4, 1))  # Assuming no lens distortion
 		(success, self.rotation_vector, self.translation_vector) = cv2.solvePnP(self.model_points, self.image_points, self.camera_matrix,
 																		 self.dist_coeffs, flags=cv2.SOLVEPNP_ITERATIVE)
 
 		# 2d pupil location
-		# self.left_pupil = relative(points[468], self.frame.shape)
-		# self.right_pupil = relative(points[473], self.frame.shape)
-		self.left_pupil = (points[468].x,points[468].y)
-		self.right_pupil = (points[473].x, points[473].y)
+		self.left_pupil = relative(points[468], self.frame.shape)
+		self.right_pupil = relative(points[473], self.frame.shape)
+		cv2.circle(self.frame, tuple([int(i) for i in self.left_pupil]), 5, 255,0,0)
 		print('left pupil',self.left_pupil)
 		
 		# Transformation between image point to world point
@@ -156,7 +154,6 @@ class GazeTracking:
 			p2 = (int(gaze[0]), int(gaze[1]))
 
 			cv2.line(self.frame, p1, p2, (0, 0, 255), 1)
-			self.convert_back(self.frame)
 			cv2.circle(self.frame, p1, 4, (0, 255, 0))
 			cv2.circle(self.frame, p2, 8, (0, 255, 0))
 	# ///////////////////////////////////////////////////////////////////////
@@ -182,22 +179,21 @@ class GazeTracking:
 			# Draw gaze line into screen
 			pr1 = (int(self.right_pupil[0]), int(self.right_pupil[1]))
 			self.pr1 = pr1
-			sl = -1*(self.gaze[1]/self.gaze[0])
-			print('sl',sl)
 			pr2 = (int(self.gaze[0]), int(self.gaze[1]))
+			self.pr2 = pr2
 			cv2.line(self.frame, pr1, pr2, (0, 0, 255), 1)
 			cv2.circle(self.frame, pr1, 4, (0, 255, 0))
 			cv2.circle(self.frame, pr2, 8, (0, 255, 0))
 			# Draw circle on 3D projected head pose
 			cv2.circle(self.frame, (int(head_pose[0][0][0]),int(head_pose[0][0][1])), 14, (0,255,0))
 			self.left_eye_left_corner = (
-				relativeT(points[263], [480,640]))[:2]
+				relativeT(points[263], [self.height, self.width]))[:2]
 			self.left_eye_right_corner = (
-				relativeT(points[398], [480,640]))[:2]
+				relativeT(points[398], [self.height, self.width]))[:2]
 			self.left_eye_top_corner = (
-				relativeT(points[374], [480,640]))[:2]
+				relativeT(points[374], [self.height, self.width]))[:2]
 			self.left_eye_bottom_corner = (
-				relativeT(points[386], [480,640]))[:2]
+				relativeT(points[386], [self.height, self.width]))[:2]
 		self.head_position()
 		dict_data = self.head_rpy()[0][5:]
 		direction = self.dir_determin(dict_data)
@@ -237,7 +233,6 @@ class GazeTracking:
 			self.ang2 = int(math.degrees(math.atan(-1/m)))
 		except:
 			self.ang2 = 90
-
 
 	def head_pose_points(self, img, camera_matrix):
 		"""
@@ -332,7 +327,7 @@ class GazeTracking:
 		all_data = [str_pose, head_rpy_dict]
 		return (all_data)
 
-
+    # ---- Results -----
 	def dir_determin(self,hp):
 		g = self.feedback()
 		self.left_center = g[0]
@@ -346,26 +341,33 @@ class GazeTracking:
 			i-j for i, j in zip(self.left_corner, self.right_corner))[0]
 		self.eye_height = tuple(
 			i-j for i, j in zip(self.top_corner, self.bottom_corner))[1]
-
-		if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) <= 0):
+		
+		slip = (self.pr2[1]-self.pr1[1])/(self.pr2[0]-self.pr1[0])
+		if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width*2) < 0):
 			self.pupil_dir = "right"  # """Returns true if the user is looking to the right"""
-		if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width/2) >= 0):
+		if bool((math.fabs(self.right_center[0]-self.right_corner[0]) - self.eye_width*2) > 0):
 			self.pupil_dir = 'left'  # """Returns true if the user is looking to the left"""
 
-
-		if bool(math.fabs(math.fabs(self.right_center[1]-self.bottom_corner[1]) - self.eye_height/2) >= 0):
+		# if bool(math.fabs(math.fabs(self.right_center[1]-self.right_corner[1]) - self.eye_height*2) > 0):
+		if slip > -1:
 			self.pupil_dir_y = " up"  # """Returns true if the user is looking to the right"""
-		if bool(math.fabs(math.fabs(self.right_center[1]-self.bottom_corner[1]) - self.eye_height/2) < 0):
+		# if bool(math.fabs(math.fabs(self.right_center[1]-self.right_corner[1]) - self.eye_height*2) < 0):
+		else:   
 			self.pupil_dir_y = ' down'  # """Returns true if the user is looking to the left"""
+		print(slip)
 		gaze_rpy_dict = {'right eye corner': self.left_center, '\n eye height/2': self.eye_height/2}
 		print(gaze_rpy_dict,'\n\n\n\n\n')
-		
+		self.convert_back(self.frame)
 		if self.pupil_dir in hp and self.pupil_dir_y in hp:
 			return [self.pupil_dir+self.pupil_dir_y]
 
 		else:
 			return [self.pupil_dir+self.pupil_dir_y,' with head being ',hp]
+		
+        
 	
+
+    # --- Frame manipulation ----
 	def convert_back(self,cv2_img):
 		pub = rospy.Publisher('/gaze_frame',Image,queue_size=10)
 		ros_image = Image()
@@ -376,6 +378,51 @@ class GazeTracking:
 		ros_image.step = cv2_img.shape[1] * 3
 		ros_image.data = np.array(cv2_img).tobytes()		
 		pub.publish(ros_image)
+	
+		# rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
+		try:
+			return self.height, self.width
+		except:
+			pass	
+	
+	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
+		try:
+			encoding = data.encoding
+			data = data.data
+			# Convert image data to numpy array
+			np_arr = np.frombuffer(data, np.uint8)
+			cv2_img = np_arr.reshape((self.height, self.width, -1))
+
+			# Convert image encoding if necessary
+			if encoding != 'bgr8':
+							cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
+			frame = cv2_img
+			self.modif_image = cv2.resize(frame, (self.height, self.width)) # resize the image to the desired size which is the camera info size
+			self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
+			self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
+
+			tem = List()
+			llll=self.modif_image.tolist()
+			for i in llll:
+				for j in i:
+						obj=Array3D()
+						obj.data=j
+						tem.data.append(obj) # convert the image to a list of 3D arrays 
+			rospy.loginfo("Converted the image to a list of 3D arrays")
+			arr = []
+			l = tem.data
+
+			for i in range(len(l)):
+							arr.append(l[i].data) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
+			
+		
+			return tem
+						
+		except Exception as e:
+			rospy.logerr("Error: %s"%e)
+			return e
+
+
 
 # class HeadPosition(GazeTracking):
 #	 print('in the HeadPosition')
@@ -614,13 +661,14 @@ class GazeTracking:
 
 class GazeDetectorService():
 	rospy.init_node('gaze_detector', anonymous=False)
+
+
 	def __init__(self):
 		rospy.Service('gaze_pose', Gaze, self.callback)
 		rospy.loginfo("gaze detector service successfully initiated")
 
 	def callback(self, data):
 		print('callback check ---------------------------------------------------------------------')
-		data = self.convert_frame(data)
 		try:
 			gazedir = GazeTracking().gazedirection(data)
 			rospy.loginfo("returning the gaze direction to the client")
@@ -629,49 +677,7 @@ class GazeDetectorService():
 		except BaseException as bex:
 			rospy.loginfo(rospy.ServiceException(bex))
 
-	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
-		try:
-			encoding = data.encoding
-			data = data.data
-			# Convert image data to numpy array
-			np_arr = np.frombuffer(data, np.uint8)
-			cv2_img = np_arr.reshape((480, 640, -1))
-
-			# Convert image encoding if necessary
-			if encoding != 'bgr8':
-							cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
-			frame = cv2_img
-			self.modif_image = cv2.resize(frame, (480,640)) # resize the image to the desired size which is the camera info size
-			self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
-			self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
-
-
-			te = Array3D()
-			tem = List()
-			temp = list()
-			pub = rospy.Publisher('/testaki',Image,queue_size=10)
-			llll=self.modif_image.tolist()
-			for i in llll:
-				for j in i:
-						obj=Array3D()
-						obj.data=j
-						tem.data.append(obj) # convert the image to a list of 3D arrays 
-			rospy.loginfo("Converted the image to a list of 3D arrays")
-			arr = []
-			l = tem.data
-
-			for i in range(len(l)):
-							arr.append(l[i].data) # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
-			
-		
-			return tem
-						
-		except Exception as e:
-			rospy.logerr("Error: %s"%e)
-			return e
-
-
-
+	
 
 # //////////////////////////////////////////////////////////////////////////////
 

@@ -8,20 +8,61 @@ import struct
 
 import geometry_msgs.msg
 import infrastructure.msg
+import sensor_msgs.msg
+import std_msgs.msg
 
 class GazeRequest(genpy.Message):
-  _md5sum = "8bb7563e20192114b78508b7a91451b0"
+  _md5sum = "c1fe2cc637bb12c3915e2dc16eb8797a"
   _type = "infrastructure/GazeRequest"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """infrastructure/List  frame
+  _full_text = """sensor_msgs/Image  frame
 infrastructure/Landmarks landmark
 
 ================================================================================
-MSG: infrastructure/List
-infrastructure/Array3D[] data
+MSG: sensor_msgs/Image
+# This message contains an uncompressed image
+# (0, 0) is at top-left corner of image
+#
+
+Header header        # Header timestamp should be acquisition time of image
+                     # Header frame_id should be optical frame of camera
+                     # origin of frame should be optical center of camera
+                     # +x should point to the right in the image
+                     # +y should point down in the image
+                     # +z should point into to plane of the image
+                     # If the frame_id here and the frame_id of the CameraInfo
+                     # message associated with the image conflict
+                     # the behavior is undefined
+
+uint32 height         # image height, that is, number of rows
+uint32 width          # image width, that is, number of columns
+
+# The legal values for encoding are in file src/image_encodings.cpp
+# If you want to standardize a new string format, join
+# ros-users@lists.sourceforge.net and send an email proposing a new encoding.
+
+string encoding       # Encoding of pixels -- channel meaning, ordering, size
+                      # taken from the list of strings in include/sensor_msgs/image_encodings.h
+
+uint8 is_bigendian    # is this data bigendian?
+uint32 step           # Full row length in bytes
+uint8[] data          # actual matrix data, size is (step * rows)
+
 ================================================================================
-MSG: infrastructure/Array3D
-float64[] data
+MSG: std_msgs/Header
+# Standard metadata for higher-level stamped data types.
+# This is generally used to communicate timestamped data 
+# in a particular coordinate frame.
+# 
+# sequence ID: consecutively increasing ID 
+uint32 seq
+#Two-integer timestamp that is expressed as:
+# * stamp.sec: seconds (stamp_secs) since epoch (in Python the variable is called 'secs')
+# * stamp.nsec: nanoseconds since stamp_secs (in Python the variable is called 'nsecs')
+# time-handling sugar is provided by the client library
+time stamp
+#Frame this data is associated with
+string frame_id
 
 ================================================================================
 MSG: infrastructure/Landmarks
@@ -37,7 +78,7 @@ float64 y
 float64 z
 """
   __slots__ = ['frame','landmark']
-  _slot_types = ['infrastructure/List','infrastructure/Landmarks']
+  _slot_types = ['sensor_msgs/Image','infrastructure/Landmarks']
 
   def __init__(self, *args, **kwds):
     """
@@ -57,11 +98,11 @@ float64 z
       super(GazeRequest, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
       if self.frame is None:
-        self.frame = infrastructure.msg.List()
+        self.frame = sensor_msgs.msg.Image()
       if self.landmark is None:
         self.landmark = infrastructure.msg.Landmarks()
     else:
-      self.frame = infrastructure.msg.List()
+      self.frame = sensor_msgs.msg.Image()
       self.landmark = infrastructure.msg.Landmarks()
 
   def _get_types(self):
@@ -76,13 +117,31 @@ float64 z
     :param buff: buffer, ``StringIO``
     """
     try:
-      length = len(self.frame.data)
-      buff.write(_struct_I.pack(length))
-      for val1 in self.frame.data:
-        length = len(val1.data)
-        buff.write(_struct_I.pack(length))
-        pattern = '<%sd'%length
-        buff.write(struct.Struct(pattern).pack(*val1.data))
+      _x = self
+      buff.write(_get_struct_3I().pack(_x.frame.header.seq, _x.frame.header.stamp.secs, _x.frame.header.stamp.nsecs))
+      _x = self.frame.header.frame_id
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self
+      buff.write(_get_struct_2I().pack(_x.frame.height, _x.frame.width))
+      _x = self.frame.encoding
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self
+      buff.write(_get_struct_BI().pack(_x.frame.is_bigendian, _x.frame.step))
+      _x = self.frame.data
+      length = len(_x)
+      # - if encoded as a list instead, serialize as bytes instead of string
+      if type(_x) in [list, tuple]:
+        buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+      else:
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
       length = len(self.landmark.face)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.face:
@@ -115,25 +174,46 @@ float64 z
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.frame is None:
-        self.frame = infrastructure.msg.List()
+        self.frame = sensor_msgs.msg.Image()
       if self.landmark is None:
         self.landmark = infrastructure.msg.Landmarks()
       end = 0
+      _x = self
+      start = end
+      end += 12
+      (_x.frame.header.seq, _x.frame.header.stamp.secs, _x.frame.header.stamp.nsecs,) = _get_struct_3I().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.frame.data = []
-      for i in range(0, length):
-        val1 = infrastructure.msg.Array3D()
-        start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        pattern = '<%sd'%length
-        start = end
-        s = struct.Struct(pattern)
-        end += s.size
-        val1.data = s.unpack(str[start:end])
-        self.frame.data.append(val1)
+      start = end
+      end += length
+      if python3:
+        self.frame.header.frame_id = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.frame.header.frame_id = str[start:end]
+      _x = self
+      start = end
+      end += 8
+      (_x.frame.height, _x.frame.width,) = _get_struct_2I().unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
+        self.frame.encoding = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.frame.encoding = str[start:end]
+      _x = self
+      start = end
+      end += 5
+      (_x.frame.is_bigendian, _x.frame.step,) = _get_struct_BI().unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.frame.data = str[start:end]
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -190,13 +270,31 @@ float64 z
     :param numpy: numpy python module
     """
     try:
-      length = len(self.frame.data)
-      buff.write(_struct_I.pack(length))
-      for val1 in self.frame.data:
-        length = len(val1.data)
-        buff.write(_struct_I.pack(length))
-        pattern = '<%sd'%length
-        buff.write(val1.data.tostring())
+      _x = self
+      buff.write(_get_struct_3I().pack(_x.frame.header.seq, _x.frame.header.stamp.secs, _x.frame.header.stamp.nsecs))
+      _x = self.frame.header.frame_id
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self
+      buff.write(_get_struct_2I().pack(_x.frame.height, _x.frame.width))
+      _x = self.frame.encoding
+      length = len(_x)
+      if python3 or type(_x) == unicode:
+        _x = _x.encode('utf-8')
+        length = len(_x)
+      buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      _x = self
+      buff.write(_get_struct_BI().pack(_x.frame.is_bigendian, _x.frame.step))
+      _x = self.frame.data
+      length = len(_x)
+      # - if encoded as a list instead, serialize as bytes instead of string
+      if type(_x) in [list, tuple]:
+        buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+      else:
+        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
       length = len(self.landmark.face)
       buff.write(_struct_I.pack(length))
       for val1 in self.landmark.face:
@@ -230,25 +328,46 @@ float64 z
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.frame is None:
-        self.frame = infrastructure.msg.List()
+        self.frame = sensor_msgs.msg.Image()
       if self.landmark is None:
         self.landmark = infrastructure.msg.Landmarks()
       end = 0
+      _x = self
+      start = end
+      end += 12
+      (_x.frame.header.seq, _x.frame.header.stamp.secs, _x.frame.header.stamp.nsecs,) = _get_struct_3I().unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.frame.data = []
-      for i in range(0, length):
-        val1 = infrastructure.msg.Array3D()
-        start = end
-        end += 4
-        (length,) = _struct_I.unpack(str[start:end])
-        pattern = '<%sd'%length
-        start = end
-        s = struct.Struct(pattern)
-        end += s.size
-        val1.data = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
-        self.frame.data.append(val1)
+      start = end
+      end += length
+      if python3:
+        self.frame.header.frame_id = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.frame.header.frame_id = str[start:end]
+      _x = self
+      start = end
+      end += 8
+      (_x.frame.height, _x.frame.width,) = _get_struct_2I().unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      if python3:
+        self.frame.encoding = str[start:end].decode('utf-8', 'rosmsg')
+      else:
+        self.frame.encoding = str[start:end]
+      _x = self
+      start = end
+      end += 5
+      (_x.frame.is_bigendian, _x.frame.step,) = _get_struct_BI().unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.frame.data = str[start:end]
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -301,12 +420,30 @@ _struct_I = genpy.struct_I
 def _get_struct_I():
     global _struct_I
     return _struct_I
+_struct_2I = None
+def _get_struct_2I():
+    global _struct_2I
+    if _struct_2I is None:
+        _struct_2I = struct.Struct("<2I")
+    return _struct_2I
+_struct_3I = None
+def _get_struct_3I():
+    global _struct_3I
+    if _struct_3I is None:
+        _struct_3I = struct.Struct("<3I")
+    return _struct_3I
 _struct_3d = None
 def _get_struct_3d():
     global _struct_3d
     if _struct_3d is None:
         _struct_3d = struct.Struct("<3d")
     return _struct_3d
+_struct_BI = None
+def _get_struct_BI():
+    global _struct_BI
+    if _struct_BI is None:
+        _struct_BI = struct.Struct("<BI")
+    return _struct_BI
 # This Python file uses the following encoding: utf-8
 """autogenerated by genpy from infrastructure/GazeResponse.msg. Do not edit."""
 import codecs
@@ -436,6 +573,6 @@ def _get_struct_I():
     return _struct_I
 class Gaze(object):
   _type          = 'infrastructure/Gaze'
-  _md5sum = 'c34a27d7d61a85ce5f08ee39e1c1aa1a'
+  _md5sum = '14f8acfcacac2e0e693c25a032fd2de8'
   _request_class  = GazeRequest
   _response_class = GazeResponse

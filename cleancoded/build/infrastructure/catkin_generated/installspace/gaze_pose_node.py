@@ -22,7 +22,7 @@ def landmark_handler(data_list):
 
 
 
-def callservice(frame):
+def callservice(frame,_):
     rospy.loginfo("waiting for gaze pose service to respond...")
     rospy.wait_for_service('gaze_pose')
     try:

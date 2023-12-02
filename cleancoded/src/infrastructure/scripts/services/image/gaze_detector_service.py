@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 # This module is the server for the gaze detection service. 
 # First, it subscribes to the extracted landmarkes from image frame topic and sends it to the gaze detection function.
@@ -5,7 +6,6 @@
 # It receives the image data from the client and sends it to the gaze detection function.
 # The output is the gaze position as a string through the Gaze service [which is located in "$(rospack find infrastructure)/srv"].
 
-#!/usr/bin/env python
 import importlib.util
 import math
 import os
