@@ -8,7 +8,8 @@ from infrastructure.msg import FaceEmotions, List, EmoProbArr, Array3D
 from sensor_msgs.msg import CameraInfo,Image
 import numpy as np
 import mediapipe as mp
-
+import time
+import matplotlib.pyplot as plt
 
 
 
@@ -36,9 +37,19 @@ class FaceDetection():
 	rospy.init_node('FaceEmotionAnalysis',anonymous=False)
 
 	def __init__(self):
+		self.dt = 0
+		# self.newb = 2
+		# self.p = 1
+		# self.mindt = 0
+		# self.lastemo = ''
+		# self.ts = []
+		# self.bs = []
+		# self.mean = []
+		# self.num = 0
+		self.c = 0
+		self.t = time.time()
 		rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
-		rospy.Subscriber("/image_raw", Image, self.convert_frame, callback_args=False, queue_size=1, buff_size=2**19) 
-
+		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=1, buff_size=2*13)
 	
 	def syncinfo(self, info):  # sync camera video stream info
 		self.height = info.height
@@ -48,9 +59,20 @@ class FaceDetection():
 			return self.height, self.width
 		except:
 			pass	
+
+	def count(self,s,d=False):
+		self.dt = time.time() - self.t
+		self.c +=1
+		print('frame number ',self.c, self.dt)
+		self.dt = 0
+		self.t = time.time()
+		self.convert_frame(s,d)
+		# self.reset_buffer()
 	
 	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
-			print('trying')
+			
+
+			
 			try:
 				encoding = data.encoding
 				data = data.data
@@ -66,34 +88,17 @@ class FaceDetection():
 				self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
 				self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
 
+				self.arrrrr= np.array(self.modif_image, dtype=np.uint8).reshape((640,480,3))
+				self.feedback(self.arrrrr)
+		
 
-				tem = List()
-				llll=self.modif_image.tolist()
-				for i in llll:
-					for j in i:
-							obj=Array3D()
-							obj.data=j
-							tem.data.append(obj) # convert the image to a list of 3D arrays 
-				rospy.loginfo("face_imit: Converted the image to a list of 3D arrays")
-				self.catch(tem)
-							
 			except Exception as e:
 				rospy.logerr("Error: %s"%e)
 				return e
 
-	def catch(self,_):
-		arr = []
-		l = _.data
-		for i in range(len(l)):
-			arr.append(list(l[i].data))  # convert the list of 3D arrays to a list of lists since the 3D array is not supported in ROS
-						# sub.unregister()
-		rospy.loginfo("face_imit: Got the image")
-		self.arrrrr= np.array(arr, dtype=np.uint8).reshape((640,480,3))
-		self.feedback(self.arrrrr)
-		
-		
+
+
 	def prequisites(self,image):
-		print('in preq')
 		with self.mp_holistic.Holistic(
 		# max_num_faces=1,  # number of faces to track in each frame
 		refine_face_landmarks=True,  # includes iris landmarks in the face mesh model
@@ -108,10 +113,11 @@ class FaceDetection():
 			image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # frame to RGB for the face-mesh model
 			results = face_mesh.process(image)
 			image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # frame back to BGR for OpenCV
-			while not results.face_landmarks:
+			if not results.face_landmarks:
 				print("No face detected")
 			else: 
-				print("Nobody is headless thanks god!")
+
+				print("Face Detected")
 				self.frame_msgs = image
 				self.face_cascade_name = cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml'  #getting a haarcascade xml file
 				self.face_cascade = cv2.CascadeClassifier()  #processing it for our project
@@ -124,28 +130,57 @@ class FaceDetection():
 						self.img=cv2.rectangle(self.frame_msgs,(x,y),(x+w,y+h),
 						(random.randint(0,255),random.randint(0,255),random.randint(0,255)),1)  #making a recentangle to show up and detect the face and setting it position and colour
 						self.face_width = h
+				
+				self.dt = time.time() - self.t
+				self.t = time.time()
+				print('time until face has been detected since the frame was caught: ',self.dt)
 				return True
 			
 
 	def analysis(self,image):
-			print('in analy')
-
-			if self.prequisites(image):
+			condition = self.prequisites(image)
+			while not condition:
+				condition = self.prequisites(image)
+				return "No face detected."
+			else:
 				analyze = DeepFace.analyze(self.frame_msgs,actions=['emotion'], enforce_detection=False)  #same thing is happing here as the previous example, we are using the analyze class from deepface and using ‘frame’ as input
 				result = [analyze]
 				
+				self.dt = time.time() - self.t
+				self.t = time.time()
+				print('from catch until analyzed: ',self.dt)
 				return result
-			else:
-				return "No face detected"
 
 
 	def feedback(self,image):  
-		print('in feed')
+		
 		image = cv2.resize(image,(self.height,self.width))
 		feedback = self.analysis(image)
 		if feedback != "No face detected":
-			emotion = feedback[0]['emotion']
-			dominant = feedback[0]['dominant_emotion']
+			emotion = feedback[0][0]['emotion']
+			dominant = feedback[0][0]['dominant_emotion']
+			self.dt = time.time() - self.t
+			self.t = time.time()
+			print('analyzed untill last process: ',self.dt)
+
+			# self.dt = time.time() - self.t
+			# self.t = time.time()
+			# mean = self.dt
+			# self.num+=1
+			# if self.num != 2:
+			# 	self.mean.append(self.dt)
+			# else:
+
+			# 	mean = sum(self.mean)/len(self.mean)
+			# 	print(self.num,'----------------------------',mean)
+			# 	st = str(self.newb)+'**'+str(self.p)
+			# 	self.bs.append(st)
+			# 	self.ts.append(mean)
+			# 	self.mindt = min(self.ts)
+			# 	if  mean > self.mindt:
+			# 		self.reset_buffer()
+			# 	self.mean = []
+			# 	self.num = 0
 
 			if len(self.global_dominant_emotion) <= 50:
 				self.global_dominant_emotion.append(str(dominant))
@@ -163,21 +198,40 @@ class FaceDetection():
 				self.submsg = EmoProbArr()
 				self.submsg.emotion, self.submsg.probability = item[0], float(round(item[1],6))
 				temp.append(self.submsg)
-				print(temp)
 			self.msg.data = temp
 			self.pub.publish(self.msg)
 			self.msg.data = []
 			# rospy.Rate(5).sleep()
 			# Converting to string to display on the camera frame output
 			prettied_str = '\n'.join(prettied_dict)
+			rospy.loginfo(prettied_str)
 			return prettied_str
 		else:
 			self.msg.data = []
 			self.pub.publish(self.msg)
 			return "No face detected"
 		
+	def reset_buffer(self):
+		self.sub.unregister()
+		# print('unregistered from topic. min dt: ',self.mindt)
+		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=1, buff_size=self.newb**self.p)
+		print('subscribed to the topic with buffer size: ',self.newb,'**',self.p)
+		self.p +=1
+
+		if self.p > 13:
+			self.newb+=1
+			self.p = 1
+
+	def __str__(self):
+		return [self.ts,self.bs]
+			
 
 
 if __name__ == '__main__':
-	FaceDetection()
+	d = FaceDetection().__str__()
 	rospy.spin()
+	# a=d[1]
+	# b=d[0]
+	# print(a,b)
+	# plt.plot(a,b)
+	# plt.show()
