@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from infrastructure.msg import List, Array3D, Landmarks
 from std_msgs.msg import String
 from geometry_msgs.msg import Point
-
+from infrastructure.srv import Gaze
 import time
 
 # from .matrix import gridding as gd
@@ -57,6 +57,7 @@ class MeshDetector():
 
 		try:
 			encoding = data.encoding
+			dd = data
 			data = data.data
 			# Convert image data to numpy array
 			np_arr = np.frombuffer(data, np.uint8)
@@ -127,6 +128,8 @@ class MeshDetector():
 			
 			landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
 			landmark_pub.publish(landmarks_msg)
+			
+			self.callservice(dd,landmarks_msg)
 
 		except Exception as e:
 			rospy.logerr("Error: %s"%e)
@@ -179,8 +182,8 @@ class MeshDetector():
 		pubcv2 = rospy.Publisher('/image_cv2/landmarked', List, queue_size=10)
 		
 		arrrrr= np.array(self.image, dtype=np.uint8).reshape((640,480,3)) # convert the list of lists to a numpy array
-		msg = self.convert_back(arrrrr)
-		pub.publish(msg)
+		self.msg = self.convert_back(arrrrr)
+		pub.publish(self.msg)
 
 		# llll=self.image.tolist()
 		# tem.data = [Array3D(j) for i in llll for j in i] # convert the image to a list of 3D arrays 
@@ -198,7 +201,20 @@ class MeshDetector():
 
 		return image
 		
-
+	def callservice(self,frame,landmarks_msg):
+		pub = rospy.Publisher('gaze_position/gaze_dir', String, queue_size=10)
+		rospy.loginfo("waiting for gaze pose service to respond...")
+		rospy.wait_for_service('gaze_pose')
+		try:
+			gazsrv = rospy.ServiceProxy('gaze_pose', Gaze)
+			rospy.loginfo("gaze pose service responded.")
+			transcript = gazsrv(frame, landmarks_msg)
+			rospy.loginfo("gaze_pose server successfully responded with %s",transcript.gazedirection)
+			rospy.loginfo("Publishing gaze position to /gaze_position/gaze_dir topic")
+			pub.publish(transcript.gazedirection)
+	        
+		except rospy.ServiceException as e:
+			rospy.logerr("Service call failed: %s"%e)
 
 	def draw(self, landmark, thickness=2 ,radius=0, color=(255,0,255)):
 

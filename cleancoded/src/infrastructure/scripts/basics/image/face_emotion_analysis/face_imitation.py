@@ -211,19 +211,19 @@ class FaceDetection():
 			self.pub.publish(self.msg)
 			return "No face detected"
 		
-	def reset_buffer(self):
-		self.sub.unregister()
-		# print('unregistered from topic. min dt: ',self.mindt)
-		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=1, buff_size=self.newb**self.p)
-		print('subscribed to the topic with buffer size: ',self.newb,'**',self.p)
-		self.p +=1
+	# def reset_buffer(self):
+	# 	self.sub.unregister()
+	# 	# print('unregistered from topic. min dt: ',self.mindt)
+	# 	self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=1, buff_size=self.newb**self.p)
+	# 	print('subscribed to the topic with buffer size: ',self.newb,'**',self.p)
+	# 	self.p +=1
 
-		if self.p > 13:
-			self.newb+=1
-			self.p = 1
+	# 	if self.p > 13:
+	# 		self.newb+=1
+	# 		self.p = 1
 
-	def __str__(self):
-		return [self.ts,self.bs]
+	# def __str__(self):
+	# 	return [self.ts,self.bs]
 			
 
 

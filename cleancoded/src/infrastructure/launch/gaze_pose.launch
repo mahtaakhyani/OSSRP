@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <node pkg="infrastructure" type="gaze_pose_node.py" name="gaze_pose" output="screen"/>
+    <!-- <node pkg="infrastructure" type="gaze_pose_node.py" name="gaze_pose" output="screen"/> -->
     <node pkg="infrastructure" type="gaze_detector_service.py" name="gaze_detector_srv" output="screen"/>
 
 </launch>
