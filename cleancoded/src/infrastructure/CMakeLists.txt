@@ -175,12 +175,14 @@ catkin_install_python(PROGRAMS
   scripts/appliences/middleware/landmark_data_processing/gaze_pose_node.py
   scripts/appliences/middleware/audio_data_handler/speech_feature_extraction_node.py
   scripts/appliences/middleware/audio_data_handler/text_to_speech_node.py
+  scripts/appliences/middleware/actuator_control/body_language_controller.py
   scripts/services/image/gaze_detector_service.py
   scripts/services/audio/text_to_speech_server.py
   scripts/services/audio/speech_to_text_server.py
   scripts/services/audio/speech_emotion_analysis_server.py
   scripts/services/audio/speech_feature_extraction_server.py
   scripts/basics/motion/dynamixel_controller/DynaControl.py
+
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
