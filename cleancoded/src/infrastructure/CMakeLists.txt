@@ -54,6 +54,7 @@ add_message_files(
   DynaTwist.msg
   Exp.msg
   DynaStatus.msg
+  DynaTwistMultiple.msg
 )
 
 ## Generate services in the 'srv' folder
