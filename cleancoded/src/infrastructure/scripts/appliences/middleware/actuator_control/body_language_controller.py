@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rospy
-from infrastructure.msg import FaceEmotions, EmoProbArr, DynaTwistMultiple
+from infrastructure.msg import FaceEmotions, EmoProbArr, DynaTwistMultiple, DynaTwist
+import time
 
 class FeelingsController:
     rospy.init_node("body_language", anonymous=False)
@@ -33,10 +34,6 @@ class FeelingsController:
         sub_msg.speed.angular.x = 70
         sub_msg.position = 90
         self.pub.publish(msg) # moving to more natural position
-
-         # subscribe to the topic /face_emotions
-        rospy.Subscriber("/face_emotions", FaceEmotions,self.feeling_callback, queue_size=10)
-        rospy.loginfo("Successfully subscribed to /face_emotions. \n Initiating body language.")
         
 
 
@@ -52,8 +49,7 @@ class FeelingsController:
             if data_list[i].probability > highest_prob:
                 highest_prob = data_list[i].probability
                 feeling = data_list[i].emotion
-            else:
-                feeling = "neutral"
+        rospy.log_info("feeling is ", feeling)
         # call the determine_movement function
         self.determine_movement(feeling)
     
@@ -73,13 +69,9 @@ class FeelingsController:
             sub_position = position+10
             sub_sub_position = position-10
             hand_action = [[speed, position, joint1], [speed, position, joint2]]
-            
-            self.actuator_control(hand_action)
             # a little wave above the head to express the feeling:
             hand_sub_action = [[sub_speed, sub_position, joint1], [sub_speed, sub_position, joint2]]
-            self.actuator_control(hand_sub_action)
             hand_sub_sub_action = [[sub_speed, sub_sub_position, joint1], [sub_speed, sub_sub_position, joint2]]
-            self.actuator_control(hand_sub_sub_action)
 
             # tilt head back:
             position = 100
@@ -163,7 +155,7 @@ class FeelingsController:
             joint1 = "neck"
             joint2 = "head"
             joint2_position = 90
-            head_action = [[speed, position, joint], [speed, joint2_position, joint2]]
+            head_action = [[speed, position, joint1], [speed, joint2_position, joint2]]
             sub_speed = speed
             sub_joint2_position = joint2_position+30
             sub_sub_joint2_position = joint2_position-30
@@ -270,16 +262,12 @@ class FeelingsController:
             joint1 = "lhand"
             joint2 = "rhand"
             hand_action = [[speed, lposition, joint1], [speed, rposition, joint2]]
-            self.actuator_control(hand_action)
-
             sub_speed = speed/2
             sub_position = lposition+20
             sub_sub_position = lposition-20
             # one hand gestures to express the feeling:
             hand_sub_action = [[sub_speed, sub_position, joint1]]
-            self.actuator_control(hand_sub_action)
             hand_sub_sub_action = [[sub_speed, sub_sub_position, joint1]]
-            self.actuator_control(hand_sub_sub_action)
 
         # shake head:
             position = 90
@@ -315,9 +303,17 @@ class FeelingsController:
         msg = DynaTwistMultiple()
         l = [DynaTwist() for i in range(len(action))]
         for i in range(len(action)):
-            l[i].joint = action[i][2]
-            l[i].speed.angular.x = action[i][0]
-            l[i].position = action[i][1]
+            l[i].joint = action[i][0][2]
+            l[i].speed.angular.x = action[i][0][0]
+            l[i].position = action[i][0][1]
             msg.commands.append(l[i])
         self.pub.publish(msg)
+        time.sleep(0.05)
     
+
+if __name__ == '__main__':
+    try:
+        FeelingsController()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
