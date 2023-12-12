@@ -7,6 +7,7 @@
 	<!-- <node pkg="infrastructure" type="CameraCapture.py" name="camera_capter_cv2" output="screen"/> -->
 	<!-- <node pkg="infrastructure" type="pose.py" name="landmark_detection" output="screen"/> -->
 	<node pkg="infrastructure" type="face_imitation.py" name="face_imitation" output="screen"/>
+	<node pkg="infrastructure" type="auto_exp_node.py" name="auto_exp" output="screen"/>
 	<!-- <include file="$(find infrastructure)/launch/gaze_pose.launch"/> -->
 	<node pkg="web_video_server" type="web_video_server" name="web_video_server" output="screen"/>
 
