@@ -4,6 +4,7 @@ from infrastructure.msg import FaceEmotions, EmoProbArr, DynaTwistMultiple, Dyna
 import time
 
 class FeelingsController:
+    count = 0
     rospy.init_node("body_language", anonymous=False)
     rospy.loginfo("Successfully subscribed to /face_emotions. \n Initializing body language controller...")
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
@@ -38,8 +39,12 @@ class FeelingsController:
 
 
     def feeling_callback(self, data):
-        # call the determine_feeling function
-        self.determine_feeling(data.data)
+        self.count+=1
+        if self.count%10 == 0: # slow down the rate of publishing to let the robot react. This is necessary because the robot is not fast enough to react to every single emotion.
+            # If you wish to change the rate, change the rate in the auto_exp_node.py file as well. The rate in the auto_exp_node.py file should be the same as the rate in the body_language_controller.py file.
+            rospy.loginfo("Received face emotion data")
+            # call the determine_feeling function
+            self.determine_feeling(data.data)
     
 
     def determine_feeling(self, data_list):
