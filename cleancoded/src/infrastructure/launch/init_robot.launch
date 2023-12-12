@@ -13,19 +13,19 @@
     <!-- <include file="$(find infrastructure)/launch/speech_emotion_analysis.launch"/> -->
 
 <!-- Controlling the motors -->
-    <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen"/>
-    <node pkg="infrastructure" type="body_language_controller.py" name="body_language_controller" output="screen"/>
+    <!-- <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen"/> -->
+    <!-- <node pkg="infrastructure" type="body_language_controller.py" name="body_language_controller" output="screen"/> -->
 
     
 
 
 <!-- Bridging between ROS and HTML interface node -->
-    <!-- <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-        <arg name="unregister_timeout" value="100"/> 
-    </include> -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="unregister_timeout" value="100"/> <!-- 100 seconds -->
+    </include>
 
 <!-- Changing rosbridge node's topic name from default to "web_interface" -->
-    <!-- <remap from="rosbridge_websocket" to="web_interface"/> -->
+    <remap from="rosbridge_websocket" to="web_interface"/>
 
 
 

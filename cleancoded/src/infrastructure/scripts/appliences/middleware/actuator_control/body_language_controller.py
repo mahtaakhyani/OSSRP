@@ -5,7 +5,7 @@ import time
 
 class FeelingsController:
     rospy.init_node("body_language", anonymous=False)
-    rospy.loginfo("Successfully subscribed to /face_emotions. \n Waiting for commands.")
+    rospy.loginfo("Successfully subscribed to /face_emotions. \n Initializing body language controller...")
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
     def __init__(self):
