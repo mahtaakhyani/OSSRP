@@ -177,6 +177,7 @@ catkin_install_python(PROGRAMS
   scripts/appliences/middleware/audio_data_handler/text_to_speech_node.py
   scripts/appliences/middleware/actuator_control/body_language_controller.py
   scripts/appliences/userinterface_websocket/synchronizer/auto_exp_node.py
+ scripts/appliences/userinterface_websocket/display_output/convert_video_to_cv.py
   scripts/services/image/gaze_detector_service.py
   scripts/services/audio/text_to_speech_server.py
   scripts/services/audio/speech_to_text_server.py

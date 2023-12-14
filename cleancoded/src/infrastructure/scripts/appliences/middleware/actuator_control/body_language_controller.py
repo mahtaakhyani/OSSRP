@@ -10,6 +10,7 @@ class FeelingsController:
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
     def __init__(self):
+        self.dominant = ""
         msg = DynaTwistMultiple()
         sub_msg = DynaTwist()
         sub_msg.joint = 'reset'
@@ -54,9 +55,15 @@ class FeelingsController:
             if data_list[i].probability > highest_prob:
                 highest_prob = data_list[i].probability
                 feeling = data_list[i].emotion
-        rospy.log_info("feeling is ", feeling)
-        # call the determine_movement function
-        self.determine_movement(feeling)
+
+        if feeling != self.dominant: # to prevent the robot from repeating the same movement
+            self.dominant = feeling
+            rospy.log_info("feeling is ", self.dominant)
+            # call the determine_movement function
+            self.determine_movement(self.dominant)
+        else:
+            rospy.log_info("feeling is still ", self.dominant)
+        
     
 
     def determine_movement(self, feeling):
@@ -296,10 +303,22 @@ class FeelingsController:
                 self.actuator_control(combined_actions) # a little wave above the head and look around rapidly
 
 
-        else:
-            # hand_movement = "still"
-            # head_movement = "still"
-            pass
+        else: # if feeling == "neutral": move to a more natural position
+            joint = "lhand"
+            speed = 100
+            position = -25
+            lhand_action = [[speed, position, joint]]
+            joint = "rhand"
+            rhand_action = [[speed, position, joint]]
+            joint = "head"
+            speed = 70
+            position = 75
+            head_action = [[speed, position, joint]]
+            joint = "neck"
+            position = 90
+            neck_action = [[speed, position, joint]]
+            combined_actions = [lhand_action, rhand_action, head_action, neck_action]
+            self.actuator_control(combined_actions)
 
 
 

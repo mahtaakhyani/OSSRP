@@ -5,6 +5,7 @@ from infrastructure.msg import FaceEmotions, Exp
 class ExpUpdater:
     def __init__(self):
         self.count = 0
+        self.dominant = ""
         self.pub = rospy.Publisher('py_exp_publisher', Exp, queue_size=10)
         rospy.init_node('exp_updater', anonymous=True)
         self.rate = rospy.Rate(10)
@@ -25,14 +26,18 @@ class ExpUpdater:
             if data_list[i].probability > highest_prob:
                 highest_prob = data_list[i].probability
                 feeling = data_list[i].emotion
-        rospy.loginfo("dominant emotion is "+ feeling)
+        if feeling != self.dominant:
+            self.dominant = feeling
+            rospy.loginfo("dominant emotion is "+ self.dominant)
 
-        # publish the emotion
-        exp = Exp()
-        exp.emotion = feeling
-        exp.auto_imit = True
-        exp.time = rospy.get_time()
-        self.pub.publish(exp)
+            # publish the emotion
+            exp = Exp()
+            exp.emotion = feeling
+            exp.auto_imit = True
+            exp.time = rospy.get_time()
+            self.pub.publish(exp)
+        else:
+            rospy.loginfo("dominant emotion is still "+ self.dominant)
 
 
 if __name__ == '__main__':

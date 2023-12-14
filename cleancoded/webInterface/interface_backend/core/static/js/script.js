@@ -294,9 +294,14 @@ autoexp_Topic.subscribe(function(message) {
           document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
  
       console.log(response);
+      var ids =   [response.face_url, sound_url];
+      update_exp(ids);  // Returning the id of the button clicked 
+                        // and it's relative sound recived as a response from the server
+                        //  to be used in the update_exp function.
+
     }
   });
-  document.getElementById("msg").innerHTML = msgd;
+  document.getElementById("msg").innerHTML = "Auto:"+msgd;
 });
 
 

@@ -1,7 +1,10 @@
 <?xml version="0.0"?>
 <launch>
 <!-- Emotion interactions node -->
-	
+	<!-- https://github.com/CircusMonkey/ros_rtsp -->
+	<!-- "Change the config/stream_setup.yaml to suit your required streams." -->
+	<include file="$(find ros_rtsp)/launch/rtsp_streams.launch"/> 
+
 	<remap from="/usb_cam/image_raw" to="/image_raw"/>
 	<include file="$(find usb_cam)/launch/usb_cam-test.launch"/>
 	<!-- <node pkg="infrastructure" type="CameraCapture.py" name="camera_capter_cv2" output="screen"/> -->
