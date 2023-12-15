@@ -95,3 +95,10 @@ class ConversationBot:
         
         return response_fa
 
+
+if __name__ == "__main__":
+    try:
+        ConversationService()
+        rospy.spin()
+    except rospy.ROSInterruptException as e:
+        rospy.logdebug(e)
