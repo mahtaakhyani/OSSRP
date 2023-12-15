@@ -9,4 +9,8 @@
    type="text_to_speech_server.py" 
    name="text_to_speech_server" 
    output="screen"/>
+   <node pkg="infrastructure"
+    type="conversation_bot.py"
+    name="conversation_bot"
+    output="screen"/>
 </launch>
