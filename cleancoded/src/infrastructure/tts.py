@@ -12,13 +12,19 @@ WordBoundary events to create subtitles using SubMaker.
 """
 
 import asyncio
-
+import rospy
 import edge_tts
 
-TEXT = "Hello World!"
-VOICE = "en-GB-SoniaNeural"
+from audio_common_msgs.msg import AudioData
+
+
+TEXT = "سلام خوبی چطوری"
+VOICE = "Microsoft Server Speech Text to Speech Voice (fa-IR, DilaraNeural)"
 OUTPUT_FILE = "test.mp3"
 
+rospy.init_node('text_to_speech_nodee',anonymous=False)
+pub = rospy.Publisher('audio/audio', AudioData, queue_size=10)
+msg = AudioData()
 
 async def amain() -> None:
     """Main function"""
@@ -27,6 +33,8 @@ async def amain() -> None:
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
                 file.write(chunk["data"])
+                msg.data = chunk["data"]
+                pub.publish(msg)
             elif chunk["type"] == "WordBoundary":
                 print(f"WordBoundary: {chunk}")
 

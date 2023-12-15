@@ -55,6 +55,7 @@ add_message_files(
   Exp.msg
   DynaStatus.msg
   DynaTwistMultiple.msg
+  Tts_msg.msg
 )
 
 ## Generate services in the 'srv' folder

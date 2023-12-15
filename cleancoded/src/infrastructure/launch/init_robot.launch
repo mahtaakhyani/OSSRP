@@ -2,7 +2,7 @@
 <launch>
 
 <!-- Emotion interactions node -->
-    <include file="$(find infrastructure)/launch/initiate_facial.launch"/>
+    <!-- <include file="$(find infrastructure)/launch/initiate_facial.launch"/> -->
 <!-- Gaze_pose launch -->
     <!-- <include file="$(find infrastructure)/launch/gaze_pose.launch"/> -->
 <!-- Speech_to_text launch -->
