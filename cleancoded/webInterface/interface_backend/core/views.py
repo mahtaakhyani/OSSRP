@@ -139,23 +139,46 @@ class CoreReqHandler(APIView):
 
 class EmotionCommandController(APIView):
 
+    def dummy(self): #If no emotion is selected (aka. the web interface hasn't loaded yet), the default emotion is set to 'neutral'
+        default_exp = 'neutral'
+        fetched_db = EmotionModel.objects.all()
+        try:
+            reqed_vidsrc_url = fetched_db.get(face=default_exp).face_video_url
+            if reqed_vidsrc_url:
+                try:
+                    reqed_soundsrc_url = fetched_db.get(face=default_exp).sound.audio_link
+                except:
+                    reqed_soundsrc_url = "No assigned sound found"
+        except:
+            reqed_vidsrc_url = "No matching face found"
+            reqed_soundsrc_url = ""
+
+        data = {'face':reqed_vidsrc_url,
+                    'sound' : reqed_soundsrc_url,
+                    'status' : 200,
+                    'message' : 'The emotion has been set' 
+                    }
+        return data
 
     def get(self, request): 
         self.api_response_data = CoreReqHandler.__str__()
-        data = {
-            "face": self.api_response_data['face'],
-            "sound": self.api_response_data['sound'],
-            "status": self.api_response_data['status'],
-            "message": self.api_response_data['message'],
-        }
-        # print(self.requested_expression)
-        '''
-            (Passes the user-selected emotion's data to the robot)
-            Taking in the latest user-commanded facial expression(emotion) through CoreReqHandler       and returning the corresponding String to the client in the form of JSON data.
-            (Data is being sent on the URL:/reqcli)
-            -Which here the client would be the android app sending requests to the server to
-            update the face based on the new commands.
-        '''
+        if self.api_response_data['face'] == '':
+            data = self.dummy()
+        else:
+            data = {
+                "face": self.api_response_data['face'],
+                "sound": self.api_response_data['sound'],
+                "status": self.api_response_data['status'],
+                "message": self.api_response_data['message'],
+            }
+            '''
+                (Passes the user-selected emotion's data to the robot)
+                Taking in the latest user-commanded facial expression(emotion) through CoreReqHandler       and returning the corresponding String to the client in the form of JSON data.
+                (Data is being sent on the URL:/reqcli)
+                -Which here the client would be the android app sending requests to the server to
+                update the face based on the new commands.
+            '''
+        print(data)
         return JsonResponse(data, status=201)
 
     def post(self, request):

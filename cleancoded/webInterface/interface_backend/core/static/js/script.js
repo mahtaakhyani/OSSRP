@@ -74,8 +74,8 @@ var robot_ws;
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
 function set_variables(host,android_host) {
+    console.log('setting environment variables...');
     // - - - Django Server - - - 
-    var android_host = "192.168.158.154";
     django_base_url = 'http://' + host + ':' + port ;
     request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
     publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
@@ -91,11 +91,30 @@ function set_variables(host,android_host) {
                 +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
                 '\n/head_cmd_vel to publish motion commands on');
 
+    // - - - Camera - - -
+    var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
+    document.getElementById("camera_img").src = camera_img_url;
+    console.log('Camera is streaming on: '+camera_img_url);
+    // - - - Camera Landmarked - - -
+    var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
+    document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
+    console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
+    // - - - Camera Gaze Frame - - -
+    var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
+    document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
+    console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
+
   }
 
-  set_variables(host,android_host);
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// ---------------------------------------------- START OF INTERFACE FUNCTIONS -----------------------------------------------
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 // Log Side Menu
 // -----------------
@@ -125,6 +144,14 @@ function viewdiv(div) {
   $(document.getElementById(div)).show().children().show();
 }
 
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF INTERFACE FUNCTIONS ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// // <----------------------------------------- ROS CONNECTION ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 // Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
@@ -145,113 +172,111 @@ ros.on('close', function() {
   console.log('Connection to websocket server closed.');
 });
 
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// // <----------------------------------------- PAGE LOAD ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // On page load, below settings will be applied or executed.
 window.addEventListener('load', (event) => {
   // get_ip();
-  set_variables(host);
+  set_variables(host,android_host);
+  set_default_exp(); // Setting the default emotion to 'neutral'. 
+                      // The function is defined in the emotion handling section 
+                      // and also takes in the default emotion's name as an argument 
+                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
+
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');  
-  $('.bt_left').click(function(){
-    $('.perso').animate({
-  left: '-=60'
-  });
-  });
-  $('.bt_right').click(function(){
-    $('.perso').animate({
-  left: '+=60'
-  });
-  });
-  $('.bt_top').click(function(){
-    $('.perso').animate({
-  top: '-=60'
-  });
-  });
-  $('.bt_bottom').click(function(){
-  $('.perso').animate({
-  top: '+=60'
-  });
-  });
-  $('.bt_head_left').click(function(){
-  $('.eve .head .face').animate({
-  left: '-=4'
-  });
+//   $('.bt_left').click(function(){
+//     $('.perso').animate({
+//   left: '-=60'
+//   });
+//   });
+//   $('.bt_right').click(function(){
+//     $('.perso').animate({
+//   left: '+=60'
+//   });
+//   });
+//   $('.bt_top').click(function(){
+//     $('.perso').animate({
+//   top: '-=60'
+//   });
+//   });
+//   $('.bt_bottom').click(function(){
+//   $('.perso').animate({
+//   top: '+=60'
+//   });
+//   });
+//   $('.bt_head_left').click(function(){
+//   $('.eve .head .face').animate({
+//   left: '-=4'
+//   });
   
-  });
-  $('.bt_head_right').click(function(){
-  $('.eve .head .face').animate({
-  left: '+=4'
-  });
-  });
-  $('.bt_head_top').click(function(){
-  $('.eve .head .face').animate({
-  top: '-=4'
-  });
-  });
-  $('.bt_head_bottom').click(function(){
-  $('.eve .head .face').animate({
-  top: '+=4'
-  });
-  });
-  $('.bt_rhand_top').click(function () {
-  $('.eve .body:before').css('transform', 'rotate(-34deg)');
-  });
+//   });
+//   $('.bt_head_right').click(function(){
+//   $('.eve .head .face').animate({
+//   left: '+=4'
+//   });
+//   });
+//   $('.bt_head_top').click(function(){
+//   $('.eve .head .face').animate({
+//   top: '-=4'
+//   });
+//   });
+//   $('.bt_head_bottom').click(function(){
+//   $('.eve .head .face').animate({
+//   top: '+=4'
+//   });
+//   });
+//   $('.bt_rhand_top').click(function () {
+//   $('.eve .body:before').css('transform', 'rotate(-34deg)');
+//   });
   
-  $(document).keydown(function(key) {
-  switch (key.which) {
-  case 37:
-    $('.perso').stop().animate({
-        left: '-=60'
-    });
-    break;
-  case 38:
-    $('.perso').stop().animate({
-        top: '-=60'
-    });
-    break;
-  case 39:
-    $('.perso').stop().animate({
-        left: '+=60'
-    }); 
-    break;
-  case 40:
-    $('.perso').stop().animate({
-        top: '+=60'
-    });
-    break;
-  }
-  });
+//   $(document).keydown(function(key) {
+//   switch (key.which) {
+//   case 37:
+//     $('.perso').stop().animate({
+//         left: '-=60'
+//     });
+//     break;
+//   case 38:
+//     $('.perso').stop().animate({
+//         top: '-=60'
+//     });
+//     break;
+//   case 39:
+//     $('.perso').stop().animate({
+//         left: '+=60'
+//     }); 
+//     break;
+//   case 40:
+//     $('.perso').stop().animate({
+//         top: '+=60'
+//     });
+//     break;
+//   }
+//   });
 });
 });
 
-
-// -----------------
-// Creating new Topic for expressions data
-// -----------------
-var dyna_Topic = new ROSLIB.Topic({
-  ros : ros,
-  name : dyna_topic,
-  messageType : dyna_msg_type
-});
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF PAGE LOAD ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   
 
-// // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <---------------------------------------------- EMOTION HANDLING SECTION---------------------------------------->	
 // // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-// Creating and Publishing the first emotion control message on the pre-defined(initiated through 'main.py') Topic /exp
-// as the interface starts interacting with the robot on user's demand.
 // -----------------
-var exp_msg = new ROSLIB.Message({
-  action: 'face expression',
-  emotion : 'Neutral',
-  auto_imit: false
-});
-
-// -----------------
-// Creating new Topic for expressions data
+// Creating new Topic for expressions data (used for publishing the user's commanded emotion in the update_exp function)
 // -----------------
 var exp_Topic = new ROSLIB.Topic({
   ros : ros,
@@ -260,17 +285,18 @@ var exp_Topic = new ROSLIB.Topic({
 });
 
 
-
-// Handling the turned on facial imitiator button through the server.
-// (Same as other buttons but on a different topic to be recognized by the robot/user.)
 // -----------------
+// Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
+// -----------------
+
+// Creating a new Topic for the user's current emotion (subscribing to the /py_exp_publisher topic)
 var autoexp_Topic = new ROSLIB.Topic({
   ros : ros,
   name : listen_exp_topic,
   messageType : exp_msg_type
 });
 
-autoexp_Topic.subscribe(function(message) {
+autoexp_Topic.subscribe(function(message) { // updating the video file based on the emotion received from the robot (not the user interface)
   console.log('Received message on ' + autoexp_Topic.name + ': ' + message.emotion);
   
   var msgd = message.emotion;
@@ -301,11 +327,17 @@ autoexp_Topic.subscribe(function(message) {
 
     }
   });
-  document.getElementById("msg").innerHTML = "Auto:"+msgd;
+  document.getElementById("msg").innerHTML = "Auto:"+ msgd;
 });
 
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------------- END OF FACIAL IMITATOR ----------------------------------------------
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+// ---------------------------------------------- EMOTION FILES HANDLING ----------------------------------------------
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var face_url_id = '';
 // Taking in the user's commanded face expression 
@@ -351,45 +383,7 @@ function exp_face(element) {
 
 }
 
-var csrftoken = $.cookie('csrftoken');
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
-var csrf = document.querySelector('meta[name="csrf-token"]').content;
-function parr_b(element) {
-  document.getElementById("pb_msg").innerHTML = element.value;
-  dta=JSON.stringify({
-    // Updating sound and video urls based on returned data from exp_face and exp_sound functions
-    id: element.id,
-    tag: element.id,
-    '_token': csrf
-  });
-  $.ajax({
-    type: "POST",
-    contentType : 'application/json',
-    url: 'parrot/',
-    data: dta,
-    success: function(response) {
-      // Playing the new requested video and sound file
-      console.log(response);
-    },
-    error: function(response) {
-    console.log(response);// logging the response in browser's console
-}});
-}
-function parr_r(element) {
-  document.getElementById("pr_msg").innerHTML = element.value;
-}
 
 // Taking in the user's commanded sound and passing on the url of the sound file to update_exp function.
 // -----------------
@@ -407,10 +401,53 @@ function exp_sound(element) {
 }
 
 
-// // <------------- UPDATE_EXP FUNCTION ------------->
 
-//Handling the facial expression buttons events through both the Django server and the ROS environment
-// (Updating sounds and facial expressions after clicking on a button)
+// setting the default valua for the face expression and sound (neutral)
+// -----------------
+function set_default_exp(face_name_val='neutral') {
+
+  $.ajax({ // Sending a GET request to the server to retrieve the sound url and face url of the default emotion
+    type: "GET",
+    url: request_current_exp,
+    data: {
+      face: face_name_val
+    },
+    success: function(response) { 
+      var sound_url = response.sound_url;
+      var face_url = response.face_url;
+      // Playing the recognized emotion's sound and video file
+      document.getElementById("vidsrc").innerHTML = '<source src="'+ face_url+'" type="video/mp4">'; 
+      document.getElementById("vidsrc").play()
+      if (sound_url != 'No assigned sound found') {
+        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
+        document.getElementById("vidsoundsrc").play();
+        } else {
+          document.getElementById("vidsoundsrc").pause();
+          document.getElementById("vidsoundsrc").currentTime = 0;
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
+ 
+      console.log(response);
+      var ids =   [face_url, sound_url];
+      update_exp(ids);  // Returning the name of the emotion
+                        // and it's relative sound recived as a response from the server
+                        //  to be used in the update_exp function.
+
+    }
+  });
+  document.getElementById("msg").innerHTML = "Default:"+ face_name_val;
+}
+
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF EMOTION FILES HANDLING ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// ---------------------------------------------- UPDATING EMOTIONS ----------------------------------------------
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Updating sounds and facial expressions through the Django server and publishing the new emotion to the robot through ROS
 // -----------------
 function update_exp(ids) {
   // Sending a GET request to the server to set a new emotion
@@ -453,6 +490,50 @@ function update_exp(ids) {
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+var csrftoken = $.cookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+
+
+function parr_b(element) {
+  document.getElementById("pb_msg").innerHTML = element.value;
+  dta=JSON.stringify({
+    // Updating sound and video urls based on returned data from exp_face and exp_sound functions
+    id: element.id,
+    tag: element.id,
+    '_token': csrf
+  });
+  $.ajax({
+    type: "POST",
+    contentType : 'application/json',
+    url: 'parrot/',
+    data: dta,
+    success: function(response) {
+      // Playing the new requested video and sound file
+      console.log(response);
+    },
+    error: function(response) {
+    console.log(response);// logging the response in browser's console
+}});
+}
+function parr_r(element) {
+  document.getElementById("pr_msg").innerHTML = element.value;
+}
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- TEXT-TO-SPEECH ----------------------------------------->
@@ -504,6 +585,16 @@ motion_Topic.subscribe(function(message) {
   
 });
 
+
+
+// -----------------
+// Creating new Topic for dynamixel movement commands
+// -----------------
+var dyna_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : dyna_topic,
+  messageType : dyna_msg_type
+});
 
 
 // // -----------------
