@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''
 This module is the server for the speech-to-text service. It receives the audio data from the client and sends it to the Google Speech Recognition API. 

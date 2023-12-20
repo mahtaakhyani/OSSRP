@@ -1,2 +1,2 @@
-infrastructure
--DCATKIN_DEVEL_PREFIX=/home/hooshang/Desktop/OSSRP/cleancoded/devel -DCMAKE_INSTALL_PREFIX=/home/hooshang/Desktop/OSSRP/cleancoded/install -G Unix Makefiles
+infrastructure:ros_rtsp
+-DCATKIN_DEVEL_PREFIX=/home/rpi4/OSSRP/cleancoded/devel -DCMAKE_INSTALL_PREFIX=/home/rpi4/OSSRP/cleancoded/install -G Unix Makefiles
