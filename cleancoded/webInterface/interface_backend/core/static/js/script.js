@@ -36,7 +36,7 @@ function sleep (time) {
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
 var host = 'localhost';
-var android_host = "192.168.158.154";
+var android_host = "192.168.197.154";
 var port = '8000';
 var android_port = '8080';
 var rosbridge_port = '9090';
@@ -110,6 +110,44 @@ function set_variables(host,android_host) {
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+const http = require('http');
+const rosnodejs = require('rosnodejs');
+const Speaker = require('speaker');
+
+// Create a server to stream audio
+const server = http.createServer((req, res) => {
+  // Set the content type to audio/wav
+  res.setHeader('Content-Type', 'audio/wav');
+
+  // Create a speaker instance to play the audio
+  const speaker = new Speaker({
+    channels: 1,
+    bitDepth: 16,
+    sampleRate: 16000
+  });
+
+  // Subscribe to the ROS audio topic
+  rosnodejs.initNode('/audio_stream');
+  const nh = rosnodejs.nh;
+  const audioSubscriber = nh.subscribe('/audio_topic', 'audio_common_msgs/AudioData', (data) => {
+    // Write the audio data to the speaker
+    speaker.write(data.data);
+  });
+
+  // Handle the client connection
+  req.on('close', () => {
+    // Unsubscribe from the ROS audio topic and close the speaker
+    audioSubscriber.shutdown();
+    speaker.close();
+  });
+});
+
+// Start the server on localhost:8000
+server.listen(1935, 'localhost', () => {
+  console.log('Server running at http://localhost:1935/');
+});
 
 // ---------------------------------------------- START OF INTERFACE FUNCTIONS -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
