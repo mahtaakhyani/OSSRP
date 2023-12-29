@@ -9,7 +9,7 @@ class FeelingsController:
     rospy.init_node("body_language", anonymous=False)
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
-    def __init__(self, topic_name):
+    def __init__(self, topic_name="/face_emotions"):
         rospy.Subscriber(topic_name, FaceEmotions, self.feeling_callback)
         rospy.loginfo("Successfully subscribed to {}. \n Initializing body language controller...".format(topic_name))
         self.dominant = ""
