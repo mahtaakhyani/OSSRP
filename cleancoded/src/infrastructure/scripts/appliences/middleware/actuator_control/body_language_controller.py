@@ -9,7 +9,7 @@ class FeelingsController:
     rospy.init_node("body_language", anonymous=False)
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
-    def __init__(self, topic_name="/face_emotions"):
+    def __init__(self, topic_name):
         rospy.Subscriber(topic_name, FaceEmotions, self.feeling_callback)
         rospy.loginfo("Successfully subscribed to {}. \n Initializing body language controller...".format(topic_name))
         self.dominant = ""
@@ -339,7 +339,7 @@ class FeelingsController:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Subscribe to a ROS topic to get the emotion data used in body language controller')
-    parser.add_argument('topic_name', type=str, help='Name of the topic to subscribe to')
+    parser.add_argument('topic_name', type=str, default='/face_emotions', help='Name of the topic to subscribe to')
     args = parser.parse_args()
 
     try:
