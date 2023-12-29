@@ -24,7 +24,7 @@ class SaveLogsToFile:
             
     def write_to_csv_file(self, data):
         writer = csv.writer(self.file)
-        writer.writerow(data)
+        writer.writerow(str(rospy.get_time().now()) + ',' + str(data) + '\n')
 
     def close(self):
         if self.file is not None:
@@ -42,11 +42,11 @@ if __name__ == '__main__':
                             nargs='+',
                             required=True)
         parser.add_argument('-m',
-                            '--msg_types',
+                            '--topics_msg_types',
                             nargs='+',
                             required=True)
         parser.add_argument('-f',
-                            '--filename',
+                            '--file_name',
                             required=False)
         parser.add_argument('-e',
                             '--file_extension',
@@ -54,8 +54,8 @@ if __name__ == '__main__':
                             required=False)
         args = parser.parse_args()
         topics = args.topics
-        msg_types = args.msg_types
-        FILENAME = args.filename
+        msg_types = args.topics_msg_types
+        FILENAME = args.file_name
         FILE_EXTENSION = args.file_extension
 
         for i,topic in enumerate(topics):
