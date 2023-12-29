@@ -2,14 +2,16 @@
 import rospy
 from infrastructure.msg import FaceEmotions, EmoProbArr, DynaTwistMultiple, DynaTwist
 import time
+import argparse
 
 class FeelingsController:
     count = 0
     rospy.init_node("body_language", anonymous=False)
-    rospy.loginfo("Successfully subscribed to /face_emotions. \n Initializing body language controller...")
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
-    def __init__(self):
+    def __init__(self, topic_name):
+        rospy.Subscriber(topic_name, FaceEmotions, self.feeling_callback)
+        rospy.loginfo("Successfully subscribed to {}. \n Initializing body language controller...".format(topic_name))
         self.dominant = ""
         msg = DynaTwistMultiple()
         sub_msg = DynaTwist()
@@ -336,8 +338,12 @@ class FeelingsController:
     
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Subscribe to a ROS topic to get the emotion data used in body language controller')
+    parser.add_argument('topic_name', type=str, help='Name of the topic to subscribe to')
+    args = parser.parse_args()
+
     try:
-        FeelingsController()
+        FeelingsController(args.topic_name)
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

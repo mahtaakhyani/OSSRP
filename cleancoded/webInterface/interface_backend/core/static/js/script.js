@@ -111,43 +111,15 @@ function set_variables(host,android_host) {
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// initializing the variables and setting the default emotion to 'neutral'
+// -----------------
+set_variables(host,android_host);
+set_default_exp(); // Setting the default emotion to 'neutral'. 
+                      // The function is defined in the emotion handling section 
+                      // and also takes in the default emotion's name as an argument 
+                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
 
-const http = require('http');
-const rosnodejs = require('rosnodejs');
-const Speaker = require('speaker');
-
-// Create a server to stream audio
-const server = http.createServer((req, res) => {
-  // Set the content type to audio/wav
-  res.setHeader('Content-Type', 'audio/wav');
-
-  // Create a speaker instance to play the audio
-  const speaker = new Speaker({
-    channels: 1,
-    bitDepth: 16,
-    sampleRate: 16000
-  });
-
-  // Subscribe to the ROS audio topic
-  rosnodejs.initNode('/audio_stream');
-  const nh = rosnodejs.nh;
-  const audioSubscriber = nh.subscribe('/audio_topic', 'audio_common_msgs/AudioData', (data) => {
-    // Write the audio data to the speaker
-    speaker.write(data.data);
-  });
-
-  // Handle the client connection
-  req.on('close', () => {
-    // Unsubscribe from the ROS audio topic and close the speaker
-    audioSubscriber.shutdown();
-    speaker.close();
-  });
-});
-
-// Start the server on localhost:8000
-server.listen(1935, 'localhost', () => {
-  console.log('Server running at http://localhost:1935/');
-});
+                      
 
 // ---------------------------------------------- START OF INTERFACE FUNCTIONS -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,12 +195,7 @@ ros.on('close', function() {
 // On page load, below settings will be applied or executed.
 window.addEventListener('load', (event) => {
   // get_ip();
-  set_variables(host,android_host);
-  set_default_exp(); // Setting the default emotion to 'neutral'. 
-                      // The function is defined in the emotion handling section 
-                      // and also takes in the default emotion's name as an argument 
-                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
-
+  
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');  
