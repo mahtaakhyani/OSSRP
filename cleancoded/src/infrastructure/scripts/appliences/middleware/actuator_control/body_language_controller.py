@@ -339,7 +339,7 @@ class FeelingsController:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Subscribe to a ROS topic to get the emotion data used in body language controller')
-    parser.add_argument('topic_name', type=str, default='/face_emotions', help='Name of the topic to subscribe to')
+    parser.add_argument('--topic_name', type=str,  nargs='?', help='Name of the topic to subscribe to')
     args = parser.parse_args()
 
     try:
