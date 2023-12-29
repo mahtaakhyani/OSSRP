@@ -9,6 +9,12 @@
 <arg name="head" value="5"/>
 <arg name="neck" value="4"/>
 
+<!-- <arg name="body_language_emotion_topic" value="/face_emotions"/>
+<arg name="body_language_emotion_msg_type" value="FaceEmotions"/> -->
+<arg name="body_language_emotion_topic" value="/manual_emotions"/>
+<arg name="body_language_emotion_msg_type" value="String"/>
+
+
 <!-- Emotion interactions node -->
     <!-- <include file="$(find infrastructure)/launch/initiate_facial.launch"/> -->
 <!-- Gaze_pose launch -->
@@ -29,8 +35,9 @@
                 --head $(arg head) 
                 --neck $(arg neck)"/>
                 
-    <!-- <node pkg="infrastructure" type="body_language_controller.py" name="body_language_controller" output="screen"/> -->
-
+    <node pkg="infrastructure" type="body_language_controller.py" name="body_language_controller" output="screen"
+        args="--topic $(arg body_language_emotion_topic) 
+                --msg_type $(arg body_language_emotion_msg_type)"/>
     
 
 

@@ -10,26 +10,15 @@ import time
 
 import rospkg
 import rospy
-from pyax12.connection import Connection
 from std_msgs.msg import String
+from pyax12.connection import Connection
 from infrastructure.msg import DynaTwist, DynaStatus, DynaTwistMultiple
-from serial_port_handler import Search_for_the_serial_port as port_in_use
 
 pkg = rospkg.RosPack().get_path('infrastructure')
 module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
 sys.path.append(module_path)
 
 from serial_port_handler import Search_for_the_serial_port as port_in_use
-import rospy
-import sys
-import os
-import time
-import argparse
-from std_msgs.msg import String
-from infrastructure.msg import DynaTwist, DynaStatus, DynaTwistMultiple
-from pyax12.connection import Connection
-from serial_port_handler import Search_for_the_serial_port as port_in_use
-import rospkg
 
 
 
@@ -53,14 +42,24 @@ class DynaControl:
         joint_id_lists (list): List of joint-ID pairs.
     """
 
-    rospy.init_node("dynamixel_control", anonymous=False) # initialize the node 
+    rospy.init_node("dynamixel_control", anonymous=False) # initialize the node
     pub = rospy.Publisher('/dyna_status',DynaStatus,queue_size=10) # publish the dynamixel status to the topic
+    pub_log = rospy.Publisher('/log/body',String,queue_size=10) # publish the log to the topic
+
 
     def __init__(self):
+        """
+        Initialize the Dynamixel controller.
+        """
+        
+        log_message = f"{rospy.get_caller_id()} Initializing the Dynamixel controller"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+
         self.args = self.parse_arguments() # parse the arguments
         self.timeout = 20
         self.control_table = []
-        # if the port and baudrate are not given as arguments, 
+        # if the port and baudrate are not given as arguments,
             # the Dynamixel module will scan for the connected Dynamixel units
         if self.args.__getattribute__('port'):
             self.port = self.args.__getattribute__('port')
@@ -88,8 +87,10 @@ class DynaControl:
                                         )
             
             if len(baud_rate_list)>1:
-                rospy.logerr(rospy.get_caller_id()+
-                             ' More than one baud rate is found. Please specify the baud rate as an argument. Exiting...')
+                
+                log_message = f"{rospy.get_caller_id()} More than one baud rate is found. Please specify the baud rate as an argument. Exiting..."
+                rospy.logerr(log_message)
+                self.pub_log.publish(log_message)
                 sys.exit()
             else:
                 self.baud_rate = baud_rate_list[0]
@@ -102,9 +103,10 @@ class DynaControl:
                 waiting_time=0.02,
                 rpi_gpio=False)
 
-            rospy.loginfo(f"{rospy.get_caller_id()} Connected to the serial port. "
-                            f"Port: {self.port},\n Baudrate: {self.baud_rate},\n "
-                            f"Waiting time: 0.02, Timeout: {self.timeout}\n")
+            
+            log_message = f"{rospy.get_caller_id()} Connected to the serial port. \nPort: {self.port},\nBaudrate: {self.baud_rate},\nWaiting time: 0.02,\nTimeout: {self.timeout}"
+            rospy.loginfo(log_message)
+            self.pub_log.publish(log_message)
             
             for joint in self.joint_id_lists: # publish the current position of the joints to the topic
                 current = self.currentposition(dynamixel_id=joint[1], degrees=True)
@@ -112,22 +114,26 @@ class DynaControl:
                 msg.joint = joint[0]
                 msg.position = current
                 self.pub.publish(msg)
+                
                 log_message = f"{rospy.get_caller_id()} {joint[0]} is at position: {current}"
                 rospy.loginfo(log_message)
+                self.pub_log.publish(log_message)
 
         except BaseException as e:
             rospy.logerr(e)
-            rospy.logerr(f"{rospy.get_caller_id()} Could not connect to the serial port. "
-                            f"Port: {self.port},\n Baudrate: {self.baud_rate},\n "
-                            f"Waiting time: 0.02, Timeout: {self.timeout}\n")
+            
+            log_message = f"{rospy.get_caller_id()} Could not connect to the serial port.\nPort: {self.port},\nBaudrate: {self.baud_rate},\nWaiting time: 0.02,\nTimeout: {self.timeout}\n"
+            rospy.logerr(log_message)
+            self.pub_log.publish(log_message)
             sys.exit()
 
         rospy.loginfo(rospy.get_caller_id() + str(self.joint_id_lists))
         rospy.Subscriber("/cmd_vel/dyna", DynaTwist, self.gotodegree) # subscribe to the topic to get the movement commands  
         rospy.Subscriber("/cmd_vel/dyna/multiple", DynaTwistMultiple, self.multiple_commands_callback)   # subscribe to the topic to get the multiple movement commands
-        rospy.loginfo(rospy.get_caller_id()+
-                      " Successfully subscribed to /cmd_vel/dyna and /cmd_vel/dyna/multiple. \n Waiting for commands.")
-
+        
+        log_message = f"{rospy.get_caller_id()} Successfully subscribed to /cmd_vel/dyna and /cmd_vel/dyna/multiple. \n Waiting for commands."
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
             
 
     def parse_arguments(self):
@@ -214,7 +220,10 @@ class DynaControl:
             rospy.loginfo(rospy.get_caller_id() + ' Closed the serial port to try the next baud rate')
 
         connected_ids = [(f'id: {id}', f'baudrate: {baudr}') for id, baudr in zip(ids, connected_baudrates)]
-        rospy.loginfo(rospy.get_caller_id() + f' Connected Dynamixel Units: {connected_ids}')
+        
+        log_message = f"{rospy.get_caller_id()} Connected Dynamixel Units: {connected_ids}"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
 
         return ids, connected_baudrates
 
@@ -227,8 +236,12 @@ class DynaControl:
         if len(ids) == len(joints):
             joint_id_lists = [[j, i] for j, i in zip(joints, ids)]
             return joint_id_lists
-        rospy.logerr(rospy.get_caller_id() + ' The number of joints and ids do not match. Please check the arguments.')
-
+        
+        
+        log_message = f"{rospy.get_caller_id()} The number of joints and ids do not match. Please check the arguments. Exiting..."
+        rospy.logerr(log_message)
+        self.pub_log.publish(log_message)
+        sys.exit()
 
     def gotodegree(self, data, multiple=False):
         """
@@ -296,8 +309,10 @@ class DynaControl:
             goal_position = command[1][0]
             speed = command[1][1]
             current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
-            log_message = rospy.get_caller_id() + f' Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(goal_position)} with speed: {str(speed)}'
+            
+            log_message = f'{rospy.get_caller_id()} Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(goal_position)} with speed: {str(speed)}'
             rospy.loginfo(log_message)
+            self.pub_log.publish(log_message)
             # move the Dynamixel unit to the requested position
             self.serial_connection.goto(dynamixel_id, goal_position, speed=speed, degrees=True)
 
@@ -319,11 +334,16 @@ class DynaControl:
                         msg.joint = joint
                         msg.position = current
                         self.pub.publish(msg)
+
+                        
                         log_message = f"{rospy.get_caller_id()} {joint} stopped at position: {current}"
                         rospy.loginfo(log_message)
+                        self.pub_log.publish(log_message)
                     else:
+                        
                         log_message = f"{rospy.get_caller_id()} Waiting for the movement of the {joint} to finish..."
                         rospy.loginfo(log_message)
+                        self.pub_log.publish(log_message)
 
 
     def multiple_commands_callback(self, data):
@@ -350,8 +370,10 @@ class DynaControl:
         """
         Close the serial connection.
         """
-        rospy.loginfo(rospy.get_caller_id()+
-                      ' Closing the serial connection')
+        
+        log_message = f"{rospy.get_caller_id()} Closing the serial connection"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
         self.serial_connection.close()
         rospy.loginfo(rospy.get_caller_id()+
                       ' Closed the serial connection')
@@ -360,6 +382,6 @@ class DynaControl:
 
 
 if __name__ == "__main__": # main function
-        camcap = DynaControl() # create an instance of the class
-        rospy.spin() # keep the node running until it is stopped
-        camcap.close() # close the serial connection
+    camcap = DynaControl() # create an instance of the class
+    rospy.spin() # keep the node running until it is stopped
+    camcap.close() # close the serial connection
