@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import rospy
-from infrastructure.msg import FaceEmotions, EmoProbArr, DynaTwistMultiple, DynaTwist
+from infrastructure.msg import FaceEmotions, Exp, DynaTwistMultiple, DynaTwist
 from std_msgs.msg import String
 import time
 import argparse
@@ -15,8 +15,8 @@ class FeelingsController:
         self.dominant = ""
         # parse the arguments
         topic_name, msg_type = self.parse_arguments()
-        if msg_type == "String":
-            rospy.Subscriber(topic_name, String, self.feeling_str_callback)
+        if msg_type == "Exp":
+            rospy.Subscriber(topic_name, Exp, self.feeling_exp_callback)
         elif msg_type == "FaceEmotions":
             rospy.Subscriber(topic_name, FaceEmotions, self.feeling_emotionmsg_callback)
         rospy.loginfo(rospy.get_caller_id()+
@@ -36,11 +36,11 @@ class FeelingsController:
         parser.add_argument('--topic',
                             type=str,
                             help='Name of the topic to subscribe to for emotion data',
-                            required=False)
+                            required=True)
         parser.add_argument('--msg_type',
                             type=str,
                             help='Type of the emotion data input (e.g String or FaceEmotions)',
-                            required=False)
+                            required=True)
             
         args = parser.parse_args()
         topic = args.__getattribute__('topic')
@@ -87,16 +87,16 @@ class FeelingsController:
             self.pub_log.publish(log_message)
 
     # callback function for manual emotion input
-    def feeling_str_callback(self, data):
+    def feeling_exp_callback(self, data):
         """
         This function is for manual emotion input for body language control.
         It is used when you want the robot to express a certain emotion.
         """
         
-        log_message = f"{rospy.get_caller_id()} Received emotion string."
+        log_message = f"{rospy.get_caller_id()} Received emotion Exp msg type."
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        self.determine_movement(data)
+        self.determine_movement(data.emotion)
 
 
     def determine_movement(self, feeling):
