@@ -3,6 +3,7 @@
 import rospy
 import argparse
 import csv
+from infrastructure.msg import *
 
 
 
