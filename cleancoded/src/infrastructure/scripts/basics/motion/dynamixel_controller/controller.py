@@ -25,9 +25,6 @@ class MotorsController():
                     '--rhand', type=str,
                     help='e.g., 1,2,3,etc.')
         parser.add_argument(
-                    '--speed', type=str,
-                    help='e.g., 100,etc.')
-        parser.add_argument(
                     '--port', type=str,
                     help='e.g., COM8 (Windows), /dev/ttyUSB0 (Linux)')
 

@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <launch>
 
+<arg name="port" value="/dev/ttyUSB0"/>
+<arg name="baudrate" value="1000000"/>
+<!-- Dynamixel's ID of each joint -->
+<arg name="lhand" value="1"/>
+<arg name="rhand" value="6"/>
+<arg name="head" value="5"/>
+<arg name="neck" value="4"/>
+
 <!-- Emotion interactions node -->
     <!-- <include file="$(find infrastructure)/launch/initiate_facial.launch"/> -->
 <!-- Gaze_pose launch -->
@@ -8,21 +16,26 @@
 <!-- Speech_to_text launch -->
     <!-- <include file="$(find infrastructure)/launch/speech_to_text.launch"/> -->
 <!-- Text_to_speech launch -->
-    <include file="$(find infrastructure)/launch/text_to_speech.launch"/>
+    <!-- <include file="$(find infrastructure)/launch/text_to_speech.launch"/> -->
 <!-- Speech_emotion_analysis launch-->
     <!-- <include file="$(find infrastructure)/launch/speech_emotion_analysis.launch"/> -->
 
-<!-- Controlling the motors -->
-    <!-- <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen"/> -->
+<!-- Controlling the Dynamixels -->
+    <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen" 
+        args="--port $(arg port) 
+                --baudrate $(arg baudrate) 
+                --lhand $(arg lhand) 
+                --rhand $(arg rhand) 
+                --head $(arg head) 
+                --neck $(arg neck)"/>
+                
     <!-- <node pkg="infrastructure" type="body_language_controller.py" name="body_language_controller" output="screen"/> -->
 
     
 
 
 <!-- Bridging between ROS and HTML interface node -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-        <arg name="unregister_timeout" value="100"/> <!-- 100 seconds -->
-    </include>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 
 <!-- Changing rosbridge node's topic name from default to "web_interface" -->
     <remap from="rosbridge_websocket" to="web_interface"/>

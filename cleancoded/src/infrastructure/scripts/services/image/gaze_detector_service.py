@@ -314,7 +314,7 @@ class GazeTracking:
             and a string of the head pose direction'''
         head_rpy_dict = {'pitch': self.ang1, 'yaw': self.ang2}
         print(head_rpy_dict)
-        rospy.loginfo('Head pitch and yaw extracted successfully.')
+        rospy.loginfo(rospy.get_caller_id()+' Head pitch and yaw extracted successfully.')
         font = cv2.FONT_HERSHEY_SIMPLEX
         head_pos_str = ['Head:']
         if self.ang1 in range(-40, 40) and self.ang2 in range(-40, 40):
@@ -416,7 +416,7 @@ class GazeTracking:
             return arr
                         
         except Exception as e:
-            rospy.logerr("Error: %s"%e)
+            rospy.logerr(rospy.get_caller_id()+" Error: %s"%e)
             return e
 
 
@@ -664,13 +664,13 @@ class GazeDetectorService():
 
     def __init__(self):
         rospy.Service('gaze_pose', Gaze, self.callback)
-        rospy.loginfo("gaze detector service successfully initiated")
+        rospy.loginfo(rospy.get_caller_id()+" gaze detector service successfully initiated")
 
     def callback(self, data):
         print('callback check ---------------------------------------------------------------------')
         try:
             gazedir = GazeTracking().gazedirection(data)
-            rospy.loginfo("returning the gaze direction to the client")
+            rospy.loginfo(rospy.get_caller_id()+" returning the gaze direction to the client")
             return gazedir
 
         except BaseException as bex:

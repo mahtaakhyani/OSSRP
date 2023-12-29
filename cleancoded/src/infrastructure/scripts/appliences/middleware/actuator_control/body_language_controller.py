@@ -9,9 +9,15 @@ class FeelingsController:
     rospy.init_node("body_language", anonymous=False)
     pub = rospy.Publisher('/cmd_vel/dyna/multiple',DynaTwistMultiple,queue_size=10) # publish the body language to the topic
 
-    def __init__(self, topic_name):
-        rospy.Subscriber(topic_name, FaceEmotions, self.feeling_callback)
-        rospy.loginfo("Successfully subscribed to {}. \n Initializing body language controller...".format(topic_name))
+    def __init__(self, topic_name='/face_emotions', msg_type=FaceEmotions):
+        if msg_type == "Str":
+            rospy.Subscriber(topic_name, msg_type, self.feeling_str_callback)
+        elif msg_type == "FaceEmotions":
+            rospy.Subscriber(topic_name, msg_type, self.feeling_emotionmsg_callback)
+        rospy.loginfo(rospy.get_caller_id()+" Successfully subscribed to {}. \n Initializing body language controller...".format(topic_name))
+        
+        
+        # initialize the dynamixels to the initial position
         self.dominant = ""
         msg = DynaTwistMultiple()
         sub_msg = DynaTwist()
@@ -19,8 +25,9 @@ class FeelingsController:
         sub_msg.speed.angular.x = 100
         sub_msg.position = 0
         msg.commands = [sub_msg]
-        self.pub.publish(msg) # reset the dynamixels to the initial position
+        self.pub.publish(msg)
 
+        # moving to more natural positions
         # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<150 -> face forward=90 |-> more than 150 is NOT possible at all -> -150|__0__|150
         sub_msg.joint = "lhand"
         sub_msg.speed.angular.x = 100
@@ -37,19 +44,23 @@ class FeelingsController:
         sub_msg.joint = "neck"
         sub_msg.speed.angular.x = 70
         sub_msg.position = 90
-        self.pub.publish(msg) # moving to more natural position
+        self.pub.publish(msg)
         
+        rospy.loginfo(rospy.get_caller_id()+" Body language controller initialized")
 
 
-    def feeling_callback(self, data):
-        self.count+=1
-        if self.count%10 == 0: # slow down the rate of publishing to let the robot react. This is necessary because the robot is not fast enough to react to every single emotion.
+
+# callback function for face emotion data
+    def feeling_emotionmsg_callback(self, data):
+        rospy.sleep(0.5)  # Delay for 0.1 seconds
+         # slow down the rate of publishing to let the robot react. This is necessary because the robot is not fast enough to react to every single emotion.
             # If you wish to change the rate, change the rate in the auto_exp_node.py file as well. The rate in the auto_exp_node.py file should be the same as the rate in the body_language_controller.py file.
-            rospy.loginfo("Received face emotion data")
-            # call the determine_feeling function
-            self.determine_feeling(data.data)
+        rospy.loginfo(rospy.get_caller_id()+" Received face emotion data")
+        # call the determine_feeling function
+        self.determine_feeling(data.data)
     
 
+# function for extracting the dominant emotion from the emotion data (the emotion with the highest probability from the FaceEmotions messages)
     def determine_feeling(self, data_list):
         # get the emotion with the highest probability
         highest_prob = 0
@@ -64,12 +75,19 @@ class FeelingsController:
             # call the determine_movement function
             self.determine_movement(self.dominant)
         else:
-            rospy.log_info("feeling is still ", self.dominant)
+            rospy.log_info(rospy.get_caller_id()+" feeling is still ", self.dominant)
         
     
 
+
+# callback function for manual emotion input
+    def feeling_str_callback(self, data): # this function is for manual emotion input for body language control (when you want the robot to express a certain emotion)
+        self.determine_movement(data)
+
+
+
+# Determine the probable movement of hands and head based on the feeling
     def determine_movement(self, feeling):
-        # Determine the probable movement of hands and head based on the feeling
         if feeling == "surprised":
         # hand_movement = "raising hands surprisedly"
         # head_movement = "tilting back"
@@ -324,8 +342,8 @@ class FeelingsController:
 
 
 
+# function for publishing the movement of hands and head to the topic /cmd_vel/dyna/multiple
     def actuator_control(self, action):
-        # publish the definition of each movement of hands and head to the topic /cmd_vel/dyna/multiple
         msg = DynaTwistMultiple()
         l = [DynaTwist() for i in range(len(action))]
         for i in range(len(action)):
@@ -337,9 +355,13 @@ class FeelingsController:
         time.sleep(0.05)
     
 
+
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Subscribe to a ROS topic to get the emotion data used in body language controller')
     parser.add_argument('--topic', type=str, help='Name of the topic to subscribe to for emotion data', required=False, default="/face_emotions")
+    parser.add_argument('--msg_type', type=str, help='Type of the emotion data input (e.g Str or FaceEmotions)', required=False, default="FaceEmotions")
     args = parser.parse_args()
 
     try:
