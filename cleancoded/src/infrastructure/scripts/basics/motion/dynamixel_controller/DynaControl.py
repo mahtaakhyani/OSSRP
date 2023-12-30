@@ -24,6 +24,7 @@ from serial_port_handler import Search_for_the_serial_port as port_in_use
 
 
 class DynaControl:
+    print('dyna')
     """
     Class representing the Dynamixel controller.
 
@@ -68,7 +69,7 @@ class DynaControl:
 
         # if the Dynamixel IDs are not given as arguments,
         #    the Dynamixel module will scan for the connected Dynamixel units
-        if self.__getattribute__('neck') and self.__getattribute__('head') and self.__getattribute__('lhand') and self.__getattribute__('rhand') and self.__getattribute__('baudrate'):
+        if self.args.__getattribute__('neck') and self.args.__getattribute__('head') and self.args.__getattribute__('lhand') and self.args.__getattribute__('rhand') and self.args.__getattribute__('baudrate'):
             self.baud_rate = self.args.__getattribute__('baudrate')
             self.head_id = self.args.__getattribute__('head')
             self.neck_id = self.args.__getattribute__('neck')
@@ -81,10 +82,6 @@ class DynaControl:
                                      # The scan() function has all the possible baud_rates list as a default argument.
                                      # This will make the Dynamixel module scan function try each baud rate to find the connected Dynamixel unit(s).
             self.connected_ids, baud_rate_list = self.scan() # scan for the connected Dynamixel units and the connected baud rate
-            self.joint_id_lists = self.match_joint_to_id(
-                                        joints=['lhand', 'neck', 'head', 'rhand'], # the sequence of the joints must be the same as the sequence of the IDs
-                                        ids=self.connected_ids
-                                        )
             
             if len(baud_rate_list)>1:
                 
@@ -94,7 +91,11 @@ class DynaControl:
                 sys.exit()
             else:
                 self.baud_rate = baud_rate_list[0]
-            
+
+        self.joint_id_lists = self.match_joint_to_id(
+                                        joints=['lhand', 'neck', 'head', 'rhand'], # the sequence of the joints must be the same as the sequence of the IDs
+                                        ids=self.connected_ids
+                                        )
         try:
             self.serial_connection = Connection(
                 port=self.port,
@@ -145,19 +146,23 @@ class DynaControl:
                             Set Dynamixel IDs assigned to different joints using 
                             --head, --neck, --lhand, --rhand\n''')
         parser.add_argument(
-                    '--head', type=str,
+                    '__name', type=str)
+        parser.add_argument(
+                    '__log', type=str)
+        parser.add_argument(
+                    '--head', type=int,
                     help='ID (e.g., 1,2,3,etc.)',
                     required=False)
         parser.add_argument(
-                    '--neck', type=str,
+                    '--neck', type=int,
                     help='ID (e.g., 1,2,3,etc.)',
                     required=False)
         parser.add_argument(
-                    '--lhand', type=str,
+                    '--lhand', type=int,
                     help='ID (e.g., 1,2,3,etc.)',
                     required=False)
         parser.add_argument(
-                    '--rhand', type=str,
+                    '--rhand', type=int,
                     help='ID (e.g., 1,2,3,etc.)',
                     required=False)
         parser.add_argument(
@@ -234,7 +239,7 @@ class DynaControl:
         Match the connected Dynamixel units to the requested joints.
         """
         if len(ids) == len(joints):
-            joint_id_lists = [[j, i] for j, i in zip(joints, ids)]
+            joint_id_lists = [[j, int(i)] for j, i in zip(joints, ids)]
             return joint_id_lists
         
         
@@ -262,7 +267,7 @@ class DynaControl:
             dynamixel_id = 4  # default value for the dynamixel id
             for joint_couple in self.joint_id_lists:  # get the dynamixel id for the requested joint
                 if joint == joint_couple[0]:
-                    dynamixel_id = joint[1]
+                    dynamixel_id = joint_couple[1]
             safety_checked_commands.append([dynamixel_id])
 
             if joint == 'reset':  # if the command is to reset the dynamixel units to their initial position
@@ -282,7 +287,7 @@ class DynaControl:
                 elif joint == 'rhand':
                     min_position = -150
                     max_position = 40
-
+                
                 # FAIL SAFE: making sure that the respective position for the requested joint is
                 # within the factory limits of that specific Dynamixel unit to prevent actuator overloading
                 control_table = self.serial_connection.get_control_table_tuple(dynamixel_id)
@@ -305,16 +310,19 @@ class DynaControl:
 
         # Now that we have gathered all the safety checked commands, we can move the Dynamixel units at the same time
         for command in safety_checked_commands:
-            dynamixel_id = command[0]
-            goal_position = command[1][0]
-            speed = command[1][1]
-            current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
-            
-            log_message = f'{rospy.get_caller_id()} Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(goal_position)} with speed: {str(speed)}'
-            rospy.loginfo(log_message)
-            self.pub_log.publish(log_message)
-            # move the Dynamixel unit to the requested position
-            self.serial_connection.goto(dynamixel_id, goal_position, speed=speed, degrees=True)
+            try:
+                dynamixel_id = command[0]
+                goal_position = command[1][0]
+                speed = command[1][1]
+                current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+                
+                log_message = f'{rospy.get_caller_id()} Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(goal_position)} with speed: {str(speed)}'
+                rospy.loginfo(log_message)
+                self.pub_log.publish(log_message)
+                # move the Dynamixel unit to the requested position
+                self.serial_connection.goto(dynamixel_id, goal_position, speed=speed, degrees=True)
+            except:
+                pass
 
 
             # While waiting, publish the current position of the joint to the topic.

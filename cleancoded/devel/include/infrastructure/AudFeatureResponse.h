@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <memory>
+#include <map>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
@@ -88,22 +88,22 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsMessage< ::infrastructure::AudFeatureResponse_<ContainerAllocator> >
-  : TrueType
-  { };
-
-template <class ContainerAllocator>
-struct IsMessage< ::infrastructure::AudFeatureResponse_<ContainerAllocator> const>
-  : TrueType
-  { };
-
-template <class ContainerAllocator>
 struct IsFixedSize< ::infrastructure::AudFeatureResponse_<ContainerAllocator> >
   : TrueType
   { };
 
 template <class ContainerAllocator>
 struct IsFixedSize< ::infrastructure::AudFeatureResponse_<ContainerAllocator> const>
+  : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsMessage< ::infrastructure::AudFeatureResponse_<ContainerAllocator> >
+  : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsMessage< ::infrastructure::AudFeatureResponse_<ContainerAllocator> const>
   : TrueType
   { };
 

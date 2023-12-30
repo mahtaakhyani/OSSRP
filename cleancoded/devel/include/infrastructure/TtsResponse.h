@@ -15,7 +15,7 @@
 #include <ros/builtin_message_traits.h>
 #include <ros/message_operations.h>
 
-#include <audio_common_msgs/AudioData.h>
+#include <infrastructure/Tts_msg.h>
 
 namespace infrastructure
 {
@@ -34,7 +34,7 @@ struct TtsResponse_
 
 
 
-   typedef  ::audio_common_msgs::AudioData_<ContainerAllocator>  _speech_type;
+   typedef  ::infrastructure::Tts_msg_<ContainerAllocator>  _speech_type;
   _speech_type speech;
 
 
@@ -123,12 +123,12 @@ struct MD5Sum< ::infrastructure::TtsResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "17bac3472f989c850bf73ced5a271756";
+    return "2534803dfe8be7600047b56444e1d2de";
   }
 
   static const char* value(const ::infrastructure::TtsResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x17bac3472f989c85ULL;
-  static const uint64_t static_value2 = 0x0bf73ced5a271756ULL;
+  static const uint64_t static_value1 = 0x2534803dfe8be760ULL;
+  static const uint64_t static_value2 = 0x0047b56444e1d2deULL;
 };
 
 template<class ContainerAllocator>
@@ -147,8 +147,11 @@ struct Definition< ::infrastructure::TtsResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "audio_common_msgs/AudioData speech\n"
+    return "infrastructure/Tts_msg speech\n"
 "\n"
+"================================================================================\n"
+"MSG: infrastructure/Tts_msg\n"
+"audio_common_msgs/AudioData[] data\n"
 "================================================================================\n"
 "MSG: audio_common_msgs/AudioData\n"
 "uint8[] data\n"
@@ -191,7 +194,7 @@ struct Printer< ::infrastructure::TtsResponse_<ContainerAllocator> >
   {
     s << indent << "speech: ";
     s << std::endl;
-    Printer< ::audio_common_msgs::AudioData_<ContainerAllocator> >::stream(s, indent + "  ", v.speech);
+    Printer< ::infrastructure::Tts_msg_<ContainerAllocator> >::stream(s, indent + "  ", v.speech);
   }
 };
 

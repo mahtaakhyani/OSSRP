@@ -33,6 +33,10 @@ class FeelingsController:
 
     def parse_arguments(self):
         parser = argparse.ArgumentParser(description='Subscribe to a ROS topic with the specified msg type to get the emotion data used in body language controller')
+        parser.add_argument(
+            '__name', type=str)
+        parser.add_argument(
+                    '__log', type=str)
         parser.add_argument('--topic',
                             type=str,
                             help='Name of the topic to subscribe to for emotion data',

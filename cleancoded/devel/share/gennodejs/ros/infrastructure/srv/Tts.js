@@ -14,7 +14,7 @@ const _getByteLength = _ros_msg_utils.getByteLength;
 
 //-----------------------------------------------------------
 
-let audio_common_msgs = _finder('audio_common_msgs');
+let Tts_msg = require('../msg/Tts_msg.js');
 
 //-----------------------------------------------------------
 
@@ -102,7 +102,7 @@ class TtsResponse {
         this.speech = initObj.speech
       }
       else {
-        this.speech = new audio_common_msgs.msg.AudioData();
+        this.speech = new Tts_msg();
       }
     }
   }
@@ -110,7 +110,7 @@ class TtsResponse {
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type TtsResponse
     // Serialize message field [speech]
-    bufferOffset = audio_common_msgs.msg.AudioData.serialize(obj.speech, buffer, bufferOffset);
+    bufferOffset = Tts_msg.serialize(obj.speech, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -119,13 +119,13 @@ class TtsResponse {
     let len;
     let data = new TtsResponse(null);
     // Deserialize message field [speech]
-    data.speech = audio_common_msgs.msg.AudioData.deserialize(buffer, bufferOffset);
+    data.speech = Tts_msg.deserialize(buffer, bufferOffset);
     return data;
   }
 
   static getMessageSize(object) {
     let length = 0;
-    length += audio_common_msgs.msg.AudioData.getMessageSize(object.speech);
+    length += Tts_msg.getMessageSize(object.speech);
     return length;
   }
 
@@ -136,14 +136,17 @@ class TtsResponse {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '17bac3472f989c850bf73ced5a271756';
+    return '2534803dfe8be7600047b56444e1d2de';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
-    audio_common_msgs/AudioData speech
+    infrastructure/Tts_msg speech
     
+    ================================================================================
+    MSG: infrastructure/Tts_msg
+    audio_common_msgs/AudioData[] data
     ================================================================================
     MSG: audio_common_msgs/AudioData
     uint8[] data
@@ -158,10 +161,10 @@ class TtsResponse {
     }
     const resolved = new TtsResponse(null);
     if (msg.speech !== undefined) {
-      resolved.speech = audio_common_msgs.msg.AudioData.Resolve(msg.speech)
+      resolved.speech = Tts_msg.Resolve(msg.speech)
     }
     else {
-      resolved.speech = new audio_common_msgs.msg.AudioData()
+      resolved.speech = new Tts_msg()
     }
 
     return resolved;
@@ -171,6 +174,6 @@ class TtsResponse {
 module.exports = {
   Request: TtsRequest,
   Response: TtsResponse,
-  md5sum() { return '32b04ab27e111935c7e979243abf2412'; },
+  md5sum() { return 'e8bbb23d743bc8a20e615c7ae7a757bd'; },
   datatype() { return 'infrastructure/Tts'; }
 };

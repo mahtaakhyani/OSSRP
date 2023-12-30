@@ -2,4 +2,4 @@
 source_root_dir = '/home/hooshang/Desktop/OSSRP/cleancoded/src'
 whitelisted_packages = ''.split(';') if '' != '' else []
 blacklisted_packages = ''.split(';') if '' != '' else []
-underlay_workspaces = '/opt/ros/melodic'.split(';') if '/opt/ros/melodic' != '' else []
+underlay_workspaces = '/home/hooshang/Desktop/OSSRP/cleancoded/devel;/opt/ros/melodic'.split(';') if '/home/hooshang/Desktop/OSSRP/cleancoded/devel;/opt/ros/melodic' != '' else []

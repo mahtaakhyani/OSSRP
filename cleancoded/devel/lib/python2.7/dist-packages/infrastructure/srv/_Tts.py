@@ -134,19 +134,23 @@ import genpy
 import struct
 
 import audio_common_msgs.msg
+import infrastructure.msg
 
 class TtsResponse(genpy.Message):
-  _md5sum = "17bac3472f989c850bf73ced5a271756"
+  _md5sum = "2534803dfe8be7600047b56444e1d2de"
   _type = "infrastructure/TtsResponse"
   _has_header = False  # flag to mark the presence of a Header object
-  _full_text = """audio_common_msgs/AudioData speech
+  _full_text = """infrastructure/Tts_msg speech
 
+================================================================================
+MSG: infrastructure/Tts_msg
+audio_common_msgs/AudioData[] data
 ================================================================================
 MSG: audio_common_msgs/AudioData
 uint8[] data
 """
   __slots__ = ['speech']
-  _slot_types = ['audio_common_msgs/AudioData']
+  _slot_types = ['infrastructure/Tts_msg']
 
   def __init__(self, *args, **kwds):
     """
@@ -166,9 +170,9 @@ uint8[] data
       super(TtsResponse, self).__init__(*args, **kwds)
       # message fields cannot be None, assign default values for those that are
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioData()
+        self.speech = infrastructure.msg.Tts_msg()
     else:
-      self.speech = audio_common_msgs.msg.AudioData()
+      self.speech = infrastructure.msg.Tts_msg()
 
   def _get_types(self):
     """
@@ -182,13 +186,16 @@ uint8[] data
     :param buff: buffer, ``StringIO``
     """
     try:
-      _x = self.speech.data
-      length = len(_x)
-      # - if encoded as a list instead, serialize as bytes instead of string
-      if type(_x) in [list, tuple]:
-        buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
-      else:
-        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      length = len(self.speech.data)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.speech.data:
+        _x = val1.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+        else:
+          buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -201,14 +208,21 @@ uint8[] data
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioData()
+        self.speech = infrastructure.msg.Tts_msg()
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.speech.data = str[start:end]
+      self.speech.data = []
+      for i in range(0, length):
+        val1 = audio_common_msgs.msg.AudioData()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.data = str[start:end]
+        self.speech.data.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -221,13 +235,16 @@ uint8[] data
     :param numpy: numpy python module
     """
     try:
-      _x = self.speech.data
-      length = len(_x)
-      # - if encoded as a list instead, serialize as bytes instead of string
-      if type(_x) in [list, tuple]:
-        buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
-      else:
-        buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
+      length = len(self.speech.data)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.speech.data:
+        _x = val1.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.Struct('<I%sB'%length).pack(length, *_x))
+        else:
+          buff.write(struct.Struct('<I%ss'%length).pack(length, _x))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -241,14 +258,21 @@ uint8[] data
       codecs.lookup_error("rosmsg").msg_type = self._type
     try:
       if self.speech is None:
-        self.speech = audio_common_msgs.msg.AudioData()
+        self.speech = infrastructure.msg.Tts_msg()
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      start = end
-      end += length
-      self.speech.data = str[start:end]
+      self.speech.data = []
+      for i in range(0, length):
+        val1 = audio_common_msgs.msg.AudioData()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.data = str[start:end]
+        self.speech.data.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -259,6 +283,6 @@ def _get_struct_I():
     return _struct_I
 class Tts(object):
   _type          = 'infrastructure/Tts'
-  _md5sum = '32b04ab27e111935c7e979243abf2412'
+  _md5sum = 'e8bbb23d743bc8a20e615c7ae7a757bd'
   _request_class  = TtsRequest
   _response_class = TtsResponse
