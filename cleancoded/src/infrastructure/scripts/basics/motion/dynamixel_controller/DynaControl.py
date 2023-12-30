@@ -278,15 +278,15 @@ class DynaControl:
                 rospy.loginfo(log_message)
                 self.pub_log.publish(log_message)
                 for dyna in self.joint_id_lists:
-                    self.serial_connection.goto(dyna[1], 0, speed=100, degrees=True)
+                    self.serial_connection.goto(dyna[1], 1, speed=100, degrees=True)
                     time.sleep(0.1)
             else:
                 if joint == 'lhand':
                     min_position = -150
                     max_position = 80
                 elif joint == 'neck':
-                    min_position = -120
-                    max_position = 100
+                    min_position = -50
+                    max_position = 0
                 elif joint == 'head':
                     min_position = -150
                     max_position = 150

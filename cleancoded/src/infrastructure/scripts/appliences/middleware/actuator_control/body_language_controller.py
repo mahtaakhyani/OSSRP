@@ -24,12 +24,12 @@ class FeelingsController:
         
 
         # reset the position of the dynamixels
-        rospy.sleep(4)
+        # rospy.sleep(4)
         # self.reset_position()
         # rospy.sleep(1)
         # moving to more natural positions
         # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<-120 -> face forward=-60 |-> more than 150 or less than -150 is NOT possible
-        self.move_to_more_natural_position()
+        # self.move_to_more_natural_position()
         
         rospy.loginfo(rospy.get_caller_id()+" Body language controller initialized")
 
@@ -351,11 +351,11 @@ class FeelingsController:
         rospy.loginfo(rospy.get_caller_id()+" dropping head and shaking sadly")
         self.pub_log.publish(rospy.get_caller_id()+" dropping head and shaking sadly")
         # head dropping and shaking:
-        position = 20
+        position = -20
         speed = 60
         joint1 = "neck"
         joint2 = "head"
-        joint2_position = 90
+        joint2_position = 0
         head_action = [[speed, position, joint1], [speed, joint2_position, joint2]]
         sub_speed = speed
         sub_joint2_position = joint2_position+30
@@ -507,7 +507,7 @@ class FeelingsController:
         position = 75
         head_action = [[speed, position, joint]]
         joint = "neck"
-        position = 90
+        position = 0
         neck_action = [[speed, position, joint]]
         
         combined_actions = [lhand_action, rhand_action, head_action, neck_action]
@@ -517,6 +517,7 @@ class FeelingsController:
 
 # function for publishing the movement of hands and head to the topic /cmd_vel/dyna/multiple
     def perform_movement(self, action):
+        print(action)
         msg = DynaTwistMultiple()
         for a in action:
             l = DynaTwist()
