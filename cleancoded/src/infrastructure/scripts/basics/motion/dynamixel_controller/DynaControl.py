@@ -24,7 +24,6 @@ from serial_port_handler import Search_for_the_serial_port as port_in_use
 
 
 class DynaControl:
-    print('dyna')
     """
     Class representing the Dynamixel controller.
 
@@ -75,16 +74,15 @@ class DynaControl:
             self.neck_id = self.args.__getattribute__('neck')
             self.lhand_id = self.args.__getattribute__('lhand')
             self.rhand_id = self.args.__getattribute__('rhand')
-            self.connected_ids = [self.head_id, self.neck_id, self.lhand_id, self.rhand_id]
+            self.connected_ids = [self.head_id, self.neck_id, self.rhand_id, self.lhand_id]
 
         else:
             # baud_rates = [1000000] # If you don't know the baud rate, DO NOT pass the list as an argument to the scan() function.
                                      # The scan() function has all the possible baud_rates list as a default argument.
                                      # This will make the Dynamixel module scan function try each baud rate to find the connected Dynamixel unit(s).
             self.connected_ids, baud_rate_list = self.scan() # scan for the connected Dynamixel units and the connected baud rate
-            
+            self.connected_ids.sort()
             if len(baud_rate_list)>1:
-                
                 log_message = f"{rospy.get_caller_id()} More than one baud rate is found. Please specify the baud rate as an argument. Exiting..."
                 rospy.logerr(log_message)
                 self.pub_log.publish(log_message)
@@ -92,8 +90,9 @@ class DynaControl:
             else:
                 self.baud_rate = baud_rate_list[0]
 
+        # matching the joint names to the joint's Dynamixel IDs
         self.joint_id_lists = self.match_joint_to_id(
-                                        joints=['lhand', 'neck', 'head', 'rhand'], # the sequence of the joints must be the same as the sequence of the IDs
+                                        joints=['rhand','neck','head','lhand'], # the sequence of the joints must be the same as the sequence of the IDs
                                         ids=self.connected_ids
                                         )
         try:
@@ -236,7 +235,7 @@ class DynaControl:
 
     def match_joint_to_id(self, joints, ids):
         """
-        Match the connected Dynamixel units to the requested joints.
+        Match the connected Dynamixel units to the joints' names.
         """
         if len(ids) == len(joints):
             joint_id_lists = [[j, int(i)] for j, i in zip(joints, ids)]
@@ -252,6 +251,10 @@ class DynaControl:
         """
         Move the Dynamixel units to the specified position in degrees.
         """
+        log_message = f'Command recieved: {data}'
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+
         safety_checked_commands = []
         if multiple:
             commands = data.commands
@@ -271,22 +274,25 @@ class DynaControl:
             safety_checked_commands.append([dynamixel_id])
 
             if joint == 'reset':  # if the command is to reset the dynamixel units to their initial position
+                log_message = f'{rospy.get_caller_id()} Reseting all the Dynamixel units to the initial position'
+                rospy.loginfo(log_message)
+                self.pub_log.publish(log_message)
                 for dyna in self.joint_id_lists:
                     self.serial_connection.goto(dyna[1], 0, speed=100, degrees=True)
                     time.sleep(0.1)
             else:
                 if joint == 'lhand':
                     min_position = -150
-                    max_position = 40
+                    max_position = 80
                 elif joint == 'neck':
-                    min_position = 0
-                    max_position = 150
+                    min_position = -120
+                    max_position = 100
                 elif joint == 'head':
-                    min_position = 0
+                    min_position = -150
                     max_position = 150
                 elif joint == 'rhand':
                     min_position = -150
-                    max_position = 40
+                    max_position = 100
                 
                 # FAIL SAFE: making sure that the respective position for the requested joint is
                 # within the factory limits of that specific Dynamixel unit to prevent actuator overloading
@@ -302,7 +308,10 @@ class DynaControl:
                         max_position = min(max_position, max_position_factory)
 
                 # END OF FAIL SAFE
-
+                if position>max_position or position<min_position:
+                    log_message = f"The requested position, {position}, is outside the allowed range of {min_position} to {max_position}.\nSetting the goal position to the closest limit."
+                    rospy.loginfo(log_message)
+                    self.pub_log.publish(log_message)
                 # make sure that the goal position is within the limits
                 position = min(max(position, min_position), max_position)
                 safety_checked_commands[command_number].append([position,speed,joint])
@@ -328,11 +337,24 @@ class DynaControl:
             # While waiting, publish the current position of the joint to the topic.
             # This may cause problems if you need to move couples of multiple joints one after another in a sequence without delay,
             # because it will wait for the first joint/joints couple to finish before moving to the next one.
-            while True:
-                if not any(self.is_moving_status(dynamixel_id=command[0]) for command in safety_checked_commands):
-                    break
-                time.sleep(0.2)
+        while True:
+            if not any(self.is_moving_status(dynamixel_id=command[0]) for command in safety_checked_commands):
                 for command in safety_checked_commands:
+                    dynamixel_id = command[0]
+                    joint = command[1][2]
+                    current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+                    log_message = f"{rospy.get_caller_id()} {joint} stopped at position: {current}"
+                    rospy.loginfo(log_message)
+                    self.pub_log.publish(log_message)
+
+                log_message = "All the Dynamixel units have stopped. Waiting for the next command."
+                rospy.loginfo(log_message)
+                self.pub_log.publish(log_message)
+                break
+                
+            time.sleep(0.5)
+            for command in safety_checked_commands:
+                try:
                     dynamixel_id = command[0]
                     joint = command[1][2]
                     is_moving = self.is_moving_status(dynamixel_id=dynamixel_id)
@@ -342,16 +364,15 @@ class DynaControl:
                         msg.joint = joint
                         msg.position = current
                         self.pub.publish(msg)
-
                         
-                        log_message = f"{rospy.get_caller_id()} {joint} stopped at position: {current}"
-                        rospy.loginfo(log_message)
-                        self.pub_log.publish(log_message)
                     else:
-                        
                         log_message = f"{rospy.get_caller_id()} Waiting for the movement of the {joint} to finish..."
                         rospy.loginfo(log_message)
                         self.pub_log.publish(log_message)
+                except:
+                    pass
+
+            
 
 
     def multiple_commands_callback(self, data):

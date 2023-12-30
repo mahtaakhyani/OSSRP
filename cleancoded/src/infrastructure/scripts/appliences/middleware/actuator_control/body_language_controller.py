@@ -24,9 +24,11 @@ class FeelingsController:
         
 
         # reset the position of the dynamixels
-        self.reset_position()
+        rospy.sleep(4)
+        # self.reset_position()
+        # rospy.sleep(1)
         # moving to more natural positions
-        # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<150 -> face forward=90 |-> more than 150 or less than -150 is NOT possible
+        # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<-120 -> face forward=-60 |-> more than 150 or less than -150 is NOT possible
         self.move_to_more_natural_position()
         
         rospy.loginfo(rospy.get_caller_id()+" Body language controller initialized")
@@ -478,19 +480,21 @@ class FeelingsController:
     
 
     def reset_position(self):
-        rospy.loginfo(rospy.get_caller_id()+" resetting position")
-        self.pub_log.publish(rospy.get_caller_id()+" resetting position")
+        log_message = f'{rospy.get_caller_id()} Reseting all the Dynamixel units to the initial position'
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
         # reset the position of the dynamixels
         joint = "reset"
-        speed = 70
-        position = 0
+        speed = 100
+        position = 10
         reset_action = [[speed, position, joint]]
-        self.perform_movement(reset_action)
+        self.perform_movement([reset_action])
 
 
     def move_to_more_natural_position(self):
-        rospy.loginfo(rospy.get_caller_id()+" moving to more natural position")
-        self.pub_log.publish(rospy.get_caller_id()+" moving to more natural position")
+        log_message = f"{rospy.get_caller_id()} Moving all the Dynamixel units to more natural positions"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
         # move to more natural positions
         joint = "lhand"
         speed = 100

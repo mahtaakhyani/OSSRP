@@ -3,6 +3,14 @@
 import rospy
 import argparse
 import csv
+import rospkg
+import os, sys
+
+pkg = rospkg.RosPack().get_path('infrastructure')
+logs_path = os.path.join(pkg, 'scripts', 'tools', 'logs')
+sys.path.append(logs_path)
+
+
 from infrastructure.msg import *
 
 
@@ -61,9 +69,9 @@ if __name__ == '__main__':
 
         for i,topic in enumerate(topics):
             if FILENAME is None:
-                FILENAME = f'{topic}_log.{FILE_EXTENSION}'
+                FILENAME = f'{logs_path}/{topic}_log.{FILE_EXTENSION}'
             else:
-                FILENAME = f'{topic}_{FILENAME}.{FILE_EXTENSION}'
+                FILENAME = f'{logs_path}/{topic}_{FILENAME}.{FILE_EXTENSION}'
             topic_type = msg_types[i]
             SaveLogsToFile(FILENAME, FILE_EXTENSION, topic, topic_type)
 

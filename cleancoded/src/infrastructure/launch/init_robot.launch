@@ -4,10 +4,10 @@
 <arg name="port" value="/dev/ttyUSB0"/>
 <arg name="baudrate" value="1000000"/>
 <!-- Dynamixel's ID of each joint -->
-<arg name="lhand" value="1"/>
-<arg name="rhand" value="6"/>
-<arg name="head" value="5"/>
-<arg name="neck" value="4"/>
+<arg name="rhand" value="4"/>
+<arg name="lhand" value="6"/>
+<arg name="head" value="1"/>
+<arg name="neck" value="5"/>
 
 <!-- <arg name="body_language_emotion_topic" value="/face_emotions"/>
 <arg name="body_language_emotion_msg_type" value="FaceEmotions"/> -->
@@ -53,12 +53,7 @@
                 --msg_type $(arg body_language_emotion_msg_type)"/>
 
     
-    <node pkg="infrastructure" type="save_logs_to_file.py" name="save_logs_to_file" output="screen"
-        args="--file_name $(arg logs_file_name) 
-                --file_extension $(arg logs_file_extension) 
-                --topics $(arg logs_topics) 
-                --topics_msg_types $(arg logs_topics_msg_types)"/>
-
+  
 
 <!-- Bridging between ROS and HTML interface node -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
@@ -70,3 +65,7 @@
 
 
 </launch>
+
+
+
+  
