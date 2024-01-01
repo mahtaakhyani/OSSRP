@@ -263,6 +263,7 @@ class DynaControl:
 
         command_number = 0
         for command in commands:
+            # rospy.sleep(0.5)
             joint = command.joint
             position = command.position
             speed = int(command.speed.angular.x)
@@ -271,21 +272,20 @@ class DynaControl:
             for joint_couple in self.joint_id_lists:  # get the dynamixel id for the requested joint
                 if joint == joint_couple[0]:
                     dynamixel_id = joint_couple[1]
-            safety_checked_commands.append([dynamixel_id])
 
             if joint == 'reset':  # if the command is to reset the dynamixel units to their initial position
                 log_message = f'{rospy.get_caller_id()} Reseting all the Dynamixel units to the initial position'
                 rospy.loginfo(log_message)
                 self.pub_log.publish(log_message)
                 for dyna in self.joint_id_lists:
-                    self.serial_connection.goto(dyna[1], 1, speed=100, degrees=True)
+                    self.serial_connection.goto(dyna[1], 0, speed=60, degrees=True)
                     time.sleep(0.1)
             else:
                 if joint == 'lhand':
                     min_position = -150
-                    max_position = 80
+                    max_position = 100
                 elif joint == 'neck':
-                    min_position = -50
+                    min_position = -58
                     max_position = 0
                 elif joint == 'head':
                     min_position = -150
@@ -296,16 +296,16 @@ class DynaControl:
                 
                 # FAIL SAFE: making sure that the respective position for the requested joint is
                 # within the factory limits of that specific Dynamixel unit to prevent actuator overloading
-                control_table = self.serial_connection.get_control_table_tuple(dynamixel_id)
-                for d in control_table:
-                    # Set the min and max position to the manually defined min & max positions if they are within the preferred limits,
-                    # otherwise set it to the factory limits
-                    if d[0] == 'cw_angle_limit':
-                        min_position_factory = float(d[1][:4])
-                        min_position = max(min_position, min_position_factory)
-                    if d[0] == 'ccw_angle_limit':
-                        max_position_factory = float(d[1][:3])
-                        max_position = min(max_position, max_position_factory)
+                # control_table = self.serial_connection.get_control_table_tuple(dynamixel_id)
+                # for d in control_table:
+                #     # Set the min and max position to the manually defined min & max positions if they are within the preferred limits,
+                #     # otherwise set it to the factory limits
+                #     if d[0] == 'cw_angle_limit':
+                #         min_position_factory = float(d[1][:4])
+                #         min_position = max(min_position, min_position_factory)
+                #     if d[0] == 'ccw_angle_limit':
+                #         max_position_factory = float(d[1][:3])
+                #         max_position = min(max_position, max_position_factory)
 
                 # END OF FAIL SAFE
                 if position>max_position or position<min_position:
@@ -314,63 +314,61 @@ class DynaControl:
                     self.pub_log.publish(log_message)
                 # make sure that the goal position is within the limits
                 position = min(max(position, min_position), max_position)
-                safety_checked_commands[command_number].append([position,speed,joint])
-                command_number+=1
-
-        # Now that we have gathered all the safety checked commands, we can move the Dynamixel units at the same time
-        for command in safety_checked_commands:
-            try:
-                dynamixel_id = command[0]
-                goal_position = command[1][0]
-                speed = command[1][1]
-                current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+                try:
+                    current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+                    log_message = f'{rospy.get_caller_id()} Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(position)} with speed: {str(speed)}'
+                    rospy.loginfo(log_message)
+                    self.pub_log.publish(log_message)
+                    # move the Dynamixel unit to the requested position
+                    self.serial_connection.goto(dynamixel_id, position, speed=speed, degrees=True)
+                except Exception as e:
+                    log_message = f'{rospy.get_caller_id()} Error from Dynamixel units: {e}. Exiting...'
+                    rospy.loginfo(log_message)
+                    self.pub_log.publisher(log_message)
+                    sys.exit()
+                    
                 
-                log_message = f'{rospy.get_caller_id()} Moving dynamixel ID {str(dynamixel_id)} from {current} to position: {str(goal_position)} with speed: {str(speed)}'
-                rospy.loginfo(log_message)
-                self.pub_log.publish(log_message)
-                # move the Dynamixel unit to the requested position
-                self.serial_connection.goto(dynamixel_id, goal_position, speed=speed, degrees=True)
-            except:
-                pass
+
+
 
 
             # While waiting, publish the current position of the joint to the topic.
             # This may cause problems if you need to move couples of multiple joints one after another in a sequence without delay,
             # because it will wait for the first joint/joints couple to finish before moving to the next one.
-        while True:
-            if not any(self.is_moving_status(dynamixel_id=command[0]) for command in safety_checked_commands):
-                for command in safety_checked_commands:
-                    dynamixel_id = command[0]
-                    joint = command[1][2]
-                    current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
-                    log_message = f"{rospy.get_caller_id()} {joint} stopped at position: {current}"
-                    rospy.loginfo(log_message)
-                    self.pub_log.publish(log_message)
+        # while True:
+        #     if not any(self.is_moving_status(dynamixel_id=command[0]) for command in safety_checked_commands):
+        #         for command in safety_checked_commands:
+        #             dynamixel_id = command[0]
+        #             joint = command[1][2]
+        #             current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+        #             log_message = f"{rospy.get_caller_id()} {joint} stopped at position: {current}"
+        #             rospy.loginfo(log_message)
+        #             self.pub_log.publish(log_message)
 
-                log_message = "All the Dynamixel units have stopped. Waiting for the next command."
-                rospy.loginfo(log_message)
-                self.pub_log.publish(log_message)
-                break
+        #         log_message = "All the Dynamixel units have stopped. Waiting for the next command."
+        #         rospy.loginfo(log_message)
+        #         self.pub_log.publish(log_message)
+        #         break
                 
-            time.sleep(0.5)
-            for command in safety_checked_commands:
-                try:
-                    dynamixel_id = command[0]
-                    joint = command[1][2]
-                    is_moving = self.is_moving_status(dynamixel_id=dynamixel_id)
-                    if not is_moving:
-                        current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
-                        msg = DynaStatus()
-                        msg.joint = joint
-                        msg.position = current
-                        self.pub.publish(msg)
+        #     time.sleep(0.5)
+        #     for command in safety_checked_commands:
+        #         try:
+        #             dynamixel_id = command[0]
+        #             joint = command[1][2]
+        #             is_moving = self.is_moving_status(dynamixel_id=dynamixel_id)
+        #             if not is_moving:
+        #                 current = self.currentposition(dynamixel_id=dynamixel_id, degrees=True)
+        #                 msg = DynaStatus()
+        #                 msg.joint = joint
+        #                 msg.position = current
+        #                 self.pub.publish(msg)
                         
-                    else:
-                        log_message = f"{rospy.get_caller_id()} Waiting for the movement of the {joint} to finish..."
-                        rospy.loginfo(log_message)
-                        self.pub_log.publish(log_message)
-                except:
-                    pass
+        #             else:
+        #                 log_message = f"{rospy.get_caller_id()} Waiting for the movement of the {joint} to finish..."
+        #                 rospy.loginfo(log_message)
+        #                 self.pub_log.publish(log_message)
+        #         except:
+        #             pass
 
             
 

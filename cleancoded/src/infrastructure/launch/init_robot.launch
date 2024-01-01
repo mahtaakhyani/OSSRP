@@ -11,7 +11,7 @@
 
 <!-- <arg name="body_language_emotion_topic" value="/face_emotions"/>
 <arg name="body_language_emotion_msg_type" value="FaceEmotions"/> -->
-<arg name="body_language_emotion_topic" value="/py_exp_publisher"/>
+<arg name="body_language_emotion_topic" value="/exp_manual"/>
 <arg name="body_language_emotion_msg_type" value="Exp"/>
 
 <!-- save logs to file -->
