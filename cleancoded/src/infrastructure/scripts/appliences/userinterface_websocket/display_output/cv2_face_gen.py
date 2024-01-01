@@ -1,10 +1,40 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import cv2
 import os
-from convert_video_to_cv import ConvertVideoToCv
+from sensor_msgs.msg import Image
+import rospy
+
+rospy.init_node('convert_video_to_cv', anonymous=True)
+pub = rospy.Publisher('/cv2_face_publisher', Image, queue_size=10)
+
+rate = rospy.Rate(10) # 10hz
+
+def convert_back(cv2_img):
+    ros_image = Image()
+    ros_image.header.stamp = rospy.Time.now()
+    ros_image.height = cv2_img.shape[0]
+    ros_image.width = cv2_img.shape[1]
+    ros_image.encoding = "bgr8"
+    ros_image.step = cv2_img.shape[1] * 3
+    ros_image.data = np.array(cv2_img).tobytes()		
+    return ros_image
+
+
+def run(img):
+    while not rospy.is_shutdown():
+        try:
+            # img = cv2.imread(self.path + str(self.exp) + ".mp4")
+            # img = cv2.resize(img, (self.height, self.width))
+            # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img = convert_back(img)
+            pub.publish(img)
+        except BaseException as e:
+            print(e)
+        rate.sleep()
 
 def show_video():
-    convert = ConvertVideoToCv()
     # get the path of the current directory
     path = os.path.dirname(os.path.realpath(__file__))
 
@@ -53,7 +83,7 @@ def show_video():
 
         # Display the canvas
         cv2.imshow('Canvas', canvas)
-        convert.run(canvas)
+        run(canvas)
 
         # wait for the user to press q
         if cv2.waitKey(1) & 0xFF == ord('q'):
