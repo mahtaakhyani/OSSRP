@@ -7,7 +7,7 @@ from sensor_msgs.msg import Image
 import rospy
 
 rospy.init_node('convert_video_to_cv', anonymous=True)
-pub = rospy.Publisher('/cv2_face_publisher', Image, queue_size=10)
+pub = rospy.Publisher('/cv2_3in1_face_publisher', Image, queue_size=10)
 
 rate = rospy.Rate(10) # 10hz
 
