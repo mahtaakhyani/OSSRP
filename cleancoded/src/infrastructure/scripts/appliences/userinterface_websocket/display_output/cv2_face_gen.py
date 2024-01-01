@@ -28,8 +28,8 @@ def run(img):
             # img = cv2.imread(self.path + str(self.exp) + ".mp4")
             # img = cv2.resize(img, (self.height, self.width))
             # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img = convert_back(img)
-            pub.publish(img)
+            img_r = convert_back(img)
+            pub.publish(img_r)
         except BaseException as e:
             print(e)
         rate.sleep()
