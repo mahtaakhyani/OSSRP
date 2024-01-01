@@ -19,7 +19,6 @@ src/web_video_server
 *.pc
 *.cmake
 *.tlog
-*.mp4
 *.zip
 *.jpg
 devel/.catkin
@@ -44,3 +43,4 @@ CMakeCache.txt
 cleancoded/src/infrastructure/scripts/tools/audio_common
 cleancoded/build
 cleancoded/devel
+cleancoded/src/infrastructure/scripts/tools/audio_common
