@@ -15,14 +15,10 @@ class ConvertVideoToCv:
     width = 480	
     def __init__(self):
         rospy.init_node('convert_video_to_cv', anonymous=True)
-        self.pub = rospy.Publisher('/cv2_exp_publisher', Image, queue_size=10)
-        self.sub = rospy.Subscriber('/py_exp_publisher', Exp, self.callback)
-        self.rate = rospy.Rate(10)
-        self.exp = 0
-        self.path = os.path.dirname(os.path.realpath(__file__)) + "/../videos/"
+        self.pub = rospy.Publisher('/cv2_face_publisher', Image, queue_size=10)
 
-    def callback(self, data):
-        self.exp = data.data
+        self.rate = rospy.Rate(10) # 10hz
+
 
     def convert_back(self,cv2_img):
         ros_image = Image()
@@ -35,12 +31,12 @@ class ConvertVideoToCv:
         return ros_image
 
 
-    def run(self):
+    def run(self, img):
         while not rospy.is_shutdown():
             try:
-                img = cv2.imread(self.path + str(self.exp) + ".mp4")
-                img = cv2.resize(img, (self.height, self.width))
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                # img = cv2.imread(self.path + str(self.exp) + ".mp4")
+                # img = cv2.resize(img, (self.height, self.width))
+                # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 img = self.convert_back(img)
                 self.pub.publish(img)
             except BaseException as e:
