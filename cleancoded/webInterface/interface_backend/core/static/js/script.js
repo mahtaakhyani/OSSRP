@@ -35,8 +35,8 @@ function sleep (time) {
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = 'localhost';
-var android_host = "192.168.197.154";
+var host = '192.168.234.46';
+var android_host = "192.168.234.154";
 var port = '8000';
 var android_port = '8080';
 var rosbridge_port = '9090';

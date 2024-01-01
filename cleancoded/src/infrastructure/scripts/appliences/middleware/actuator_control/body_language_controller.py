@@ -24,12 +24,12 @@ class FeelingsController:
         
 
         # reset the position of the dynamixels
-        # rospy.sleep(4)
-        # self.reset_position()
-        # rospy.sleep(1)
+        rospy.sleep(3)
+        self.reset_position()
+        # rospy.sleep(0.5)
         # moving to more natural positions
-        # position ranges: head>0 , hands: 50<best<-100 , neck: 0<best<-120 -> face forward=-60 |-> more than 150 or less than -150 is NOT possible
-        # self.move_to_more_natural_position()
+        # position ranges: head>0 , hands: -150<best<100 , neck: 0<best<-120 -> face forward=-60 |-> more than 150 or less than -150 is NOT possible
+        self.move_to_more_natural_position()
         
         rospy.loginfo(rospy.get_caller_id()+" Body language controller initialized")
 
@@ -118,6 +118,8 @@ class FeelingsController:
 
             elif "happy" in feeling:
                 self.perform_happy_movement()
+                # rospy.sleep(5)
+                # self.move_to_more_natural_position()
 
             elif "sad" in feeling:
                 self.perform_sad_movement()
@@ -131,8 +133,11 @@ class FeelingsController:
             elif "angry" in feeling:
                 self.perform_angry_movement()
 
-            elif feeling == "neutral":
+            elif feeling == "neutral" or feeling == "natural" or feeling == "normal":
                 self.move_to_more_natural_position()
+
+            elif feeling == "seq1":
+                self.seq()
         
         except Exception as e:
             
@@ -141,6 +146,33 @@ class FeelingsController:
             self.pub_log.publish(log_message)
             self.reset_position()
             self.move_to_more_natural_position()
+
+
+
+
+    def seq(self):
+        """
+        Perform the movement for the "seq" feeling.
+        """
+        rospy.loginfo(rospy.get_caller_id()+" performing seq movement")
+        # Raise hands surprisedly
+        hand_actions_list = self.seq_hands()
+        # Tilt head back and nod
+        neck_actions_list = self.seq_neck()
+        head_actions_list = self.drop_head_and_shake_sadly()
+        # perform the movement
+        self.perform_movement(hand_actions_list)
+        rospy.sleep(3)
+        self.move_to_more_natural_position()
+        rospy.sleep(5)
+        self.perform_movement(hand_actions_list)
+        self.perform_movement(neck_actions_list)
+        rospy.sleep(2)
+        self.move_to_more_natural_position()
+        rospy.sleep(3)
+        self.perform_movement(head_actions_list)
+
+
 
 
     def perform_surprised_movement(self):
@@ -169,13 +201,13 @@ class FeelingsController:
         # Raise hands happily
         hand_actions_list = self.raise_hands_happily()
         # Tilt head back and nod
-        head_actions_list = self.tilt_head_back_happily()
+        # head_actions_list = self.tilt_head_back_happily()
 
          # combine the hand and head actions list decussatedly
-        all_actions_list = [val for pair in zip(hand_actions_list, head_actions_list) for val in pair]
+        # all_actions_list = [val for pair in zip(hand_actions_list, head_actions_list) for val in pair]
 
         # perform the movement
-        self.perform_movement(all_actions_list)
+        self.perform_movement(hand_actions_list)
 
 
 
@@ -255,6 +287,45 @@ class FeelingsController:
 
     
 
+    def seq_hands(self):
+        log_message = f"{rospy.get_caller_id()} seq hands"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = -40
+        position2 = -20
+        joint1 = "lhand"
+        joint2 = "rhand"
+        speed = 150
+        sub_speed = speed
+        hand_action = [[speed, position1, joint1], [speed, position2, joint2]]
+
+        return [hand_action]
+
+    def seq_neck(self):
+        log_message = f"{rospy.get_caller_id()} seq neck"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        # tilt head back and nod:
+        position = -40
+        speed = 50
+        joint = "neck"
+        head_action = [[speed, position, joint]]
+    
+        return [head_action]
+
+
+    def seq_head(self):
+        log_message = f"{rospy.get_caller_id()} seq head"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position = -40
+        speed = 50
+        joint = "head"
+        head_action = [[speed, position, joint]]
+    
+        return [head_action]
+
+
     def raise_hands_surprisedly(self):
         rospy.loginfo(rospy.get_caller_id()+" raising hands surprisedly")
         self.pub_log.publish(rospy.get_caller_id()+" raising hands surprisedly")
@@ -299,17 +370,22 @@ class FeelingsController:
         rospy.loginfo(rospy.get_caller_id()+" raising hands happily")
         self.pub_log.publish(rospy.get_caller_id()+" raising hands happily")
         # raise hands happily:
-        position = -100
+        position1 = -50
         joint1 = "lhand"
-        joint2 = "rhand"
         speed = 100
-        sub_speed = speed/2
-        sub_position = position+10
-        sub_sub_position = position-10
-        hand_action = [[speed, position, joint1], [speed, position, joint2]]
+        lhand_action = [speed, position1, joint1]
+        position2 = 40
+        joint2 = "rhand"
+        rhand_action = [speed, position2, joint2]
+        sub_speed = speed-30
+        sub_position1 = position1+50
+        sub_sub_position1 = sub_position1-50
+        sub_position2 = position2-50
+        sub_sub_position2 = sub_position2+50
+        hand_action = [lhand_action, rhand_action]
         # a little wave above the head to express the feeling:
-        hand_sub_action = [[sub_speed, sub_position, joint1], [sub_speed, sub_position, joint2]]
-        hand_sub_sub_action = [[sub_speed, sub_sub_position, joint1], [sub_speed, sub_sub_position, joint2]]
+        hand_sub_action = [[sub_speed, sub_position1, joint1], [sub_speed, sub_position2, joint2]]
+        hand_sub_sub_action = [[sub_speed, sub_sub_position1, joint1], [sub_speed, sub_sub_position2, joint2]]
 
         combined_hand_actions = [hand_action, hand_sub_action, hand_sub_sub_action]
         return combined_hand_actions
@@ -497,17 +573,18 @@ class FeelingsController:
         self.pub_log.publish(log_message)
         # move to more natural positions
         joint = "lhand"
-        speed = 100
-        position = -25
+        speed = 70
+        position = 19
         lhand_action = [[speed, position, joint]]
         joint = "rhand"
+        position = -70
         rhand_action = [[speed, position, joint]]
         joint = "head"
-        speed = 70
-        position = 75
+        speed = 60
+        position = -5
         head_action = [[speed, position, joint]]
         joint = "neck"
-        position = 0
+        position = -55
         neck_action = [[speed, position, joint]]
         
         combined_actions = [lhand_action, rhand_action, head_action, neck_action]
@@ -518,15 +595,17 @@ class FeelingsController:
 # function for publishing the movement of hands and head to the topic /cmd_vel/dyna/multiple
     def perform_movement(self, action):
         print(action)
-        msg = DynaTwistMultiple()
         for a in action:
-            l = DynaTwist()
-            l.joint = a[0][2]
-            l.speed.angular.x = a[0][0]
-            l.position = a[0][1]
-            msg.commands.append(l)
-        self.pub.publish(msg)
-        time.sleep(0.05)
+            for b in a:
+                msg = DynaTwistMultiple()
+                l = DynaTwist()
+                print(b)
+                l.joint = b[2]
+                l.speed.angular.x = b[0]
+                l.position = b[1]
+                msg.commands.append(l)
+                self.pub.publish(msg)
+                rospy.sleep(0.05)
     
 
 
