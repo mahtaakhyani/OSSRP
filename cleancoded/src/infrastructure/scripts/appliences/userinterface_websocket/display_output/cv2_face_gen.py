@@ -83,7 +83,8 @@ def show_video():
 
         # Display the canvas
         cv2.imshow('Canvas', canvas)
-        run(canvas)
+        img_r = convert_back(canvas)
+        pub.publish(img_r)
 
         # wait for the user to press q
         if cv2.waitKey(1) & 0xFF == ord('q'):
