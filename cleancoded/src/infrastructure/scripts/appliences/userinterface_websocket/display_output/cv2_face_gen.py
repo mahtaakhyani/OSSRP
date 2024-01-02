@@ -117,11 +117,11 @@ class CV2FaceGenerator:
             img_r = self.convert_back(canvas)
             self.pub.publish(img_r)
             # Display the canvas
-            cv2.imshow('Canvas', canvas)
+            # cv2.imshow('Canvas', canvas)
 
             # wait for the user to press q
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
 
 
