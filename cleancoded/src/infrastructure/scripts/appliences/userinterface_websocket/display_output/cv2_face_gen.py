@@ -19,6 +19,7 @@ class CV2FaceGenerator:
 
 
     def convert_back(self, cv2_img):
+        print('convert_back')
         ros_image = Image()
         ros_image.header.stamp = rospy.Time.now()
         ros_image.height = cv2_img.shape[0]
