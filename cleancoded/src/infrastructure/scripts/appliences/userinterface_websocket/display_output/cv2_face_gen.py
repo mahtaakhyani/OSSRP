@@ -54,6 +54,7 @@ class CV2FaceGenerator:
 
 
     def show_video(self, vid1, vid2, vid3):
+        rospy.sleep(0.5)
         rospy.loginfo(f'cv2_face_generator node started showing videos {vid1}, {vid2}, {vid3}')
         video1 = cv2.VideoCapture(vid1)
         video2 = cv2.VideoCapture(vid2)
