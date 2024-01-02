@@ -19,7 +19,6 @@ class CV2FaceGenerator:
 
 
     def convert_back(self, cv2_img):
-        rospy.loginfo('cv2_face_generator node converted image to ros image')
         ros_image = Image()
         ros_image.header.stamp = rospy.Time.now()
         ros_image.height = cv2_img.shape[0]
@@ -59,6 +58,10 @@ class CV2FaceGenerator:
         video1 = cv2.VideoCapture(video1)
         video2 = cv2.VideoCapture(video2)
         video3 = cv2.VideoCapture(video3)
+        video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        
         self.is_running = False
         # Get the dimensions of the videos
         width1 = int(video1.get(cv2.CAP_PROP_FRAME_WIDTH))
