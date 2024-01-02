@@ -20,7 +20,6 @@ class CV2FaceGenerator:
 
 
     def convert_back(self, cv2_img):
-        print('convert_back')
         ros_image = Image()
         ros_image.header.stamp = rospy.Time.now()
         ros_image.height = cv2_img.shape[0]
@@ -45,10 +44,18 @@ class CV2FaceGenerator:
         # get the path of the current directory
         path = os.path.dirname(os.path.realpath(__file__))
 
+        video1 = f"{path}/happy_eyebrows.mp4"
+        video2 = f"{path}/happy_eyes.mp4"
+        video3 = f"{path}/happy_mouth.mp4"
+        
         # get the videos
-        video1 = f"{path}/{exp.data}_eyebrows.mp4"
-        video2 = f"{path}/{exp.data}_eyes.mp4"
-        video3 = f"{path}/{exp.data}_mouth.mp4"
+        if "eyes" in exp.data:
+            video2 = f"{path}/{exp.data}_eyes.mp4"
+        if "eyebrows" in exp.data:
+            video1 = f"{path}/{exp.data}_eyebrows.mp4"
+        if "mouth" in exp.data:
+            video3 = f"{path}/{exp.data}_mouth.mp4"
+        
         rospy.loginfo('cv2_face_generator node loaded videos')
 
         self.is_running = True
