@@ -44,18 +44,10 @@ class CV2FaceGenerator:
         # get the path of the current directory
         path = os.path.dirname(os.path.realpath(__file__))
 
-        video1 = f"{path}/happy_eyebrows.mp4"
-        video2 = f"{path}/happy_eyes.mp4"
-        video3 = f"{path}/happy_mouth.mp4"
-
         # get the videos
-        if "eyes" in exp.data:
-            video2 = f"{path}/{exp.data}_eyes.mp4"
-        if "eyebrows" in exp.data:
-            video1 = f"{path}/{exp.data}_eyebrows.mp4"
-        if "mouth" in exp.data:
-            video3 = f"{path}/{exp.data}_mouth.mp4"
-        
+        video1 = f"{path}/{exp.data}_eyebrows.mp4"
+        video2 = f"{path}/{exp.data}_eyes.mp4"
+        video3 = f"{path}/{exp.data}_mouth.mp4"
         rospy.loginfo('cv2_face_generator node loaded videos')
 
         self.is_running = True
@@ -105,6 +97,7 @@ class CV2FaceGenerator:
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
+                print('not ret')
                 video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
