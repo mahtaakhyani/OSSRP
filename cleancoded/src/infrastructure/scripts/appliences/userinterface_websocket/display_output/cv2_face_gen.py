@@ -53,11 +53,11 @@ class CV2FaceGenerator:
         self.show_video(video1, video2, video3)
 
 
-    def show_video(self, video1, video2, video3):
-        rospy.loginfo(f'cv2_face_generator node started showing videos {video1}, {video2}, {video3}')
-        video1 = cv2.VideoCapture(video1)
-        video2 = cv2.VideoCapture(video2)
-        video3 = cv2.VideoCapture(video3)
+    def show_video(self, vid1, vid2, vid3):
+        rospy.loginfo(f'cv2_face_generator node started showing videos {vid1}, {vid2}, {vid3}')
+        video1 = cv2.VideoCapture(vid1)
+        video2 = cv2.VideoCapture(vid2)
+        video3 = cv2.VideoCapture(vid3)
         video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
         video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
         video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
@@ -78,6 +78,7 @@ class CV2FaceGenerator:
 
         # Read frames from the videos and place them on the canvas
         # loop over the frames of the videos
+        print(self.is_running)
         while True:
             if self.is_running:
                 # release the videos
