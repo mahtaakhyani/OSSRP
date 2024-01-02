@@ -16,6 +16,7 @@ class CV2FaceGenerator:
         self.sub = rospy.Subscriber('/exp_test', String, self.change_videos)
         rospy.loginfo('cv2_face_generator node subscribed to /exp_test')
         self.rate = rospy.Rate(10) # 10hz
+        
 
 
     def convert_back(self, cv2_img):
@@ -94,7 +95,6 @@ class CV2FaceGenerator:
             ret1, frame1 = video1.read()
             ret2, frame2 = video2.read()
             ret3, frame3 = video3.read()
-            print(len(frame1))
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
@@ -116,6 +116,7 @@ class CV2FaceGenerator:
 
             img_r = self.convert_back(canvas)
             self.pub.publish(img_r)
+            self.rate.sleep()
             # Display the canvas
             # cv2.imshow('Canvas', canvas)
 
