@@ -73,7 +73,6 @@ class CV2FaceGenerator:
         # Read frames from the videos and place them on the canvas
         # loop over the frames of the videos
         while True:
-            print(self.is_running)
             if self.is_running:
                 break
             # get the frames
