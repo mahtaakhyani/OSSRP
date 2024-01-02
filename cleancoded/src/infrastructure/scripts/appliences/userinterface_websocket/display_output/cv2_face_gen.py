@@ -15,7 +15,13 @@ class CV2FaceGenerator:
         rospy.loginfo('cv2_face_generator node started')
         self.sub = rospy.Subscriber('/exp_test', String, self.change_videos)
         rospy.loginfo('cv2_face_generator node subscribed to /exp_test')
-        self.rate = rospy.Rate(10) # 10hz
+        self.rate = rospy.Rate(5) # 10hz
+        # get the path of the current directory
+        self.path = os.path.dirname(os.path.realpath(__file__))
+
+        self.video1 = f"{self.path}/happy_eyebrows.mp4"
+        self.video2 = f"{self.path}/happy_eyes.mp4"
+        self.video3 = f"{self.path}/happy_mouth.mp4"
         
 
 
@@ -41,25 +47,21 @@ class CV2FaceGenerator:
 
     def change_videos(self, exp):
         rospy.loginfo('cv2_face_generator node received exp command')
-        # get the path of the current directory
-        path = os.path.dirname(os.path.realpath(__file__))
-
-        video1 = f"{path}/happy_eyebrows.mp4"
-        video2 = f"{path}/happy_eyes.mp4"
-        video3 = f"{path}/happy_mouth.mp4"
+  
+        
 
         # get the videos
         if "eyes" in exp.data:
-            video2 = f"{path}/{exp.data[:-5]}_eyes.mp4"
+            self.video2 = f"{self.path}/{exp.data[:-5]}_eyes.mp4"
         if "eyebrows" in exp.data:
-            video1 = f"{path}/{exp.data[:-9]}_eyebrows.mp4"
+            self.video1 = f"{self.path}/{exp.data[:-9]}_eyebrows.mp4"
         if "mouth" in exp.data:
-            video3 = f"{path}/{exp.data[:-6]}_mouth.mp4"
+            self.video3 = f"{self.path}/{exp.data[:-6]}_mouth.mp4"
         
         rospy.loginfo('cv2_face_generator node loaded videos')
 
         self.is_running = True
-        self.show_video(video1, video2, video3)
+        self.show_video(self.video1, self.video2, self.video3)
 
 
     def show_video(self, vid1, vid2, vid3):
