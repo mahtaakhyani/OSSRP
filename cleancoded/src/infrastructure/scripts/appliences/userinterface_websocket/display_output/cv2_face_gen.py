@@ -89,6 +89,7 @@ class CV2FaceGenerator:
             ret1, frame1 = video1.read()
             ret2, frame2 = video2.read()
             ret3, frame3 = video3.read()
+            cv2.imshow('f1', frame1)
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
@@ -120,7 +121,7 @@ class CV2FaceGenerator:
 
 
         # close all windows
-        # cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
