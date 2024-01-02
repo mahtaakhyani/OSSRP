@@ -108,5 +108,10 @@ class CV2FaceGenerator:
         # close all windows
         cv2.destroyAllWindows()
 
-cv2_face_gen = CV2FaceGenerator()
 
+if __name__ == '__main__':
+    try:
+        cv2_face_generator = CV2FaceGenerator()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
