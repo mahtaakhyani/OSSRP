@@ -12,11 +12,14 @@ class CV2FaceGenerator:
     def __init__(self):
         rospy.init_node('convert_video_to_cv', anonymous=True)
         self.pub = rospy.Publisher('/cv2_3in1_face_publisher', Image, queue_size=10)
+        rospy.loginfo('cv2_face_generator node started')
         self.sub = rospy.Subscriber('/exp_test', String, self.change_videos)
+        rospy.loginfo('cv2_face_generator node subscribed to /exp_test')
         self.rate = rospy.Rate(10) # 10hz
 
 
     def convert_back(self, cv2_img):
+        rospy.loginfo('cv2_face_generator node converted image to ros image')
         ros_image = Image()
         ros_image.header.stamp = rospy.Time.now()
         ros_image.height = cv2_img.shape[0]
@@ -31,11 +34,13 @@ class CV2FaceGenerator:
             try:
                 img_r = self.convert_back(img)
                 self.pub.publish(img_r)
+                rospy.loginfo('cv2_face_generator node published image to /cv2_3in1_face_publisher')
             except BaseException as e:
                 print(e)
             self.rate.sleep()
 
     def change_videos(self, exp):
+        rospy.loginfo('cv2_face_generator node received exp command')
         # get the path of the current directory
         path = os.path.dirname(os.path.realpath(__file__))
 
@@ -43,12 +48,14 @@ class CV2FaceGenerator:
         video1 = cv2.VideoCapture(f"{path}/{exp}_eyebrows.mp4")
         video2 = cv2.VideoCapture(f"{path}/{exp}_eyes.mp4")
         video3 = cv2.VideoCapture(f"{path}/{exp}_mouth.mp4")
+        rospy.loginfo('cv2_face_generator node loaded videos')
 
         self.is_running = True
         self.show_video(video1, video2, video3)
 
 
     def show_video(self, video1, video2, video3):
+        rospy.loginfo(f'cv2_face_generator node started showing videos {video1}, {video2}, {video3}')
         self.is_running = False
         # Get the dimensions of the videos
         width1 = int(video1.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -66,6 +73,7 @@ class CV2FaceGenerator:
         # Read frames from the videos and place them on the canvas
         # loop over the frames of the videos
         while True:
+            print(self.is_running)
             if self.is_running:
                 break
             # get the frames
