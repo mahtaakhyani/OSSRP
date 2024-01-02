@@ -45,9 +45,9 @@ class CV2FaceGenerator:
         path = os.path.dirname(os.path.realpath(__file__))
 
         # get the videos
-        video1 = cv2.VideoCapture(f"{path}/{exp}_eyebrows.mp4")
-        video2 = cv2.VideoCapture(f"{path}/{exp}_eyes.mp4")
-        video3 = cv2.VideoCapture(f"{path}/{exp}_mouth.mp4")
+        video1 = f"{path}/{exp}_eyebrows.mp4"
+        video2 = f"{path}/{exp}_eyes.mp4"
+        video3 = f"{path}/{exp}_mouth.mp4"
         rospy.loginfo('cv2_face_generator node loaded videos')
 
         self.is_running = True
@@ -56,6 +56,9 @@ class CV2FaceGenerator:
 
     def show_video(self, video1, video2, video3):
         rospy.loginfo(f'cv2_face_generator node started showing videos {video1}, {video2}, {video3}')
+        video1 = cv2.VideoCapture(video1)
+        video2 = cv2.VideoCapture(video2)
+        video3 = cv2.VideoCapture(video3)
         self.is_running = False
         # Get the dimensions of the videos
         width1 = int(video1.get(cv2.CAP_PROP_FRAME_WIDTH))
