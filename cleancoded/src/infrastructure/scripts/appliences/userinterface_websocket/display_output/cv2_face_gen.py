@@ -91,10 +91,12 @@ class CV2FaceGenerator:
             ret1, frame1 = video1.read()
             ret2, frame2 = video2.read()
             ret3, frame3 = video3.read()
+            print(len(frame1))
             cv2.imshow('f1', frame1)
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
+                print('not ret')
                 video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
