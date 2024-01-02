@@ -87,13 +87,14 @@ class CV2FaceGenerator:
                 video1.release()
                 video2.release()
                 video3.release()
+                # close all frames and video windows
+                cv2.destroyAllWindows()
                 break
             # get the frames
             ret1, frame1 = video1.read()
             ret2, frame2 = video2.read()
             ret3, frame3 = video3.read()
             print(len(frame1))
-            cv2.imshow('f1', frame1)
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
@@ -113,20 +114,15 @@ class CV2FaceGenerator:
             canvas[height1:height1+height2, (canvas_width-width2)//2:(canvas_width-width2)//2+width2] = frame2
             canvas[height1+height2:, (canvas_width-width3)//2:(canvas_width-width3)//2+width3] = frame3
 
-            # Display the canvas
-            cv2.imshow('Canvas', canvas)
             img_r = self.convert_back(canvas)
             self.pub.publish(img_r)
+            # Display the canvas
+            cv2.imshow('Canvas', canvas)
 
             # wait for the user to press q
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-                
-
-
-        # close all windows
-        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
