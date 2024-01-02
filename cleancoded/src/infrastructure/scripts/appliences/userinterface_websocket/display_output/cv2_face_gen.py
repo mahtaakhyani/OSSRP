@@ -47,7 +47,7 @@ class CV2FaceGenerator:
         video1 = f"{path}/happy_eyebrows.mp4"
         video2 = f"{path}/happy_eyes.mp4"
         video3 = f"{path}/happy_mouth.mp4"
-        
+
         # get the videos
         if "eyes" in exp.data:
             video2 = f"{path}/{exp.data}_eyes.mp4"
@@ -105,7 +105,6 @@ class CV2FaceGenerator:
 
             # check if the frames are empty
             if not ret1 or not ret2 or not ret3:
-                print('not ret')
                 video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
                 video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
