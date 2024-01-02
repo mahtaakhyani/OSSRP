@@ -61,7 +61,7 @@ class CV2FaceGenerator:
         video1.set(cv2.CAP_PROP_POS_FRAMES, 0)
         video2.set(cv2.CAP_PROP_POS_FRAMES, 0)
         video3.set(cv2.CAP_PROP_POS_FRAMES, 0)
-        
+
         self.is_running = False
         # Get the dimensions of the videos
         width1 = int(video1.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -80,6 +80,10 @@ class CV2FaceGenerator:
         # loop over the frames of the videos
         while True:
             if self.is_running:
+                # release the videos
+                video1.release()
+                video2.release()
+                video3.release()
                 break
             # get the frames
             ret1, frame1 = video1.read()
@@ -113,13 +117,10 @@ class CV2FaceGenerator:
                 break
 
                 
-        # release the videos
-        video1.release()
-        video2.release()
-        video3.release()
+
 
         # close all windows
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
