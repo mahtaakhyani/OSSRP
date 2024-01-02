@@ -50,11 +50,11 @@ class CV2FaceGenerator:
 
         # get the videos
         if "eyes" in exp.data:
-            video2 = f"{path}/{exp.data}_eyes.mp4"
+            video2 = f"{path}/{exp.data[:-5]}_eyes.mp4"
         if "eyebrows" in exp.data:
-            video1 = f"{path}/{exp.data}_eyebrows.mp4"
+            video1 = f"{path}/{exp.data[:-9]}_eyebrows.mp4"
         if "mouth" in exp.data:
-            video3 = f"{path}/{exp.data}_mouth.mp4"
+            video3 = f"{path}/{exp.data[:-6]}_mouth.mp4"
         
         rospy.loginfo('cv2_face_generator node loaded videos')
 
