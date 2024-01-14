@@ -142,6 +142,9 @@ class FeelingsController:
             elif feeling == "seq2":
                 self.seq2()
         
+            elif feeling == "seq3":
+                self.seq3()
+
         except Exception as e:
             
             log_message = f"{rospy.get_caller_id()} Error: {e}. Resetting position and moving to more natural position."
@@ -221,6 +224,26 @@ class FeelingsController:
             # rospy.sleep(3)
             self.move_to_more_natural_position()
             rospy.sleep(5)
+
+    def seq3(self):
+        """
+        Perform the movement for the "seq" feeling.
+        """
+        rospy.loginfo(rospy.get_caller_id()+" performing seq movement")
+        # Tilt head back and nod
+        seq_neck_approve = self.seq_neck_approve()
+        for i in range(1):
+            # perform the movement
+            self.perform_movement(seq_neck_approve)
+            rospy.sleep(0.5)
+            self.move_to_more_natural_position()
+            rospy.sleep(0.5)
+            self.perform_movement(seq_neck_approve)
+            # self.perform_movement(seq_neck_approve)
+            # # self.perform_movement(neck_actions_list)
+            # rospy.sleep(2)
+            # self.move_to_more_natural_position()
+            # rospy.sleep(5)
 
 
 
@@ -373,6 +396,22 @@ class FeelingsController:
         head_action = [[speed, position, joint]]
     
         return [head_action]
+    
+    def seq_neck_approve(self):
+        log_message = f"{rospy.get_caller_id()} seq neck approve"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        # tilt head back and nod:
+        position = -50
+        speed = 50
+        joint = "neck"
+        head_action = [[speed, position, joint]]
+        # position = -55
+        # speed = 50
+        # head_sub_action = [[speed, position, joint]]
+    
+        return [head_action]
+    
 
 
     def seq_head1(self):
