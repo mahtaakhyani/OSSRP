@@ -1,2 +1,2 @@
-infrastructure:ros_rtsp
+infrastructure:multi-parrot/multi_parrot_blue:multi-parrot/multi_parrot_red:ros_rtsp
 -DCATKIN_DEVEL_PREFIX=/home/hooshang/Desktop/OSSRP/cleancoded/devel -DCMAKE_INSTALL_PREFIX=/home/hooshang/Desktop/OSSRP/cleancoded/install -G Unix Makefiles

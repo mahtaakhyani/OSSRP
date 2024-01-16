@@ -15,6 +15,8 @@ f8d5f6f90be64f77d7f2feb1f3429977 /home/hooshang/Desktop/OSSRP/cleancoded/devel/i
 6db8788a349039a9639de3837caf17fb /home/hooshang/Desktop/OSSRP/cleancoded/devel/include/infrastructure/Stt.h
 d99574a8e8a1ca2cb4306d665b7f02e0 /home/hooshang/Desktop/OSSRP/cleancoded/devel/include/infrastructure/Tts.h
 c4721da2dc4ec62ec148d7783690ad6c /home/hooshang/Desktop/OSSRP/cleancoded/devel/include/infrastructure/Tts_msg.h
+c158e06c702eb37c30adfa46b1656bb2 /home/hooshang/Desktop/OSSRP/cleancoded/devel/include/multi_parrot_blue/BlueParrot.h
+cc14bad1ba564e6a94b4d05e121ac88a /home/hooshang/Desktop/OSSRP/cleancoded/devel/include/multi_parrot_red/RedParrot.h
 64b178d42b5c3882761e056afe273f4b /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/msg/_Array3D.py
 f084664c5a4f99f5b6147e9f3227a721 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/msg/_AudFeatures.py
 0b8cbe5364d434b290f213aa40391f3a /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/msg/_DynaStatus.py
@@ -33,6 +35,10 @@ c7f2d1dd909c3a11fac8dc3ffc8d18cf /home/hooshang/Desktop/OSSRP/cleancoded/devel/l
 c79192c673f83786eb60e9f2530db651 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/srv/_Stt.py
 bf8965d00ab82253bb91e2fbe60c3d23 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/srv/_Tts.py
 6ca7754441fbc93ee08046fc1a8377e8 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/infrastructure/srv/__init__.py
+6e5e4c2e2f7ccb669a135a93f17c6935 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/multi_parrot_blue/srv/_BlueParrot.py
+519c7e9620df53b2f0b7416710365fdd /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/multi_parrot_blue/srv/__init__.py
+9b128944cbe87b668ae051eb4a9ae464 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/multi_parrot_red/srv/_RedParrot.py
+532320a1c6adf5ade654f4c2036a1753 /home/hooshang/Desktop/OSSRP/cleancoded/devel/lib/python2.7/dist-packages/multi_parrot_red/srv/__init__.py
 b6da7022470e1af3eca8f43cdc7f72fa /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/Array3D.lisp
 0aa763ada8daedfe642b974885079f0e /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/AudFeatures.lisp
 aa16fc65947adc72f8e64d954976c465 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/msg/DynaStatus.lisp
@@ -49,6 +55,8 @@ f5c3f7fc89e6982755129e0a78986487 /home/hooshang/Desktop/OSSRP/cleancoded/devel/s
 b0a47e5f06fee1c6a3fe087b3dfd9468 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/Gaze.lisp
 c3636e47c760c47161662c744f76b8dd /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/Stt.lisp
 6346809e6747fb99577462837aacd6bb /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/infrastructure/srv/Tts.lisp
+90dd6020debf341ef79e28ac1a7565c3 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/multi_parrot_blue/srv/BlueParrot.lisp
+801dbb66168b0ae5bddccd3f9edc4ad4 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/common-lisp/ros/multi_parrot_red/srv/RedParrot.lisp
 5d230bd5c65cdb177207a4be68c61433 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/Array3D.js
 5fa718d774b230302183ef572c261c69 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/AudFeatures.js
 9e3e3a6d2d7790ac9036e87786252e47 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/msg/DynaStatus.js
@@ -65,6 +73,8 @@ d610f5fd21354e006bcf9f9342f26c10 /home/hooshang/Desktop/OSSRP/cleancoded/devel/s
 a7d404a7f9e99d89fbed184869e8f0e8 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/Gaze.js
 e26010fcff91f27075a4f64da4bc9897 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/Stt.js
 c60fb475af9d1553d78f046767c81b51 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/infrastructure/srv/Tts.js
+fc091a343939658c9d8d99a49f4a89e1 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/multi_parrot_blue/srv/BlueParrot.js
+3eaa73480125f0c1b89f6ea239808fd9 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/gennodejs/ros/multi_parrot_red/srv/RedParrot.js
 57836d7dbea47b3c7a1488aa13ae5c49 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/manifest.l
 b48526b409468935eda790d0489579e7 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/Array3D.l
 9dbecc100485b0cb2fdb5a4dd6de464d /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/msg/AudFeatures.l
@@ -82,6 +92,10 @@ bb88bb0cde82f9c392d46af52920502a /home/hooshang/Desktop/OSSRP/cleancoded/devel/s
 4f133af7a6b10227d9ddc115efd3159b /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/Gaze.l
 059112663b3e0791a2fd142445a4129f /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/Stt.l
 43a135a9882d6fbf90372f485e20823a /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/infrastructure/srv/Tts.l
+cc8bed38d86ce84682708ee16d8de92b /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/multi_parrot_blue/manifest.l
+a7c0c0a7701c66cd2f46bd3e54430ac2 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/multi_parrot_blue/srv/BlueParrot.l
+27321f97a66141f516d62326b9c2b052 /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/multi_parrot_red/manifest.l
+c6a7d55a1d293faa83c4b3c3b7a960cf /home/hooshang/Desktop/OSSRP/cleancoded/devel/share/roseus/ros/multi_parrot_red/srv/RedParrot.l
 c7b15b7d568c411d7b980b86799c2776 CMakeFiles/clean_test_results
 2429a099e1f07cfe9041ccfbdfecb9ba infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_Array3D
 2ecfac637282fa1a24fa53cd0b543841 infrastructure/CMakeFiles/_infrastructure_generate_messages_check_deps_AudFeature
@@ -104,3 +118,15 @@ da697c91667a8136b5cd9e3b256fca5e infrastructure/CMakeFiles/_infrastructure_gener
 22591b0167e143dfc496e591418afbea infrastructure/CMakeFiles/infrastructure_generate_messages_lisp
 22591b0167e143dfc496e591418afbea infrastructure/CMakeFiles/infrastructure_generate_messages_nodejs
 22591b0167e143dfc496e591418afbea infrastructure/CMakeFiles/infrastructure_generate_messages_py
+955208ec98c9c3e96e750fd24617323f multi-parrot/multi_parrot_blue/CMakeFiles/_multi_parrot_blue_generate_messages_check_deps_BlueParrot
+5f3b083fb34b8fd57776ceb28d411208 multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_cpp
+5f3b083fb34b8fd57776ceb28d411208 multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_eus
+5f3b083fb34b8fd57776ceb28d411208 multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_lisp
+5f3b083fb34b8fd57776ceb28d411208 multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_nodejs
+5f3b083fb34b8fd57776ceb28d411208 multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_py
+0e87026a3c48c78fc2b8a5126d391ea4 multi-parrot/multi_parrot_red/CMakeFiles/_multi_parrot_red_generate_messages_check_deps_RedParrot
+fda61f76c97408e3b1ce0e95c93a08a2 multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_cpp
+fda61f76c97408e3b1ce0e95c93a08a2 multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_eus
+fda61f76c97408e3b1ce0e95c93a08a2 multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_lisp
+fda61f76c97408e3b1ce0e95c93a08a2 multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_nodejs
+fda61f76c97408e3b1ce0e95c93a08a2 multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_py

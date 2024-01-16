@@ -896,6 +896,318 @@ _infrastructure_generate_messages_check_deps_DynaTwist/fast:
 .PHONY : _infrastructure_generate_messages_check_deps_DynaTwist/fast
 
 #=============================================================================
+# Target rules for targets named multi_parrot_blue_geneus
+
+# Build rule for target.
+multi_parrot_blue_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_geneus
+.PHONY : multi_parrot_blue_geneus
+
+# fast build rule for target.
+multi_parrot_blue_geneus/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_geneus.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_geneus.dir/build
+.PHONY : multi_parrot_blue_geneus/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages_eus
+
+# Build rule for target.
+multi_parrot_blue_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages_eus
+.PHONY : multi_parrot_blue_generate_messages_eus
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages_eus/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_eus.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_eus.dir/build
+.PHONY : multi_parrot_blue_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named _multi_parrot_blue_generate_messages_check_deps_BlueParrot
+
+# Build rule for target.
+_multi_parrot_blue_generate_messages_check_deps_BlueParrot: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _multi_parrot_blue_generate_messages_check_deps_BlueParrot
+.PHONY : _multi_parrot_blue_generate_messages_check_deps_BlueParrot
+
+# fast build rule for target.
+_multi_parrot_blue_generate_messages_check_deps_BlueParrot/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/_multi_parrot_blue_generate_messages_check_deps_BlueParrot.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/_multi_parrot_blue_generate_messages_check_deps_BlueParrot.dir/build
+.PHONY : _multi_parrot_blue_generate_messages_check_deps_BlueParrot/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages_cpp
+
+# Build rule for target.
+multi_parrot_blue_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages_cpp
+.PHONY : multi_parrot_blue_generate_messages_cpp
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages_cpp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_cpp.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_cpp.dir/build
+.PHONY : multi_parrot_blue_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages
+
+# Build rule for target.
+multi_parrot_blue_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages
+.PHONY : multi_parrot_blue_generate_messages
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages.dir/build
+.PHONY : multi_parrot_blue_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_gencpp
+
+# Build rule for target.
+multi_parrot_blue_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_gencpp
+.PHONY : multi_parrot_blue_gencpp
+
+# fast build rule for target.
+multi_parrot_blue_gencpp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_gencpp.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_gencpp.dir/build
+.PHONY : multi_parrot_blue_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_gennodejs
+
+# Build rule for target.
+multi_parrot_blue_gennodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_gennodejs
+.PHONY : multi_parrot_blue_gennodejs
+
+# fast build rule for target.
+multi_parrot_blue_gennodejs/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_gennodejs.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_gennodejs.dir/build
+.PHONY : multi_parrot_blue_gennodejs/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages_lisp
+
+# Build rule for target.
+multi_parrot_blue_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages_lisp
+.PHONY : multi_parrot_blue_generate_messages_lisp
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages_lisp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_lisp.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_lisp.dir/build
+.PHONY : multi_parrot_blue_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_genlisp
+
+# Build rule for target.
+multi_parrot_blue_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_genlisp
+.PHONY : multi_parrot_blue_genlisp
+
+# fast build rule for target.
+multi_parrot_blue_genlisp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_genlisp.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_genlisp.dir/build
+.PHONY : multi_parrot_blue_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages_nodejs
+
+# Build rule for target.
+multi_parrot_blue_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages_nodejs
+.PHONY : multi_parrot_blue_generate_messages_nodejs
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages_nodejs/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_nodejs.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_nodejs.dir/build
+.PHONY : multi_parrot_blue_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_generate_messages_py
+
+# Build rule for target.
+multi_parrot_blue_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_generate_messages_py
+.PHONY : multi_parrot_blue_generate_messages_py
+
+# fast build rule for target.
+multi_parrot_blue_generate_messages_py/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_py.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_generate_messages_py.dir/build
+.PHONY : multi_parrot_blue_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_blue_genpy
+
+# Build rule for target.
+multi_parrot_blue_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_blue_genpy
+.PHONY : multi_parrot_blue_genpy
+
+# fast build rule for target.
+multi_parrot_blue_genpy/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_genpy.dir/build.make multi-parrot/multi_parrot_blue/CMakeFiles/multi_parrot_blue_genpy.dir/build
+.PHONY : multi_parrot_blue_genpy/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_gennodejs
+
+# Build rule for target.
+multi_parrot_red_gennodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_gennodejs
+.PHONY : multi_parrot_red_gennodejs
+
+# fast build rule for target.
+multi_parrot_red_gennodejs/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_gennodejs.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_gennodejs.dir/build
+.PHONY : multi_parrot_red_gennodejs/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages
+
+# Build rule for target.
+multi_parrot_red_generate_messages: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages
+.PHONY : multi_parrot_red_generate_messages
+
+# fast build rule for target.
+multi_parrot_red_generate_messages/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages.dir/build
+.PHONY : multi_parrot_red_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_gencpp
+
+# Build rule for target.
+multi_parrot_red_gencpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_gencpp
+.PHONY : multi_parrot_red_gencpp
+
+# fast build rule for target.
+multi_parrot_red_gencpp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_gencpp.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_gencpp.dir/build
+.PHONY : multi_parrot_red_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named _multi_parrot_red_generate_messages_check_deps_RedParrot
+
+# Build rule for target.
+_multi_parrot_red_generate_messages_check_deps_RedParrot: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 _multi_parrot_red_generate_messages_check_deps_RedParrot
+.PHONY : _multi_parrot_red_generate_messages_check_deps_RedParrot
+
+# fast build rule for target.
+_multi_parrot_red_generate_messages_check_deps_RedParrot/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/_multi_parrot_red_generate_messages_check_deps_RedParrot.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/_multi_parrot_red_generate_messages_check_deps_RedParrot.dir/build
+.PHONY : _multi_parrot_red_generate_messages_check_deps_RedParrot/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages_lisp
+
+# Build rule for target.
+multi_parrot_red_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages_lisp
+.PHONY : multi_parrot_red_generate_messages_lisp
+
+# fast build rule for target.
+multi_parrot_red_generate_messages_lisp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_lisp.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_lisp.dir/build
+.PHONY : multi_parrot_red_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_genlisp
+
+# Build rule for target.
+multi_parrot_red_genlisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_genlisp
+.PHONY : multi_parrot_red_genlisp
+
+# fast build rule for target.
+multi_parrot_red_genlisp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_genlisp.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_genlisp.dir/build
+.PHONY : multi_parrot_red_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages_nodejs
+
+# Build rule for target.
+multi_parrot_red_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages_nodejs
+.PHONY : multi_parrot_red_generate_messages_nodejs
+
+# fast build rule for target.
+multi_parrot_red_generate_messages_nodejs/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_nodejs.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_nodejs.dir/build
+.PHONY : multi_parrot_red_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages_cpp
+
+# Build rule for target.
+multi_parrot_red_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages_cpp
+.PHONY : multi_parrot_red_generate_messages_cpp
+
+# fast build rule for target.
+multi_parrot_red_generate_messages_cpp/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_cpp.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_cpp.dir/build
+.PHONY : multi_parrot_red_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages_py
+
+# Build rule for target.
+multi_parrot_red_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages_py
+.PHONY : multi_parrot_red_generate_messages_py
+
+# fast build rule for target.
+multi_parrot_red_generate_messages_py/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_py.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_py.dir/build
+.PHONY : multi_parrot_red_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_generate_messages_eus
+
+# Build rule for target.
+multi_parrot_red_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_generate_messages_eus
+.PHONY : multi_parrot_red_generate_messages_eus
+
+# fast build rule for target.
+multi_parrot_red_generate_messages_eus/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_eus.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_generate_messages_eus.dir/build
+.PHONY : multi_parrot_red_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_geneus
+
+# Build rule for target.
+multi_parrot_red_geneus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_geneus
+.PHONY : multi_parrot_red_geneus
+
+# fast build rule for target.
+multi_parrot_red_geneus/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_geneus.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_geneus.dir/build
+.PHONY : multi_parrot_red_geneus/fast
+
+#=============================================================================
+# Target rules for targets named multi_parrot_red_genpy
+
+# Build rule for target.
+multi_parrot_red_genpy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 multi_parrot_red_genpy
+.PHONY : multi_parrot_red_genpy
+
+# fast build rule for target.
+multi_parrot_red_genpy/fast:
+	$(MAKE) -f multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_genpy.dir/build.make multi-parrot/multi_parrot_red/CMakeFiles/multi_parrot_red_genpy.dir/build
+.PHONY : multi_parrot_red_genpy/fast
+
+#=============================================================================
 # Target rules for targets named image_to_rtsp_nodelet
 
 # Build rule for target.
@@ -1237,6 +1549,30 @@ help:
 	@echo "... _infrastructure_generate_messages_check_deps_EmoProbArr"
 	@echo "... audio_common_msgs_generate_messages_py"
 	@echo "... _infrastructure_generate_messages_check_deps_DynaTwist"
+	@echo "... multi_parrot_blue_geneus"
+	@echo "... multi_parrot_blue_generate_messages_eus"
+	@echo "... _multi_parrot_blue_generate_messages_check_deps_BlueParrot"
+	@echo "... multi_parrot_blue_generate_messages_cpp"
+	@echo "... multi_parrot_blue_generate_messages"
+	@echo "... multi_parrot_blue_gencpp"
+	@echo "... multi_parrot_blue_gennodejs"
+	@echo "... multi_parrot_blue_generate_messages_lisp"
+	@echo "... multi_parrot_blue_genlisp"
+	@echo "... multi_parrot_blue_generate_messages_nodejs"
+	@echo "... multi_parrot_blue_generate_messages_py"
+	@echo "... multi_parrot_blue_genpy"
+	@echo "... multi_parrot_red_gennodejs"
+	@echo "... multi_parrot_red_generate_messages"
+	@echo "... multi_parrot_red_gencpp"
+	@echo "... _multi_parrot_red_generate_messages_check_deps_RedParrot"
+	@echo "... multi_parrot_red_generate_messages_lisp"
+	@echo "... multi_parrot_red_genlisp"
+	@echo "... multi_parrot_red_generate_messages_nodejs"
+	@echo "... multi_parrot_red_generate_messages_cpp"
+	@echo "... multi_parrot_red_generate_messages_py"
+	@echo "... multi_parrot_red_generate_messages_eus"
+	@echo "... multi_parrot_red_geneus"
+	@echo "... multi_parrot_red_genpy"
 	@echo "... image_to_rtsp_nodelet"
 	@echo "... bond_generate_messages_py"
 	@echo "... bond_generate_messages_lisp"

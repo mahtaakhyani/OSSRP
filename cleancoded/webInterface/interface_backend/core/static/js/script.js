@@ -35,8 +35,8 @@ function sleep (time) {
 
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = 'hooshang-desktop.local';
-var android_host = "192.168.62.154";
+var host;
+var android_host;
 var port = '8000';
 var android_port = '8080';
 var rosbridge_port = '9090';
@@ -76,36 +76,47 @@ var robot_ws;
 function set_variables(host,android_host) {
     console.log('setting environment variables...');
     // - - - Django Server - - - 
-    django_base_url = 'http://' + host + ':' + port ;
-    request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
-    publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
-    android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
-    console.log('Android Server is listening on: '+android_server_url+
-                '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
+    $.ajax({
+      type: "GET",
+      url: request_server_ip,
+      success: function(response) {
+        host = response.host
+        android_host = response.android_ip;
+        alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
+        django_base_url = 'http://' + host + ':' + port ;
+        request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
+        publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
+        android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
+        console.log('Android Server is listening on: '+android_server_url+
+        '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
+        
+        // - - - ROS - - -
+        // Workspace
+        robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
+        console.log('ROSBridge websocket is listening on: '+robot_ws+
+        '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
+        +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
+        '\n/head_cmd_vel to publish motion commands on');
+        
+        // - - - Camera - - -
+        var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
+        document.getElementById("camera_img").src = camera_img_url;
+        console.log('Camera is streaming on: '+camera_img_url);
+        // - - - Camera Landmarked - - -
+        var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
+        document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
+        console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
+        // - - - Camera Gaze Frame - - -
+        var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
+        document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
+        console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
+        
+      }
+    });
+      }
+      
+
   
-    // - - - ROS - - -
-    // Workspace
-    robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
-    console.log('ROSBridge websocket is listening on: '+robot_ws+
-                '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
-                +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
-                '\n/head_cmd_vel to publish motion commands on');
-
-    // - - - Camera - - -
-    var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
-    document.getElementById("camera_img").src = camera_img_url;
-    console.log('Camera is streaming on: '+camera_img_url);
-    // - - - Camera Landmarked - - -
-    var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
-    document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
-    console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
-    // - - - Camera Gaze Frame - - -
-    var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
-    document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
-    console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
-
-  }
-
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
