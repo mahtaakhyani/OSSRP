@@ -283,7 +283,7 @@ class DynaControl:
             else:
                 if joint == 'lhand':
                     min_position = -150
-                    max_position = 100
+                    max_position = 50
                 elif joint == 'neck':
                     min_position = -58
                     max_position = 0
@@ -324,7 +324,7 @@ class DynaControl:
                 except Exception as e:
                     log_message = f'{rospy.get_caller_id()} Error from Dynamixel units: {e}. Exiting...'
                     rospy.loginfo(log_message)
-                    self.pub_log.publisher(log_message)
+                    self.pub_log.publish(log_message)
                     sys.exit()
                     
                 

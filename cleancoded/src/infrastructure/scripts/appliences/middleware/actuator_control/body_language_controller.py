@@ -138,7 +138,13 @@ class FeelingsController:
 
             elif feeling == "seq1":
                 self.seq()
+            
+            elif feeling == "seq2":
+                self.seq2()
         
+            elif feeling == "seq3":
+                self.seq3()
+
         except Exception as e:
             
             log_message = f"{rospy.get_caller_id()} Error: {e}. Resetting position and moving to more natural position."
@@ -162,27 +168,82 @@ class FeelingsController:
         neck_actions_list = self.seq_neck()
         head1_actions_list = self.seq_head1()
         head2_actions_list = self.seq_head2()
-        # perform the movement
-        self.perform_movement(hand_actions_list)
-        rospy.sleep(3)
-        self.move_to_more_natural_position()
-        rospy.sleep(5)
-        self.perform_movement(hand_actions_list)
-        self.perform_movement(neck_actions_list)
-        rospy.sleep(2)
-        self.move_to_more_natural_position()
-        rospy.sleep(2)
-        self.perform_movement(hand2_actions_list)
-        rospy.sleep(2)
-        self.move_to_more_natural_position()
-        rospy.sleep(4)
-        self.perform_movement(head1_actions_list)
-        rospy.sleep(0.5)
-        self.perform_movement(head2_actions_list)
-        rospy.sleep(1)
-        self.move_to_more_natural_position()
+        for i in range(4):
+            # perform the movement
+            self.perform_movement(hand_actions_list)
+            rospy.sleep(3)
+            self.move_to_more_natural_position()
+            rospy.sleep(5)
+            self.perform_movement(hand_actions_list)
+            self.perform_movement(neck_actions_list)
+            rospy.sleep(2)
+            self.move_to_more_natural_position()
+            rospy.sleep(2)
+            self.perform_movement(hand2_actions_list)
+            rospy.sleep(2)
+            self.move_to_more_natural_position()
+            # rospy.sleep(4)
+            # self.perform_movement(head1_actions_list)
+            # rospy.sleep(0.5)
+            # self.perform_movement(head2_actions_list)
+            rospy.sleep(3)
+            self.move_to_more_natural_position()
+            rospy.sleep(1)
         
 
+    def seq2(self):
+        """
+        Perform the movement for the "seq" feeling.
+        """
+        rospy.loginfo(rospy.get_caller_id()+" performing seq movement")
+        # Raise hands surprisedly
+        hand_actions_list = self.seq_hands()
+        hand2_actions_list = self.seq_hands2()
+        # Tilt head back and nod
+        neck_actions_list = self.seq_neck()
+        head1_actions_list = self.seq_head1()
+        head2_actions_list = self.seq_head2()
+        for i in range(4):
+            # perform the movement
+            self.perform_movement(hand2_actions_list)
+            rospy.sleep(3)
+            self.move_to_more_natural_position()
+            rospy.sleep(8)
+            self.perform_movement(hand2_actions_list)
+            # self.perform_movement(neck_actions_list)
+            rospy.sleep(2)
+            self.move_to_more_natural_position()
+            # rospy.sleep(5)
+            # self.perform_movement(hand2_actions_list)
+            # rospy.sleep(2)
+            # self.move_to_more_natural_position()
+            # rospy.sleep(4)
+            # self.perform_movement(head1_actions_list)
+            # rospy.sleep(0.5)
+            # self.perform_movement(head2_actions_list)
+            # rospy.sleep(3)
+            self.move_to_more_natural_position()
+            rospy.sleep(5)
+
+    def seq3(self):
+        """
+        Perform the movement for the "seq" feeling.
+        """
+        rospy.loginfo(rospy.get_caller_id()+" performing seq movement")
+        # Tilt head back and nod
+        seq_neck_approve = self.seq_neck_approve()
+        for i in range(1):
+            # perform the movement
+            self.perform_movement(seq_neck_approve)
+            rospy.sleep(0.5)
+            self.move_to_more_natural_position()
+            rospy.sleep(0.5)
+            self.perform_movement(seq_neck_approve)
+            # self.perform_movement(seq_neck_approve)
+            # # self.perform_movement(neck_actions_list)
+            # rospy.sleep(2)
+            # self.move_to_more_natural_position()
+            # rospy.sleep(5)
 
 
 
@@ -317,9 +378,9 @@ class FeelingsController:
         log_message = f"{rospy.get_caller_id()} seq hands2"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position2 = -20
+        position2 = -40
         joint2 = "rhand"
-        speed = 150
+        speed = 120
         hand_action = [[speed, position2, joint2]]
 
         return [hand_action]
@@ -335,14 +396,30 @@ class FeelingsController:
         head_action = [[speed, position, joint]]
     
         return [head_action]
+    
+    def seq_neck_approve(self):
+        log_message = f"{rospy.get_caller_id()} seq neck approve"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        # tilt head back and nod:
+        position = -50
+        speed = 50
+        joint = "neck"
+        head_action = [[speed, position, joint]]
+        # position = -55
+        # speed = 50
+        # head_sub_action = [[speed, position, joint]]
+    
+        return [head_action]
+    
 
 
     def seq_head1(self):
         log_message = f"{rospy.get_caller_id()} seq head"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position = -20
-        speed = 150
+        position = -90
+        speed = 170
         joint = "head"
         head_action = [[speed, position, joint]]
         return [head_action]
@@ -351,8 +428,8 @@ class FeelingsController:
         log_message = f"{rospy.get_caller_id()} seq head"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position = 10
-        speed = 150
+        position = -60
+        speed = 170
         joint = "head"
         head_action = [[speed, position, joint]]
         return [head_action]
@@ -613,7 +690,7 @@ class FeelingsController:
         rhand_action = [[speed, position, joint]]
         joint = "head"
         speed = 60
-        position = -5
+        position = -75
         head_action = [[speed, position, joint]]
         joint = "neck"
         position = -55
