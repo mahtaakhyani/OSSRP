@@ -88,6 +88,7 @@
 .dropdown {
   display: inline-block;
   position: relative;
+  margin-left: 20px;
 }
 
 .dd-button {
@@ -124,7 +125,6 @@
 
 .dd-menu {
   position: absolute;
-  top: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0;
@@ -222,128 +222,190 @@
 <body>
   <div class="u-clearfix">
     <div class="u-layout-row">
-      <div class="window u-layout-col u-size-15" id="card">
-        <div class="header image_view">
-          <h1 class="col">Image View</h1>
-          <label class="col dropdown">
-            <div class="dd-button">
-              select topic
-            </div> 
-            <input type="checkbox" class="dd-input" id="test">
-            <ul class="dd-menu">
-              <li class="topic" onclick="changeimage(this.className)">topic</li>
-              <li>Another action</li>
-            </ul>
-          </label>
+      <div class="u-layout-col" style="width: 20%;">
+        <div class="u-layout-row">
+          <div class="window u-layout-col" id="card" style="max-height: 400px;height: 300px;max-width: 100%;">
+            <div class="header image_view">
+              <h1 class="col">Image View</h1>
+              <label class="col dropdown">
+                <div class="dd-button">
+                  select topic
+                </div> 
+                <input type="checkbox" class="dd-input" id="test">
+                <ul class="dd-menu">
+                  <li class="topic" onclick="changeimage(this.className)">topic</li>
+                  <li>Another action</li>
+                </ul>
+              </label>
+            </div>
+            <div class="content">
+              <img id="pro_viewer" class="fit-video embed-responsive-item" src="">
+                <p>Unable to load image frames.</p>
+            </img>
+            </div>
+          </div>
+          <div class="window u-layout-col" style="height: 300px;">
+            <div class="header   image_view">
+              <h1 class="col">ROS Topic Publish</h1>
+              <label class="col dropdown">
+                <div class="dd-button">
+                  select topic
+                </div> 
+                <input type="checkbox" class="dd-input" id="test">
+                <ul class="dd-menu">
+                  <li class="topic" onclick="setrostopic(this.className)">topic</li>
+                  <li>Another action</li>
+                </ul>
+              </label>
+            </div>
+            <div class="content scrollable">
+              <form id="messageForm">
+                <!-- Form input fields will be dynamically added here -->
+                <button class="emoinput" type="submit" id="pub" style="display: none;">Publish</button>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="content">
-          <img id="pro_viewer" class="fit-video embed-responsive-item" src="">
-            <p>Unable to load camera frames.</p>
-        </img>
-        </div>
-      </div>
-      <div class="window u-layout-col  u-size-15">
-        <div class="header   image_view">
-          <h1 class="col">ROS Topic Publish</h1>
-          <label class="col dropdown">
-            <div class="dd-button">
-              select topic
-            </div> 
-            <input type="checkbox" class="dd-input" id="test">
-            <ul class="dd-menu">
-              <li class="topic" onclick="setrostopic(this.className)">topic</li>
-              <li>Another action</li>
-            </ul>
-          </label>
-        </div>
-        <div class="content">
-          <form id="messageForm">
-            <!-- Form input fields will be dynamically added here -->
-            <button type="submit">Publish</button>
-          </form>
+        <div class="u-layout-row">
+          <div class="window u-layout-col" id="card" style="height: 100%;">
+            <div class="header image_view">
+              <h1 class="col">Robot's Face</h1>
+              <label class="col dropdown">
+                <div class="refresh-button" onclick="get_latest_emotion()">
+                  <i class="bi bi-arrow-clockwise" style="font-size: 2rem;"></i>
+                </div> 
+                
+              </label>
+            </div>
+            <div class="content">
+              <div class="u-layout-row">
+                <div class="u-layout-col ">
+                  <video id="vidsrc" class="embed-responsive-item  fit-video"  loop="true" playsinline="">
+                    <source  src="" type="video/mp4">
+                    <p>Your browser does not support HTML5 video.</p>
+                  </video>
+                    <audio id="vidsoundsrc" class="fc-media" style="width: 100%;">
+                      <source src="" type="audio/mp3"/>
+                    </audio>
+                </div>
+                <div class="u-layout-col">
+                  <div class="scrollable" style="height: 200px; margin-top: 20px;" id="repeater">
+                  <table>
+                    <tr>
+                      <td>
+                        <h4 class="u-text u-text-1" style=" font-weight: 700; ">Face's Name</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p id="msg" style=" font-weight: 600;  text-align: left;">Null</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      {% for emotion in emotions %}{% if emotion %}
+                      <!-- if the id can be divided by two, break the table to the next row: -->
+                      {% if forloop.counter|divisibleby:"2" %}</tr><tr> {% endif %}
+
+                      <td>
+                        <div class="emobtns" id="{{emotion}}"  draggable="true" ondragstart="drag(event,this.id)">
+                          <input type="button"
+                          id={{emotion.face_video_url}} 
+                          onclick="exp_face(this);"
+                          value="{{emotion}}"
+                          class="emoinput">
+                          </input>
+                        </div>
+                      </td>
+                      {% endif %} {% endfor %}
+                  </div>
+                  <table>
+                    <tr>
+                      <td>
+                        <div class="emobtns">
+                          <a href="/admincore/emotionmodel/add/" 
+                                          target="_blank" 
+                                          onclick="window.open('/admincore/emotionmodel/add/', 
+                                      'add new emotion model', 
+                                      'width=600,height=500','toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'); 
+                                          return false;"
+                                          class="u-align-center u-border-3 u-border-custom-color-7 u-border-hover-palette-1-light-1 u-btn u-btn-round u-button-style u-none u-radius-50 u-btn-1"
+                                          style="    padding: 0;
+                                          min-width: auto;
+                                          font-size: 2rem;
+                                          background: #d0cdcd40 !important;
+                                          border: 0rem  !important;
+                                      ">
+                            <i class="bi bi-plus-circle-dotted"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="u-layout-row">
-      <div class="window u-layout-col u-size-15" id="card">
-        <div class="header image_view">
-          <h1 class="col">Robot's Face</h1>
-          <label class="col dropdown">
-            <div class="refresh-button" onclick="get_latest_emotion()">
-              <i class="bi bi-arrow-clockwise" style="font-size: 2rem;"></i>
-            </div> 
-            
-          </label>
+      <div class="u-layout-col" style="width: 20%;">
+        <div class="u-layout-row">
+          <div class="window u-layout-col" style="height: 100%">
+            <div class="header   image_view">
+              <h1 class="col">ROS Topic Echo</h1>
+              <label class="col dropdown">
+                <div class="dd-button">
+                  select topic
+                </div> 
+                <input type="checkbox" class="dd-input" id="test">
+                <ul class="dd-menu">
+                  <li class="topic" onclick="echorostopic(this.className)">topic</li>
+                  <li>Another action</li>
+                </ul>
+              </label>
+            </div>
+            <div class="content">
+              <div class="scrollable" id="messages"></div>
+            </div>
+          </div>
         </div>
-        <div class="content">
-          <div class="u-layout-row">
-            <div class="u-layout-col ">
-              <video id="vidsrc" class="embed-responsive-item  fit-video"  loop="true" playsinline="">
-                <source  src="" type="video/mp4">
-                <p>Your browser does not support HTML5 video.</p>
-              </video>
-                <audio id="vidsoundsrc" class="fc-media" style="width: 100%;">
-                  <source src="" type="audio/mp3"/>
-                </audio>
-            </div>
-            <div class="u-layout-col">
-              <div class="scrollable" style="height: 200px; margin-top: 20px;" id="repeater">
-              <table>
-                <tr>
-                  <td>
-                    <h4 class="u-text u-text-1" style=" font-weight: 700; ">Face's Name</h4>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <p id="msg" style=" font-weight: 600;  text-align: left;">Null</p>
-                  </td>
-                </tr>
-                <tr>
-                  {% for emotion in emotions %}{% if emotion %}
-                  <!-- if the id can be divided by two, break the table to the next row: -->
-                  {% if forloop.counter|divisibleby:"2" %}</tr><tr> {% endif %}
-
-                  <td>
-                    <div class="emobtns" id="{{emotion}}"  draggable="true" ondragstart="drag(event,this.id)">
-                      <input type="button"
-                      id={{emotion.face_video_url}} 
-                      onclick="exp_face(this);"
-                      value="{{emotion}}"
-                      class="emoinput">
-                      </input>
-                    </div>
-                  </td>
-                  {% endif %} {% endfor %}
-                </div>
-                <tr>
-                  <td>
-                    <div class="emobtns">
-                      <a href="/admincore/emotionmodel/add/" 
-                                      target="_blank" 
-                                      onclick="window.open('/admincore/emotionmodel/add/', 
-                                  'add new emotion model', 
-                                  'width=600,height=500','toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'); 
-                                      return false;"
-                                      class="u-align-center u-border-3 u-border-custom-color-7 u-border-hover-palette-1-light-1 u-btn u-btn-round u-button-style u-none u-radius-50 u-btn-1"
-                                      style="    padding: 0;
-                                      min-width: auto;
-                                      font-size: 2rem;
-                                      background: #d0cdcd40 !important;
-                                      border: 0rem  !important;
-                                  ">
-                        <i class="bi bi-plus-circle-dotted"></i>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-              </table>
-              </div>
-            </div>
       </div>
     </div>
+    <div class="u-layout-col">
+      <div class="u-layout-row">
+        <div class="u-layout-col" style="width: 20%;">
+          <div class="u-layout-row">
+            <div class="window u-layout-col" style="height: 100%">
+              <div class="header   image_view">
+                <h1 class="col">ROS Nodes</h1>
+                
+              </div>
+              <div class="content">
+                <div class="scrollable" id="messages"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="u-layout-row">
+        <div class="u-layout-col" style="width: 20%;">
+          <div class="u-layout-row">
+            <div class="window u-layout-col" style="height: 100%">
+              <div class="header   image_view">
+                <h1 class="col">ROS Launch</h1>
+                
+              </div>
+              <div class="content">
+                <div class="scrollable" id="messages"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
   </div>
-  
   <nav class="c-circle-menu js-menu menu">
     <button class="c-circle-menu__toggle menu js-menu-toggle" id="c-circle-menu">
       <span>Toggle</span>

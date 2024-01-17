@@ -333,4 +333,4 @@ class GetMsgType(APIView):
         # return JsonResponse(data={"msg_type": msg_type}, status=200)
         return JsonResponse(data={"msg_type": "std_msg/String"}, status=200)
 
-
+    

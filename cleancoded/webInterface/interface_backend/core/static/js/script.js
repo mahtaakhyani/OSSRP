@@ -42,27 +42,27 @@ var robot_ws;
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
 // - - - Django Server - - - 
-$.ajax({
-  type: "GET",
-  url: request_server_ip,
-  success: function(response) {
-    host = response.host
-    android_host = response.android_ip;
-    alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
-    setTimeout(() => {
-      // Code to execute after the delay
-      console.log("After delay");
-    }, 2000); // Delay of 2000 milliseconds (2 seconds)
+// $.ajax({
+//   type: "GET",
+//   url: request_server_ip,
+//   success: function(response) {
+//     host = response.host
+//     android_host = response.android_ip;
+//     alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
+//     setTimeout(() => {
+//       // Code to execute after the delay
+//       console.log("After delay");
+//     }, 2000); // Delay of 2000 milliseconds (2 seconds)
     
-    set_variables();
-    set_ros();
-    set_default_exp(); // Setting the default emotion to 'neutral'. 
-                      // The function is defined in the emotion handling section 
-                      // and also takes in the default emotion's name as an argument 
-                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
+//     set_variables();
+//     set_ros();
+//     set_default_exp(); // Setting the default emotion to 'neutral'. 
+//                       // The function is defined in the emotion handling section 
+//                       // and also takes in the default emotion's name as an argument 
+//                       // (i.e. face_name_val='neutral' or whatever the default emotion must be)
 
-  }
-});
+//   }
+// });
 // }
 function set_variables() {
       console.log('setting environment variables...');
@@ -835,6 +835,8 @@ function setrostopic(topic_name) {
           input.setAttribute('placeholder', field);
 
           form.appendChild(input);
+          const bt = document.getElementById('pub');
+          bt.style.display = 'block';
         });
 
         publish_msg_form(ros_topic); // Publish the message when the form is submitted
@@ -859,5 +861,38 @@ function publish_msg_form(topic) {
     }
 
     topic.publish(message);
+  });
+}
+
+function echorostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
+      
+      var ros_topic = new ROSLIB.Topic({ 
+        ros: ros,
+        name: topic_name,
+        messageType: msg_type // Set the message type of the topic
+      });
+
+      ros_topic.subscribe(function(message) {
+        // add a new line to the topic's div with the message
+        const div = document.getElementById('topics');
+        const p = document.createElement('p');
+        p.innerHTML = JSON.stringify(message);
+        div.appendChild(p);
+        p.innerHTML = '------------------ <br>';
+        div.appendChild(p);
+        
+      });
+    }
   });
 }
