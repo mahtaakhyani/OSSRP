@@ -1,38 +1,3 @@
-// sleep time expects milliseconds
-function sleep (time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-// Fetching server ip address --------------------- * DOESN'T WORK !
-// -----------------------------------------------
-
-// function get_ip() {
-//   $.ajax({
-//     type: "GET",
-//     url: request_server_ip, 
-//     success: function(response) {
-//       host = response.ip;
-//       console.log('Settings have successfully set [Jetson local ip address = '+host+']');
-//     },
-//     error: function(error) {
-//       console.log(error, "IP address could not be fetched. Setting IP address to 'localhost'");
-//       host = 'localhost';
-
-//     },
-//     // while the function is running, the page will be in a loading state
-//     beforeSend: function() {
-//       console.log("Loading server IP...");
-//     },
-//     // when the function is completed, the page will be in a normal state
-//     complete: function() {
-//       console.log("Fetching server IP Done");
-//       set_variables(host);
-
-//     }
-//   });
-// }
-
-
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
 var host;
@@ -71,49 +36,62 @@ var tts_srv_type = 'infrastructure/Tts';
 // - - - ROS - - -
 var robot_ws;
 
+
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
-function set_variables(host,android_host) {
-    console.log('setting environment variables...');
-    // - - - Django Server - - - 
-    $.ajax({
-      type: "GET",
-      url: request_server_ip,
-      success: function(response) {
-        host = response.host
-        android_host = response.android_ip;
-        alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
-        django_base_url = 'http://' + host + ':' + port ;
-        request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
-        publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
-        android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
-        console.log('Android Server is listening on: '+android_server_url+
-        '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
-        
-        // - - - ROS - - -
-        // Workspace
-        robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
-        console.log('ROSBridge websocket is listening on: '+robot_ws+
-        '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
-        +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
-        '\n/head_cmd_vel to publish motion commands on');
-        
-        // - - - Camera - - -
-        var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
-        document.getElementById("camera_img").src = camera_img_url;
-        console.log('Camera is streaming on: '+camera_img_url);
-        // - - - Camera Landmarked - - -
-        var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
-        document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
-        console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
-        // - - - Camera Gaze Frame - - -
-        var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
-        document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
-        console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
-        
-      }
-    });
-      }
+// - - - Django Server - - - 
+$.ajax({
+  type: "GET",
+  url: request_server_ip,
+  success: function(response) {
+    host = response.host
+    android_host = response.android_ip;
+    alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
+    setTimeout(() => {
+      // Code to execute after the delay
+      console.log("After delay");
+    }, 2000); // Delay of 2000 milliseconds (2 seconds)
+    
+    set_variables();
+    set_ros();
+    set_default_exp(); // Setting the default emotion to 'neutral'. 
+                      // The function is defined in the emotion handling section 
+                      // and also takes in the default emotion's name as an argument 
+                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
+
+  }
+});
+// }
+function set_variables() {
+      console.log('setting environment variables...');
+      django_base_url = 'http://' + host + ':' + port ;
+      request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
+      publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
+      android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
+      console.log('Android Server is listening on: '+android_server_url+
+      '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
+      
+      // - - - ROS - - -
+      // Workspace
+      robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
+      console.log('ROSBridge websocket is listening on: '+robot_ws+
+      '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
+      +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
+      '\n/head_cmd_vel to publish motion commands on');
+      
+      // - - - Camera - - -
+      var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
+      document.getElementById("camera_img").src = camera_img_url;
+      console.log('Camera is streaming on: '+camera_img_url);
+      // - - - Camera Landmarked - - -
+      var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
+      document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
+      console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
+      // - - - Camera Gaze Frame - - -
+      var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
+      document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
+      console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
+}
       
 
   
@@ -121,16 +99,36 @@ function set_variables(host,android_host) {
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// // <----------------------------------------- ROS CONNECTION ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var ros;
+function set_ros() {
 
-// initializing the variables and setting the default emotion to 'neutral'
-// -----------------
-set_variables(host,android_host);
-set_default_exp(); // Setting the default emotion to 'neutral'. 
-                      // The function is defined in the emotion handling section 
-                      // and also takes in the default emotion's name as an argument 
-                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
+  // Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
+  // ----------------- 
+  ros = new ROSLIB.Ros({
+    url : robot_ws
+  });
 
-                      
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+}
+        // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
+        // // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+      
+// }                 
 
 // ---------------------------------------------- START OF INTERFACE FUNCTIONS -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,32 +169,6 @@ function viewdiv(div) {
 
 
 
-// // <----------------------------------------- ROS CONNECTION ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
-// ----------------- 
-var ros = new ROSLIB.Ros({
-  url : robot_ws
-});
-
-ros.on('connection', function() {
-  console.log('Connected to websocket server.');
-});
-
-ros.on('error', function(error) {
-  console.log('Error connecting to websocket server: ', error);
-});
-
-ros.on('close', function() {
-  console.log('Connection to websocket server closed.');
-});
-
-
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -291,60 +263,50 @@ window.addEventListener('load', (event) => {
 // // <---------------------------------------------- EMOTION HANDLING SECTION---------------------------------------->	
 // // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// -----------------
-// Creating new Topic for expressions data (used for publishing the user's commanded emotion in the update_exp function)
-// -----------------
-var exp_Topic = new ROSLIB.Topic({
-  ros : ros,
-  name : publish_exp_topic,
-  messageType : exp_msg_type
-});
+  // -----------------
+  // Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
+  // -----------------
 
-
-// -----------------
-// Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
-// -----------------
-
-// Creating a new Topic for the user's current emotion (subscribing to the /py_exp_publisher topic)
-var autoexp_Topic = new ROSLIB.Topic({
-  ros : ros,
-  name : listen_exp_topic,
-  messageType : exp_msg_type
-});
-
-autoexp_Topic.subscribe(function(message) { // updating the video file based on the emotion received from the robot (not the user interface)
-  console.log('Received message on ' + autoexp_Topic.name + ': ' + message.emotion);
-  
-  var msgd = message.emotion;
-  $.ajax({
-    type: "GET",
-    url: request_current_exp,
-    data: {
-      face: msgd
-    },
-    success: function(response) {
-      var sound_url = response.sound_url;
-      // Playing the recognized emotion's sound and video file
-      document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">'; 
-      document.getElementById("vidsrc").play()
-      if (sound_url != 'No assigned sound found') {
-        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
-        document.getElementById("vidsoundsrc").play();
-        } else {
-          document.getElementById("vidsoundsrc").pause();
-          document.getElementById("vidsoundsrc").currentTime = 0;
-          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
- 
-      console.log(response);
-      var ids =   [response.face_url, sound_url];
-      update_exp(ids);  // Returning the id of the button clicked 
-                        // and it's relative sound recived as a response from the server
-                        //  to be used in the update_exp function.
-
-    }
+  // Creating a new Topic for the user's current emotion (subscribing to the /py_exp_publisher topic)
+  var autoexp_Topic = new ROSLIB.Topic({
+    ros : ros,
+    name : listen_exp_topic,
+    messageType : exp_msg_type
   });
-  document.getElementById("msg").innerHTML = "Auto:"+ msgd;
-});
+
+  autoexp_Topic.subscribe(function(message) { // updating the video file based on the emotion received from the robot (not the user interface)
+    console.log('Received message on ' + autoexp_Topic.name + ': ' + message.emotion);
+    
+    var msgd = message.emotion;
+    $.ajax({
+      type: "GET",
+      url: request_current_exp,
+      data: {
+        face: msgd
+      },
+      success: function(response) {
+        var sound_url = response.sound_url;
+        // Playing the recognized emotion's sound and video file
+        document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">'; 
+        document.getElementById("vidsrc").play()
+        if (sound_url != 'No assigned sound found') {
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
+          document.getElementById("vidsoundsrc").play();
+          } else {
+            document.getElementById("vidsoundsrc").pause();
+            document.getElementById("vidsoundsrc").currentTime = 0;
+            document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
+  
+        console.log(response);
+        var ids =   [response.face_url, sound_url];
+        update_exp(ids);  // Returning the id of the button clicked 
+                          // and it's relative sound recived as a response from the server
+                          //  to be used in the update_exp function.
+
+      }
+    });
+    document.getElementById("msg").innerHTML = "Auto:"+ msgd;
+  });
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------------------- END OF FACIAL IMITATOR ----------------------------------------------
@@ -578,6 +540,7 @@ function tts() {
 // // <----------------------------------------- END OF TEXT-TO-SPEECH ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------------- MOTION HANDLING --------------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,8 +564,6 @@ motion_Topic.subscribe(function(message) {
   
 });
 
-
-
 // -----------------
 // Creating new Topic for dynamixel movement commands
 // -----------------
@@ -612,75 +573,82 @@ var dyna_Topic = new ROSLIB.Topic({
   messageType : dyna_msg_type
 });
 
+var exp_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : publish_exp_topic,
+  messageType : exp_msg_type
+});
+
+
 
 // // -----------------
 // // Publishing manual movement commands from the user interface(not from the keyboard) on /cmd_vel_web topic
 // // -----------------
 
 function get_speed(){
-  var speed = document.getElementById("speed").value;
-  return speed;
+var speed = document.getElementById("speed").value;
+return speed;
 }
 
 function get_degrees(){
-  var degrees = document.getElementById("degrees").value;
-  return degrees;
+var degrees = document.getElementById("degrees").value;
+return degrees;
 }
 
 // the function that will be called from the move_keys function when the user clicks on the move buttons
 function move(cw, joint) { 
-  var cmd_vel_listener = new ROSLIB.Topic({
-    ros : ros,
-    name : dyna_topic,
-    messageType : dyna_msg_type
-  });
-  
-  cmd_vel_listener.subscribe(function(message) {
-    console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
-  });
-  angular = get_speed();
-  degree = get_degrees()*cw;
-  console.log(degree, joint)
-  // the position is in degrees and is how much the joint will move from its current position
-  console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+var cmd_vel_listener = new ROSLIB.Topic({
+  ros : ros,
+  name : dyna_topic,
+  messageType : dyna_msg_type
+});
 
-  // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
-  var twist = new ROSLIB.Message({
-    linear: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    angular: {
-      x: parseFloat(angular),
-      y: 0,
-      z: 0
-    }
-  });
+cmd_vel_listener.subscribe(function(message) {
+  console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
+});
+angular = get_speed();
+degree = get_degrees()*cw;
+console.log(degree, joint)
+// the position is in degrees and is how much the joint will move from its current position
+console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
 
-  var dyna_twist = new ROSLIB.Message({
-    speed: twist,
-    position: parseInt(degree),
-    joint: joint
-  });
-  cmd_vel_listener.publish(dyna_twist);
-  console.log(dyna_twist)
+// Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
+var twist = new ROSLIB.Message({
+  linear: {
+    x: 0,
+    y: 0,
+    z: 0
+  },
+  angular: {
+    x: parseFloat(angular),
+    y: 0,
+    z: 0
+  }
+});
 
-  var motion_Topic = new ROSLIB.Topic({
-    ros : ros,
-    name : listen_dyna_status_topic,
-    messageType : dyna_status_msg_type
-  });
-  
-  var current_pos;
-  var current_id;
-  motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
-    console.log('Received message on ' + listen_dyna_status_topic + ': ' + message.joint + ':' + message.position);
-    current_pos = message.position;
-    current_id = message.joint;
-    document.getElementById('current_id').innerHTML = current_id;
-    document.getElementById('current_pos').innerHTML = current_pos;
-  }); 
+var dyna_twist = new ROSLIB.Message({
+  speed: twist,
+  position: parseInt(degree),
+  joint: joint
+});
+cmd_vel_listener.publish(dyna_twist);
+console.log(dyna_twist)
+
+var motion_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : listen_dyna_status_topic,
+  messageType : dyna_status_msg_type
+});
+
+var current_pos;
+var current_id;
+motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
+  console.log('Received message on ' + listen_dyna_status_topic + ': ' + message.joint + ':' + message.position);
+  current_pos = message.position;
+  current_id = message.joint;
+  document.getElementById('current_id').innerHTML = current_id;
+  document.getElementById('current_pos').innerHTML = current_pos;
+}); 
 };
 
 

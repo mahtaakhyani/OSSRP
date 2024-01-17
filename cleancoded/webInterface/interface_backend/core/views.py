@@ -2,6 +2,9 @@ from email.policy import default
 import json
 from pathlib import Path
 import sys
+import socket
+import fcntl
+import struct
 import requests
 # Create your views here."\move.py""\interface_backend\interface_backendapp\views.py"
 from django.http import HttpResponse, request, JsonResponse, StreamingHttpResponse, HttpRequest
@@ -31,7 +34,39 @@ class MainViewTemp(APIView):
         hostname = request.get_host()
         # print(voices_uri)
         emdb = EmotionModel.objects.all().order_by('-id')[0:]
+        # for emotion in emdb:
+        #     # Split face_video_url on "/" 
+        #     url_parts = emotion.face_video_url.split('/')
+        #     # Replace first part with hostname if local
+        #     if 'hoosh' in url_parts[2]:
+        #         try:   
+        #             file_name = str(emotion.video_file.file).split('/')[-1]
+        #         except:
+        #             file_name = url_parts[-1]
+        #         new_url = f'http://{hostname}/api/stream?path=media/videos/{file_name}'
+        #         # Update field
+        #         emotion.face_video_url = new_url
+
+        #         # Save
+        #         emotion.save()
         sdb = Song.objects.all().order_by('-id')[0:]
+        # for song in sdb:
+        #     # Split audio_link on "/" 
+        #     url_parts = song.audio_link.split('/')  
+
+        #     # Replace first part with hostname if local
+        #     if 'hoosh' in url_parts[2]:
+        #         try:   
+        #             file_name = str(song.audio_file.file).split('/')[-1]
+        #         except:
+        #             file_name = url_parts[-1]
+        #         new_url = f'http://{hostname}/api/stream?path=media/sounds/{file_name}'
+
+        #         # Update field
+        #         song.audio_link = new_url
+
+        #         # Save
+        #         emotion.save()
         # print(EmotionModel.objects.all()[1].sound.path())
         parrot_serializers_to_parse = ParrotCommandController().get(request)
         return TemplateResponse(request, 
@@ -220,19 +255,30 @@ class EmotionModelViewDB(APIView):
 # -----------------------------------------------------------------------------------------
 class IPUpdater(APIView):
     def get(self,request: HttpRequest):
-        hostname = request.get_host()
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            hostname = socket.inet_ntoa(fcntl.ioctl(
+                sock.fileno(),
+                0x8915,  # SIOCGIFADDR
+                struct.pack('256s', 'wlan0'[:15].encode('utf-8'))
+            )[20:24])
+        except IOError:
+            hostname = 'hooshang-desktop.local'
+
         ip = ""
         gateway = f"{'.'.join(hostname.split('.')[:3])}.0"
         print(gateway)
         android_mac = "3c:f7:a4:50:a2:d1"
         output = subprocess.run(["arp", "-a"], stdout=subprocess.PIPE).stdout.decode()
         if android_mac in output:
-            print(output.split('?')[0])
-            ip = output.split(android_mac)[0].split("(")[1].split(")")[0]
+            for i in output.split('?'):
+                if android_mac in i:
+                    ip = i.split("(")[1].split(")")[0]
+            
         else:
             print("MAC address of the android not found. Trying different method.")
             android_mac = android_mac.upper()
-            p = subprocess.Popen([f"sudo -S nmap -sn {gateway}/24"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.PIPE)
+            p = subprocess.Popen([f"sudo nmap -sn {gateway}/24"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.PIPE)
             password = "1"
             stdout, stderr = p.communicate(input=(password + '\n').encode())
             output = stdout.decode()
@@ -242,41 +288,6 @@ class IPUpdater(APIView):
                 if android_mac in line:
                     ip = output[i-2].replace("Nmap scan report for ","")
         print(ip)
-        emdb = EmotionModel.objects.all().order_by('-id')[0:]
-        for emotion in emdb:
-            # Split face_video_url on "/" 
-            url_parts = emotion.face_video_url.split('/')
-            # Replace first part with hostname if local
-            if '192' in url_parts[2]:
-                try:   
-                    file_name = str(emotion.video_file.file).split('/')[-1]
-                except:
-                    file_name = url_parts[-1]
-                new_url = f'http://{hostname}/api/stream?path=media/videos/{file_name}'
-                # Update field
-                emotion.face_video_url = new_url
-
-                # Save
-                emotion.save()
-                
-        sdb = Song.objects.all().order_by('-id')[0:]
-        for song in sdb:
-            # Split audio_link on "/" 
-            url_parts = song.audio_link.split('/')  
-
-            # Replace first part with hostname if local
-            if '192' in url_parts[2]:
-                try:   
-                    file_name = str(song.audio_file.file).split('/')[-1]
-                except:
-                    file_name = url_parts[-1]
-                new_url = f'http://{hostname}/api/stream?path=media/sounds/{file_name}'
-
-                # Update field
-                song.audio_link = new_url
-
-                # Save
-                emotion.save()
         print(f"Hostname: {hostname}")
         return JsonResponse(data={"host": hostname,
                                 "android_ip": ip}, status=200)
