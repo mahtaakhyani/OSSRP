@@ -303,3 +303,26 @@ class IPUpdater(APIView):
         return JsonResponse(data={"host": hostname,
                                 "android_ip": ip}, status=200)
    
+  
+
+# ----------------------------------------- ROS handling ----------------------------------
+
+class ProViewTemp(APIView):
+    def get(self, request):
+        # img_topics_list = RH().get_image_topics()
+        emdb = EmotionModel.objects.all().order_by('-id')[0:]
+        sdb = Song.objects.all().order_by('-id')[0:]
+        return TemplateResponse(request, 
+            f'Modified_files/pro.html',
+            {'emotions':emdb,
+            'voices':sdb,
+            # 'img_ros_topics':img_topics_names
+            }) #Sending the data to the template for rendering
+
+
+class ROSController(APIView):
+    def get(self,request): 
+        req_topic = request.GET.get('topic')
+        
+
+
