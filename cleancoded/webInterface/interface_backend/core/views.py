@@ -5,8 +5,7 @@ import sys
 import requests
 
 # Create your views here."\move.py""\interface_backend\interface_backendapp\views.py"
-from django.http import HttpResponse, request, JsonResponse, StreamingHttpResponse
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, request, JsonResponse, StreamingHttpResponse
 from django.core.files.storage import Storage
 from django.shortcuts import render
 from django.views import View
