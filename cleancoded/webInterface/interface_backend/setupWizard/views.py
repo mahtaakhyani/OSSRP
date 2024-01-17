@@ -1,4 +1,3 @@
-from typing import Any
 from django.shortcuts import render
 from django.http import  JsonResponse
 from django.template.response import TemplateResponse
@@ -7,12 +6,9 @@ from setupWizard.serializers import RobotModelSerializer
 # Create your views here.
 
 class WizardWindow(APIView):
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-
     def get(self,request):
         return TemplateResponse(request, 
-            'Modified_files/setupwizardrobot.html')
+            'Modified_files/selectrobot.html')
     
     def post(self, request):
         serializer = RobotModelSerializer()
@@ -26,3 +22,4 @@ class WizardWindow(APIView):
             'msg':'success'
         }
         return JsonResponse(msg, status=201)
+

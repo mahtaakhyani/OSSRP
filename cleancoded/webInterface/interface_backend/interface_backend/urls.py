@@ -22,5 +22,7 @@ urlpatterns = [
     path('',include('core.urls')),
     path('api/', include('sage_stream.api.urls')),
     path('wizard',include('setupWizard.urls')),
+    path('auth',include('auth_django.urls')),
+    path("accounts", include("django.contrib.auth.urls")),
     # path('parrot',include('serialHandler.urls'))
 ]

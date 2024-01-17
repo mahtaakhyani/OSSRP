@@ -44,7 +44,8 @@ var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
 // - - - Django Server - - - 
-var request_server_ip = '/reqip'; //URL has been set in 'interface_backendapp/urls.py'
+var request_server_ip = '/reqip'; //URL has been set in 'interface_backend/core/urls.py'
+var get_latest_emotion_url = '/reqcli'; //URL has been set in 'interface_backend/core/urls.py'
 var django_base_url;
 var request_current_exp;
 var publish_new_exp;
@@ -90,7 +91,7 @@ function set_variables(host,android_host) {
                 '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
                 +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
                 '\n/head_cmd_vel to publish motion commands on');
-
+    // - - - Set Image Viewer IPs - - -
     // - - - Camera - - -
     var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
     document.getElementById("camera_img").src = camera_img_url;
@@ -104,8 +105,8 @@ function set_variables(host,android_host) {
     document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
     console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
 
+    get_latest_emotion();
   }
-
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +154,14 @@ function viewdiv(div) {
   $('.change').children().hide();
   $(document.getElementById(div)).show().children().show();
 }
+
+function changeimage(topic_name) {
+  var img_url = 'http://' + host + ':8080/stream?topic=' + topic_name;
+    document.getElementById("pro_viewer").src = img_url;
+    console.log('Image Viewer is showing: '+ img_url + ' topic');
+}
+
+
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF INTERFACE FUNCTIONS ----------------------------------------->
@@ -491,6 +500,32 @@ function update_exp(ids) {
   
 // // <--- END OF UPDATE_EXP FUNCTION --->
 
+function get_latest_emotion() {
+  $.ajax({
+    type: "GET",
+    url: get_latest_emotion_url,
+    
+    success: function(response) {
+      console.log(response);
+      var sound_url = response.sound;
+      var face_url = response.face;
+      // Playing the recognized emotion's sound and video file
+      document.getElementById("vidsrc").pause();
+      document.getElementById("vidsrc").currentTime = 0;
+      document.getElementById("vidsrc").innerHTML = '<source src="'+ face_url+'" type="video/mp4">'; 
+      document.getElementById("vidsrc").load();
+      document.getElementById("vidsrc").play()
+      if (sound_url != 'No assigned sound found') {
+        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
+        document.getElementById("vidsoundsrc").play();
+        } else {
+          document.getElementById("vidsoundsrc").pause();
+          document.getElementById("vidsoundsrc").currentTime = 0;
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
+      
+    }
+  });
+}
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
@@ -630,8 +665,15 @@ function move(cw, joint) {
   angular = get_speed();
   degree = get_degrees()*cw;
   console.log(degree, joint)
-  // the position is in degrees and is how much the joint will move from its current position
-  console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+  if (joint == 'reset'){
+    degree = 0;
+    console.log('Resetting all joints to 0');
+
+  }
+  else {
+    // the position is in degrees and is how much the joint will move from its current position
+    console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+  }
 
   // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
   var twist = new ROSLIB.Message({
@@ -675,7 +717,10 @@ function move(cw, joint) {
 
 // the function that will be called when the user clicks on the move buttons
 function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, down, left, right
-  if (joint == 'head'){
+  if (joint == 'reset'){
+    move(1,'reset');
+  }
+  else if (joint == 'head'){
     if (pos == 'up'){
       move(1,'head');
     }
@@ -854,3 +899,29 @@ function submitWizardForm(data) {
       // // <----------------------------------------- END OF CAMERA VIEWER ----------------------------------------->
       // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+
+
+  function setrostopic(topic_name) {
+    // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+    $.ajax({
+      type: "GET",
+      url: '/setrostopic',
+      data: {
+        topic: topic_name
+      },
+      success: function(response) {
+        console.log(response);
+        var msg_type = response.msg_type;
+        console.log(msg_type);
+        var ros_topic = new ROSLIB.Topic({
+          ros : ros,
+          name : topic_name,
+          messageType : msg_type
+        });
+        ros_topic.subscribe(function(message) {
+          console.log('Received message on ' + ros_topic.name + ': ' + message);
+          document.getElementById("ros_topic").innerHTML = message;
+        });
+      }
+    });
+  }

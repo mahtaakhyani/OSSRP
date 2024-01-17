@@ -1,0 +1,241 @@
+{% load static %}
+
+<html>
+
+<head>
+  <title>Setup Wizard</title>
+  <link rel="stylesheet" href=" {% static 'css/nicepage.css' %} " media="screen">
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    
+    li {
+      display: table;
+      padding: 0.5rem;
+    }
+    .window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 600px;
+      min-height: 400px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      animation: zoom-in 0.5s;
+    }
+
+    #login {
+      min-width: 300px;
+    }
+    @media screen and (max-width: 600px) {
+      .window {
+        min-width: 300px;
+      }
+      
+    }
+
+    @keyframes zoom-in {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .header {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333333;
+      font-weight: 900 !important;
+    }
+
+    .content {
+      padding: 20px;
+      padding-left: 50px;
+    }
+    .circle-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      margin: 20px;
+      margin-right: 50px;
+    }
+    .circle-image:hover {
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      transform: scale(0.95);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+        
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    
+    .form-group button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .form-group button:hover {
+      background-color: #45a049;
+    }
+  </style>
+  
+</head>
+
+<body>
+  <div class="window u-layout-col" id="card">
+    <div class="header ">
+      <h1>Select your robot</h1>
+    </div>
+    <div class="content">
+      <div class="u-container-style u-form-group">
+        <div class="u-container-layout u-container-layout-9 scrollable">
+          <ul class="u-layout-row">
+            {% for robot in robots %}
+            <div class="robot u-layout-col {{robot.name}}" id="{{robot.name}}">
+              <li 
+              id="{{robot.name}}"  
+              class="circle-image u-align-center "
+               style="padding-bottom: 3%; 
+              background-image: url({% static 'img/Hooshang.png' %}) ;"
+              onclick="update(this.id);">
+              </li>
+              <p class="u-align-center u-text u-text-1">{{robot.name}}</p>
+            </div>
+          {% endfor %}
+          <div class="robot u-layout-col" id="/adminsetupWizard/robotconfig/add/">
+            <li 
+            id="/adminsetupWizard/robotconfig/add/"  
+            class="circle-image u-align-center "
+             style="padding-bottom: 3%; 
+            background-image: url({% static 'img/plus.jpeg' %}) ;
+            opacity: 0.35;
+            width: 150px;
+            height: 150px;
+            margin-top: 20%;"
+            onclick="goToUrl(this.id);">
+            </li> 
+            <p class="u-align-center u-text u-text-1">Add New</p>
+          </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+    </div>
+  </div>
+  <div class="window u-layout-col" id="login" style="display: none; opacity: 0;">
+    <div class="header ">
+      {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}.</h1>
+    </div>
+    <p id='logged' class="content"></p>
+     {% else %}
+        <h1>Login</h1>
+    </div>
+    <div class="content">
+        <div class="u-container-style u-form-group">
+          <div class="u-container-layout u-container-layout-9">
+            <form action="/auth/login/" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+              </div>
+              <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <input type="tex" id="url_form" name="url" hidden>
+              </div>
+              <div class="form-group">
+                <button type="submit">Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+    {% endif %}
+
+    {% if form.errors %}
+      <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+</form>
+
+  </div>
+
+  <script>
+    function update(url) {
+      const elements = document.getElementsByClassName("robot");
+        for (let i = 0; i < elements.length; i++) {
+          if (elements[i].id !== url) {
+            elements[i].style.display = "none";
+          }
+          else {
+            elements[i].style.transition = 'all 0.5s ease-in-out'
+            elements[i].style.transform = 'translate(50%, 0)'
+          }
+        }
+        var element = document.getElementById("card");
+        for (let i = 0; i < element.childElementCount; i++) {
+          element.children[i].style.transition = 'all 1s ease-in-out'
+          element.children[i].style.opacity = "0.1";
+        }
+        var element = document.getElementById("login");
+        element.style.transition = 'all 1s ease-in-out'
+        element.style.display = "block";
+        element.style.opacity = "1";
+        if (document.getElementById("url_form")){
+          var uri = document.getElementById("url_form");
+          uri.value = url;
+        }
+        else {
+          var text = document.getElementById("logged");
+          text.innerHTML = "You are already logged in. Redirecting to " + url;
+          goToUrl(url);
+        }
+
+      }
+    function goToUrl(url) {
+      window.location.href = url;
+  }
+  </script>
+</body>
+
+</html>

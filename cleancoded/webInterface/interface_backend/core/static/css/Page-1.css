@@ -246,6 +246,7 @@ html, body {
   margin: -793px auto 60px calc(((100% - 1140px) / 2) + 28px);
 } */
 
+
 .u-section-1 .u-layout-cell-3 {
   min-height: 190px;
 }
@@ -267,7 +268,8 @@ html, body {
 }
 
 .u-section-1 .u-video-1 {
-  min-height: 771px;
+  min-height: 300px;
+  max-height: 360px;
 }
 
 .u-section-1 .u-container-layout-13 {
@@ -468,5 +470,6 @@ html, body {
     display: none;
   }
 }
+
 
 

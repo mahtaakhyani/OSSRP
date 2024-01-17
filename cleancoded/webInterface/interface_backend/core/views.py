@@ -3,8 +3,10 @@ import json
 from pathlib import Path
 import sys
 import requests
+
 # Create your views here."\move.py""\interface_backend\interface_backendapp\views.py"
 from django.http import HttpResponse, request, JsonResponse, StreamingHttpResponse
+from django.http import HttpRequest
 from django.core.files.storage import Storage
 from django.shortcuts import render
 from django.views import View
@@ -17,23 +19,32 @@ from rest_framework.response import Response
 ws_dir = str(Path(__file__).resolve().parent.parent.parent)
 sys.path.insert(0, ws_dir)
 
+# import rospkg
+# pkg = rospkg.RosPack().get_path('infrastructure')
+# module_path = os.path.join(pkg, 'appliences', 'userinterface_websocket', 'synchronizer')
+# sys.path.append(module_path)
+# from django_ros_handler import ROSHandler as RH
+
 from core.serializers import *
 from core.models import *
 from soundHandler.models import *
 import serialHandler.serializers as serializers
 from serialHandler.views import ParrotCommandController
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
+@method_decorator(login_required, name='dispatch')
 class MainViewTemp(APIView):
         def get(self, request):
-           
+            robot_name = request.build_absolute_uri().split('/')[-1]
             # print(voices_uri)
             emdb = EmotionModel.objects.all().order_by('-id')[0:]
             sdb = Song.objects.all().order_by('-id')[0:]
             # print(EmotionModel.objects.all()[1].sound.path())
             parrot_serializers_to_parse = ParrotCommandController().get(request)
             return TemplateResponse(request, 
-                'Modified_files/Page-1.html',
+                f'Modified_files/{robot_name}.html',
              {'emotions':emdb,
                 'voices':sdb,
                 'p_commands':parrot_serializers_to_parse
@@ -218,11 +229,37 @@ class EmotionModelViewDB(APIView):
 # -----------------------------------------------------------------------------------------
 class IPUpdater(APIView):
 
-    def get(self,request):
-        user_ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
-        if user_ip_address:
-            ip = user_ip_address.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return JsonResponse(data={"ip": ip}, status=200)
+    def get(self,request: HttpRequest):
+        hostname = request.get_host()
+        try:
+            ip_address = request.META['REMOTE_ADDR']
+        except KeyError:
+            ip_address = "127.0.0.1"
+
+        print(f"Hostname: {hostname}")  
+        print(f"IP Address: {ip_address}")
+        return JsonResponse(data={"ip": ip_address,
+                                  "host": host}, status=200)
    
+
+# ----------------------------------------- ROS handling ----------------------------------
+
+class ProViewTemp(APIView):
+    def get(self, request):
+        # img_topics_list = RH().get_image_topics()
+        emdb = EmotionModel.objects.all().order_by('-id')[0:]
+        sdb = Song.objects.all().order_by('-id')[0:]
+        return TemplateResponse(request, 
+            f'Modified_files/pro.html',
+            {'emotions':emdb,
+            'voices':sdb,
+            # 'img_ros_topics':img_topics_names
+            }) #Sending the data to the template for rendering
+
+
+class ROSController(APIView):
+    def get(self,request): 
+        req_topic = request.GET.get('topic')
+        
+
+

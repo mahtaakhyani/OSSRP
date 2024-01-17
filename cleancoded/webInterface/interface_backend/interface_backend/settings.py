@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'serialHandler',
     'setupWizard',
     'core',
+    'auth_django',
     'sage_stream'
 ]
 
@@ -125,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGIN_URL = '/auth/choose/' 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -154,3 +155,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

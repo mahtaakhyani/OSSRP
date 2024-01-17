@@ -20,6 +20,7 @@ class MovingFeatures(models.Model):
 class RobotConfig(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, default="My_Robot" )
+    image = models.ImageField(upload_to='robot_images', default='default.png')
 
     streaminput = models.BooleanField(default=False)
     saveinput = models.BooleanField(default=False)

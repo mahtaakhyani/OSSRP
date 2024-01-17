@@ -1,0 +1,400 @@
+{% load static %}
+
+<html>
+
+<head>
+  <title>Pro Control Panel</title>
+  <link rel="stylesheet" href=" {% static 'css/nicepage.css' %} " media="screen">
+  <link rel="stylesheet" href=" {% static 'css/styleui.css' %} " media="screen">
+  <link rel="stylesheet" href=" {% static 'css/Page-1.css' %} " media="screen">
+  <script class="u-script" type="text/javascript" src=" {% static 'js/jquery.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/roslib.min.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/nicepage.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/script.js' %} " defer=""></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://static.robotwebtools.org/keyboardteleopjs/current/keyboardteleop.min.js"></script>
+  <link rel="stylesheet" href=" {% static 'font-awesome-4.7.0/css/font-awesome.min.css' %} ">
+  <link rel="stylesheet" href=" {% static 'icons-1.5.0/font/bootstrap-icons.css' %} ">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+  <style>
+    
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    
+    li {
+      display: table;
+      padding: 0.5rem;
+    }
+    .window {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      animation: zoom-in 0.5s;
+      margin: 10px;
+      height: fit-content;
+    }
+
+    #login {
+      min-width: 300px;
+    }
+    @media screen and (max-width: 600px) {
+      .window {
+        min-width: 300px;
+      }
+      
+    }
+
+    @keyframes zoom-in {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .header {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      margin: 0;
+      margin-top: 5px;
+      font-size: 24px;
+      color: #333333;
+      font-weight: 900 !important;
+      font-family:'Times New Roman', Times, serif;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  
+   
+
+/* Dropdown */
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dd-button {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 10px 30px 10px 20px;
+  background-color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dd-button:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
+}
+
+.dd-button:hover {
+  background-color: #eeeeee;
+}
+
+
+.dd-input {
+  display: none;
+}
+
+.dd-menu {
+  position: absolute;
+  top: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0;
+  margin: 2px 0 0 0;
+  box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  list-style-type: none;
+  z-index: 1000;
+  margin-top: 2px !important;
+}
+
+.dd-input + .dd-menu {
+  display: none;
+} 
+
+.dd-input:checked + .dd-menu {
+  display: block;
+} 
+
+.dd-menu li {
+  padding: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dd-menu li:hover {
+  background-color: #f6f6f6;
+}
+
+.dd-menu li a {
+  display: block;
+  margin: -10px -20px;
+  padding: 10px 20px;
+}
+
+.dd-menu li.divider{
+  padding: 0;
+  border-bottom: 1px solid #cccccc;
+}
+
+.refresh-button {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 50%;
+  padding: 5px;
+  background-color: #26ff32;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.refresh-button:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+}
+
+.image_view {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.fit-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.emobtns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  width: fit-content;
+
+}
+
+.emoinput {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.emoinput:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  background-color: #8cdf91;
+}
+
+  </style>
+  
+</head>
+
+<body>
+  <div class="u-clearfix">
+    <div class="u-layout-row">
+      <div class="window u-layout-col u-size-15" id="card">
+        <div class="header image_view">
+          <h1 class="col">Image View</h1>
+          <label class="col dropdown">
+            <div class="dd-button">
+              select topic
+            </div> 
+            <input type="checkbox" class="dd-input" id="test">
+            <ul class="dd-menu">
+              <li class="topic" onclick="changeimage(this.className)">topic</li>
+              <li>Another action</li>
+            </ul>
+          </label>
+        </div>
+        <div class="content">
+          <img id="pro_viewer" class="fit-video embed-responsive-item" src="">
+            <p>Unable to load camera frames.</p>
+        </img>
+        </div>
+      </div>
+      <div class="window u-layout-col  u-size-15">
+        <div class="header   image_view">
+          <h1 class="col">ROS Topic Publish</h1>
+          <label class="col dropdown">
+            <div class="dd-button">
+              select topic
+            </div> 
+            <input type="checkbox" class="dd-input" id="test">
+            <ul class="dd-menu">
+              <li class="topic" onclick="setrostopic(this.className)">topic</li>
+              <li>Another action</li>
+            </ul>
+          </label>
+        </div>
+        <div class="content">
+          
+        </div>
+      </div>
+    </div>
+    <div class="u-layout-row">
+      <div class="window u-layout-col u-size-15" id="card">
+        <div class="header image_view">
+          <h1 class="col">Robot's Face</h1>
+          <label class="col dropdown">
+            <div class="refresh-button" onclick="get_latest_emotion()">
+              <i class="bi bi-arrow-clockwise" style="font-size: 2rem;"></i>
+            </div> 
+            
+          </label>
+        </div>
+        <div class="content">
+          <div class="u-layout-row">
+            <div class="u-layout-col ">
+              <video id="vidsrc" class="embed-responsive-item  fit-video"  loop="true" playsinline="">
+                <source  src="" type="video/mp4">
+                <p>Your browser does not support HTML5 video.</p>
+              </video>
+                <audio id="vidsoundsrc" class="fc-media" style="width: 100%;">
+                  <source src="" type="audio/mp3"/>
+                </audio>
+            </div>
+            <div class="u-layout-col">
+              <div class="scrollable" style="height: 200px; margin-top: 20px;" id="repeater">
+              <table>
+                <tr>
+                  <td>
+                    <h4 class="u-text u-text-1" style=" font-weight: 700; ">Face's Name</h4>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p id="msg" style=" font-weight: 600;  text-align: left;">Null</p>
+                  </td>
+                </tr>
+                <tr>
+                  {% for emotion in emotions %}{% if emotion %}
+                  <!-- if the id can be divided by two, break the table to the next row: -->
+                  {% if forloop.counter|divisibleby:"2" %}</tr><tr> {% endif %}
+
+                  <td>
+                    <div class="emobtns" id="{{emotion}}"  draggable="true" ondragstart="drag(event,this.id)">
+                      <input type="button"
+                      id={{emotion.face_video_url}} 
+                      onclick="exp_face(this);"
+                      value="{{emotion}}"
+                      class="emoinput">
+                      </input>
+                    </div>
+                  </td>
+                  {% endif %} {% endfor %}
+                </div>
+                <tr>
+                  <td>
+                    <div class="emobtns">
+                      <a href="/admincore/emotionmodel/add/" 
+                                      target="_blank" 
+                                      onclick="window.open('/admincore/emotionmodel/add/', 
+                                  'add new emotion model', 
+                                  'width=600,height=500','toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'); 
+                                      return false;"
+                                      class="u-align-center u-border-3 u-border-custom-color-7 u-border-hover-palette-1-light-1 u-btn u-btn-round u-button-style u-none u-radius-50 u-btn-1"
+                                      style="    padding: 0;
+                                      min-width: auto;
+                                      font-size: 2rem;
+                                      background: #d0cdcd40 !important;
+                                      border: 0rem  !important;
+                                  ">
+                        <i class="bi bi-plus-circle-dotted"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+  
+  <nav class="c-circle-menu js-menu menu">
+    <button class="c-circle-menu__toggle menu js-menu-toggle" id="c-circle-menu">
+      <span>Toggle</span>
+    </button>
+    <ul class="c-circle-menu__items menu">
+      <li class="c-circle-menu__item">
+        <a href="#" class="c-circle-menu__link">
+          <i class="bi bi-power"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/hooshang" class="c-circle-menu__link">
+          <i class="bi bi-exclude"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="#" class="c-circle-menu__link js-toggle" onclick="cssCircleMenuchild()">
+          <i class="bi bi-controller"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/admin" class="c-circle-menu__link">
+          <i class="bi bi-sliders"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/auth/login" class="c-circle-menu__link">
+          <i class="bi bi-house-fill"></i>
+        </a>
+      </li>
+    </ul>
+    <div class="c-circle-menu__mask js-menu-mask menu"></div>
+  </nav>
+  
+
+  <script>
+    function displaysimple(){
+      var display = document.getElementById("sec-48f7");
+      for (var i = 0; i < display.childElementCount; i++) {
+        if (!display.children[i].className.includes("menu")) {
+          if (display.children[i].style.display == "none") {
+            display.children[i].style.display = "block";
+          } else {
+            display.children[i].style.display = "none";
+          }
+        }
+      }
+    }
+    function goToUrl(url) {
+    window.location.href = url;
+    }
+
+    
+  </script>
+</body>
+
+</html>

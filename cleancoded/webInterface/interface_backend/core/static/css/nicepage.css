@@ -37637,8 +37637,8 @@ a.u-link.u-text-hover-grey-90:hover {
         text-align: center;
         /* display: inline-flex; */
         /* flex-direction: column-reverse; */
-        /* align-items: center; */
-        /* justify-content: center; */
+        align-items: center;
+        justify-content: center;
         }
         .u-btn
         {
