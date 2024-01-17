@@ -40,50 +40,6 @@ var robot_ws;
 
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
-<<<<<<< HEAD
-function set_variables(host,android_host) {
-    console.log('setting environment variables...');
-    // - - - Django Server - - - 
-    django_base_url = 'http://' + host + ':' + port ;
-    request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
-    publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
-    android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
-    console.log('Android Server is listening on: '+android_server_url+
-                '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
-  
-    // - - - ROS - - -
-    // Workspace
-    robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
-    console.log('ROSBridge websocket is listening on: '+robot_ws+
-                '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
-                +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
-                '\n/head_cmd_vel to publish motion commands on');
-    // - - - Set Image Viewer IPs - - -
-    // - - - Camera - - -
-    var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
-    document.getElementById("camera_img").src = camera_img_url;
-    console.log('Camera is streaming on: '+camera_img_url);
-    // - - - Camera Landmarked - - -
-    var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
-    document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
-    console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
-    // - - - Camera Gaze Frame - - -
-    var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
-    document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
-    console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
-
-    get_latest_emotion();
-  }
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// initializing the variables and setting the default emotion to 'neutral'
-// -----------------
-set_variables(host,android_host);
-set_default_exp(); // Setting the default emotion to 'neutral'. 
-=======
 // - - - Django Server - - - 
 $.ajax({
   type: "GET",
@@ -100,7 +56,6 @@ $.ajax({
     set_variables();
     set_ros();
     set_default_exp(); // Setting the default emotion to 'neutral'. 
->>>>>>> a96f573e2ba1cc533479abdfd2bf920c141fcebc
                       // The function is defined in the emotion handling section 
                       // and also takes in the default emotion's name as an argument 
                       // (i.e. face_name_val='neutral' or whatever the default emotion must be)
@@ -677,7 +632,6 @@ return degrees;
 
 // the function that will be called from the move_keys function when the user clicks on the move buttons
 function move(cw, joint) { 
-<<<<<<< HEAD
   var cmd_vel_listener = new ROSLIB.Topic({
     ros : ros,
     name : dyna_topic,
@@ -699,13 +653,6 @@ function move(cw, joint) {
     // the position is in degrees and is how much the joint will move from its current position
     console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
   }
-=======
-var cmd_vel_listener = new ROSLIB.Topic({
-  ros : ros,
-  name : dyna_topic,
-  messageType : dyna_msg_type
-});
->>>>>>> a96f573e2ba1cc533479abdfd2bf920c141fcebc
 
 cmd_vel_listener.subscribe(function(message) {
   console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
