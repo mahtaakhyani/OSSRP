@@ -1,12 +1,8 @@
-from email.policy import default
-import json
 from pathlib import Path
 import sys
 import socket
 import fcntl
 import struct
-import requests
-
 # Create your views here."\move.py""\interface_backend\interface_backendapp\views.py"
 from django.http import HttpRequest, HttpResponse, request, JsonResponse, StreamingHttpResponse, HttpRequest
 from django.core.files.storage import Storage
@@ -18,7 +14,7 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.response import Response    
 import subprocess
-import time
+
 
 ws_dir = str(Path(__file__).resolve().parent.parent.parent)
 sys.path.insert(0, ws_dir)
@@ -329,9 +325,12 @@ class ProViewTemp(APIView):
             }) #Sending the data to the template for rendering
 
 
-class ROSController(APIView):
-    def get(self,request): 
+class GetMsgType(APIView):
+    def get(self,request):
         req_topic = request.GET.get('topic')
-        
+        # msg_type = RH().get_topic_type()
+        # print(msg_type)
+        # return JsonResponse(data={"msg_type": msg_type}, status=200)
+        return JsonResponse(data={"msg_type": "std_msg/String"}, status=200)
 
 

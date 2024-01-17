@@ -11,6 +11,7 @@ var auto_imit_val = false;
 // - - - Django Server - - - 
 var request_server_ip = '/reqip'; //URL has been set in 'interface_backend/core/urls.py'
 var get_latest_emotion_url = '/reqcli'; //URL has been set in 'interface_backend/core/urls.py'
+var get_msg_type_url = '/get_msg_type'; //URL has been set in 'interface_backend/core/urls.py'
 var django_base_url;
 var request_current_exp;
 var publish_new_exp;
@@ -104,7 +105,7 @@ function set_variables() {
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var ros;
 function set_ros() {
-
+  const ROSLIB = require('roslib');
   // Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
   // ----------------- 
   ros = new ROSLIB.Ros({
@@ -124,9 +125,9 @@ function set_ros() {
   });
 
 }
-        // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
-        // // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
+// // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
       
 // }                 
@@ -154,9 +155,6 @@ $logmenu.addEventListener('click', function(e) {
 } );
 
 
-
-
-
 //Changing tabs
 // -----------------
 function viewdiv(div) {
@@ -164,20 +162,95 @@ function viewdiv(div) {
   $(document.getElementById(div)).show().children().show();
 }
 
+// Changing the image viewer's image
+// -----------------
 function changeimage(topic_name) {
   var img_url = 'http://' + host + ':8080/stream?topic=' + topic_name;
     document.getElementById("pro_viewer").src = img_url;
     console.log('Image Viewer is showing: '+ img_url + ' topic');
 }
 
+// Drag and Drop
+// -----------------
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+var state_var = '';
+function drag(ev, state) {
+  state_var = state; 
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var drop_id = ev.target.id;
+//   if ($(this).find("input id=*clone")){
+//     $(document.getElementById(state_var)).appendTo(".dest_list").replaceWith(function() { 
+//     return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
+// });
+//   }
+//   else {
+
+  $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
+    $(this).find("p").addClass("sclone_p");
+    $(this).css('display', 'inline-grid');
+    $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
+    $(this).find("input").attr("class", state_var + "_clone");
+    var del_btn = document.createElement("i");
+    del_btn.setAttribute("class","bi bi-x-lg del_btn");
+    del_btn.setAttribute("onclick","clear_item(this)");
+    $(this).append(del_btn);
+    $('#'+state_var + "_clone\*").css('border-radius','0%').css('width','10%').css('margin','-20px').css("height","inherit");
+    $(".play_btn").css('margin','0');
+    return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
+});
+
+}
+
+function auto_run(){
+  // click all buttons that end with "clone" in order with a delay of 1 second
+    $(".dest_list li input[class$='clone']").each(function(i) {
+      $(this).removeClass("active");
+      $(this).delay(5000 * i).queue(function() {
+        $(this).addClass("active");
+        $(this).click();
+        $(this).dequeue();
+        });
+
+    });
+  }
+
+function clean(){
+$(".dest_list").empty();
+}
+function clear_item(item){
+$(item).parent().remove();
+} 
+// End of Drag and Drop
+// -----------------
+
+
+// // Audio Player for the web interface
+// // -----------------
+function playAudio(input) { 
+  $(".play_btn")[0].currentTime = 0;
+  
+  if ($(input).hasClass("active") ) {
+    $(input).removeClass("active");
+    
+  } 
+  else {
+    $(".play_btn").removeClass("active");
+    $(input).addClass("active"); 
+       
+
+    }
+  }
 
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF INTERFACE FUNCTIONS ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
 
@@ -191,75 +264,6 @@ window.addEventListener('load', (event) => {
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');  
-//   $('.bt_left').click(function(){
-//     $('.perso').animate({
-//   left: '-=60'
-//   });
-//   });
-//   $('.bt_right').click(function(){
-//     $('.perso').animate({
-//   left: '+=60'
-//   });
-//   });
-//   $('.bt_top').click(function(){
-//     $('.perso').animate({
-//   top: '-=60'
-//   });
-//   });
-//   $('.bt_bottom').click(function(){
-//   $('.perso').animate({
-//   top: '+=60'
-//   });
-//   });
-//   $('.bt_head_left').click(function(){
-//   $('.eve .head .face').animate({
-//   left: '-=4'
-//   });
-  
-//   });
-//   $('.bt_head_right').click(function(){
-//   $('.eve .head .face').animate({
-//   left: '+=4'
-//   });
-//   });
-//   $('.bt_head_top').click(function(){
-//   $('.eve .head .face').animate({
-//   top: '-=4'
-//   });
-//   });
-//   $('.bt_head_bottom').click(function(){
-//   $('.eve .head .face').animate({
-//   top: '+=4'
-//   });
-//   });
-//   $('.bt_rhand_top').click(function () {
-//   $('.eve .body:before').css('transform', 'rotate(-34deg)');
-//   });
-  
-//   $(document).keydown(function(key) {
-//   switch (key.which) {
-//   case 37:
-//     $('.perso').stop().animate({
-//         left: '-=60'
-//     });
-//     break;
-//   case 38:
-//     $('.perso').stop().animate({
-//         top: '-=60'
-//     });
-//     break;
-//   case 39:
-//     $('.perso').stop().animate({
-//         left: '+=60'
-//     }); 
-//     break;
-//   case 40:
-//     $('.perso').stop().animate({
-//         top: '+=60'
-//     });
-//     break;
-//   }
-//   });
 });
 });
 
@@ -272,50 +276,50 @@ window.addEventListener('load', (event) => {
 // // <---------------------------------------------- EMOTION HANDLING SECTION---------------------------------------->	
 // // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // -----------------
-  // Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
-  // -----------------
+// -----------------
+// Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
+// -----------------
 
-  // Creating a new Topic for the user's current emotion (subscribing to the /py_exp_publisher topic)
-  var autoexp_Topic = new ROSLIB.Topic({
-    ros : ros,
-    name : listen_exp_topic,
-    messageType : exp_msg_type
-  });
+// Creating a new Topic for the user's current emotion (subscribing to the /py_exp_publisher topic)
+var autoexp_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : listen_exp_topic,
+  messageType : exp_msg_type
+});
 
-  autoexp_Topic.subscribe(function(message) { // updating the video file based on the emotion received from the robot (not the user interface)
-    console.log('Received message on ' + autoexp_Topic.name + ': ' + message.emotion);
-    
-    var msgd = message.emotion;
-    $.ajax({
-      type: "GET",
-      url: request_current_exp,
-      data: {
-        face: msgd
-      },
-      success: function(response) {
-        var sound_url = response.sound_url;
-        // Playing the recognized emotion's sound and video file
-        document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">'; 
-        document.getElementById("vidsrc").play()
-        if (sound_url != 'No assigned sound found') {
-          document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
-          document.getElementById("vidsoundsrc").play();
-          } else {
-            document.getElementById("vidsoundsrc").pause();
-            document.getElementById("vidsoundsrc").currentTime = 0;
-            document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
+autoexp_Topic.subscribe(function(message) { // updating the video file based on the emotion received from the robot (not the user interface)
+  console.log('Received message on ' + autoexp_Topic.name + ': ' + message.emotion);
   
-        console.log(response);
-        var ids =   [response.face_url, sound_url];
-        update_exp(ids);  // Returning the id of the button clicked 
-                          // and it's relative sound recived as a response from the server
-                          //  to be used in the update_exp function.
+  var msgd = message.emotion;
+  $.ajax({
+    type: "GET",
+    url: request_current_exp,
+    data: {
+      face: msgd
+    },
+    success: function(response) {
+      var sound_url = response.sound_url;
+      // Playing the recognized emotion's sound and video file
+      document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">'; 
+      document.getElementById("vidsrc").play()
+      if (sound_url != 'No assigned sound found') {
+        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
+        document.getElementById("vidsoundsrc").play();
+        } else {
+          document.getElementById("vidsoundsrc").pause();
+          document.getElementById("vidsoundsrc").currentTime = 0;
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
 
-      }
-    });
-    document.getElementById("msg").innerHTML = "Auto:"+ msgd;
+      console.log(response);
+      var ids =   [response.face_url, sound_url];
+      update_exp(ids);  // Returning the id of the button clicked 
+                        // and it's relative sound recived as a response from the server
+                        //  to be used in the update_exp function.
+
+    }
   });
+  document.getElementById("msg").innerHTML = "Auto:"+ msgd;
+});
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ---------------------------------------------- END OF FACIAL IMITATOR ----------------------------------------------
@@ -349,6 +353,7 @@ function exp_face(element) {
     },
     success: function(response) {
       var sound_url = response.sound_url;
+      // Playing the requested emotion's sound and video file
       document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">';
       if (sound_url == 'No assigned sound found' | face_url_id == 'auto') {
         document.getElementById("vidsoundsrc").pause();
@@ -365,8 +370,6 @@ function exp_face(element) {
                         //  to be used in the update_exp function.
     }
   });
-   // returning the url of the face to prevent changing the video file when sound updates
-
 
 }
 
@@ -375,13 +378,13 @@ function exp_face(element) {
 // Taking in the user's commanded sound and passing on the url of the sound file to update_exp function.
 // -----------------
 function exp_sound(element) {
-  playAudio(element)
-  document.getElementById("vidsoundsrc").pause()
-  document.getElementById("vidsoundsrc").currentTime = 0;
+  playAudio(element) // Playing the sound file
+  document.getElementById("vidsoundsrc").pause() // Pausing the video file
+  document.getElementById("vidsoundsrc").currentTime = 0; // Resetting the video file to the beginning
   var sound_url_val = element.value;
-  document.getElementById("msg_sound").innerHTML = sound_url_val;
-  document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url_val+'" type="audio/mp3">';
-  document.getElementById("vidsoundsrc").play();
+  document.getElementById("msg_sound").innerHTML = sound_url_val; // Displaying the name of the sound file on the web interface
+  document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url_val+'" type="audio/mp3">'; // Updating the sound file
+  document.getElementById("vidsoundsrc").play(); // Playing the sound file
   var ids =   [face_url_id, sound_url_val];
   return update_exp(ids); // returning the id of the button clicked to be used in the 'exp' function.
 
@@ -389,7 +392,7 @@ function exp_sound(element) {
 
 
 
-// setting the default valua for the face expression and sound (neutral)
+// setting the default value for the face expression and sound (neutral)
 // -----------------
 function set_default_exp(face_name_val='neutral') {
 
@@ -421,7 +424,7 @@ function set_default_exp(face_name_val='neutral') {
 
     }
   });
-  document.getElementById("msg").innerHTML = "Default:"+ face_name_val;
+  document.getElementById("msg").innerHTML = "Default:"+ face_name_val; // Displaying the name of the emotion on the web interface
 }
 
 
@@ -452,15 +455,14 @@ function update_exp(ids) {
       sound: ids[1]
     },
     success: function(response) {
-      document.getElementById("vidsrc").load();
-
-      document.getElementById("vidsrc").play();
+      document.getElementById("vidsrc").load(); // Loading the new requested video file
+      document.getElementById("vidsrc").play(); // Playing the new requested video file
       
-      // Playing the new requested video and sound file
-      console.log(response);
+      console.log(response); // logging the response in browser's console
     }
-  }) // logging the response in browser's console
+  });
 
+  // Publishing the new emotion to the robot through ROS
   var exp_msg = new ROSLIB.Message({
     emotion : ids[0],
     auto_imit: auto_imit_val,
@@ -473,7 +475,7 @@ function update_exp(ids) {
   
 // // <--- END OF UPDATE_EXP FUNCTION --->
 
-function get_latest_emotion() {
+function get_latest_emotion() { // Getting the latest emotion from the server
   $.ajax({
     type: "GET",
     url: get_latest_emotion_url,
@@ -483,18 +485,18 @@ function get_latest_emotion() {
       var sound_url = response.sound;
       var face_url = response.face;
       // Playing the recognized emotion's sound and video file
-      document.getElementById("vidsrc").pause();
-      document.getElementById("vidsrc").currentTime = 0;
+      document.getElementById("vidsrc").pause(); // Pausing the video file
+      document.getElementById("vidsrc").currentTime = 0; // Resetting the video file to the beginning
       document.getElementById("vidsrc").innerHTML = '<source src="'+ face_url+'" type="video/mp4">'; 
-      document.getElementById("vidsrc").load();
-      document.getElementById("vidsrc").play()
+      document.getElementById("vidsrc").load(); // Loading the new requested video file
+      document.getElementById("vidsrc").play() // Playing the new requested video file
       if (sound_url != 'No assigned sound found') {
-        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">';
-        document.getElementById("vidsoundsrc").play();
+        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">'; // Updating the sound file
+        document.getElementById("vidsoundsrc").play(); // Playing the sound file
         } else {
-          document.getElementById("vidsoundsrc").pause();
-          document.getElementById("vidsoundsrc").currentTime = 0;
-          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
+          document.getElementById("vidsoundsrc").pause(); // Pausing the sound file
+          document.getElementById("vidsoundsrc").currentTime = 0; // Resetting the sound file to the beginning
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';}; // Updating the sound file
       
     }
   });
@@ -504,29 +506,35 @@ function get_latest_emotion() {
 // // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// // <----------------------------------------- CSRF Token Handling ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var csrftoken = $.cookie('csrftoken');
+var csrftoken = $.cookie('csrftoken'); // Getting the CSRF token from the browser's cookies
 
 function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method)); // Returning true if the method is GET, HEAD, OPTIONS, or TRACE
 }
 
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
+$.ajaxSetup({ // Setting up the ajax request to include the CSRF token in the header
+  beforeSend: function(xhr, settings) { // Before sending the request
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) { // If the request is not safe and is not cross domain
+      xhr.setRequestHeader("X-CSRFToken", csrftoken); // Set the CSRF token in the header
     }
+  }
 });
-var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF CSRF Token Handling ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// // <----------------------------------------- PARROT ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function parr_b(element) {
-  document.getElementById("pb_msg").innerHTML = element.value;
+  document.getElementById("pb_msg").innerHTML = element.value; 
   dta=JSON.stringify({
-    // Updating sound and video urls based on returned data from exp_face and exp_sound functions
     id: element.id,
     tag: element.id,
     '_token': csrf
@@ -548,6 +556,10 @@ function parr_r(element) {
   document.getElementById("pr_msg").innerHTML = element.value;
 }
 
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF PARROT ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- TEXT-TO-SPEECH ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,7 +567,7 @@ function parr_r(element) {
 function tts() {
   var text = document.getElementById("tts_text").value;
 
-  var speech_to_text_client = new ROSLIB.Service({
+  var text_to_speech_client = new ROSLIB.Service({
       ros : ros,
       name : tts_service,
       serviceType : tts_srv_type
@@ -565,8 +577,8 @@ function tts() {
       text : text,
     });
   
-    speech_to_text_client.callService(request, function(result) {
-      console.log('Service called successfully.');
+    text_to_speech_client.callService(request, function(result) {
+      console.log('Service called successfully. \n The generated sound will be played on the robot, not on the web interface.');
     });
 }
 
@@ -630,7 +642,9 @@ var degrees = document.getElementById("degrees").value;
 return degrees;
 }
 
-// the function that will be called from the move_keys function when the user clicks on the move buttons
+// -----------------
+// The function that will be called from the move_keys function when the user clicks on the move buttons
+// -----------------
 function move(cw, joint) { 
   var cmd_vel_listener = new ROSLIB.Topic({
     ros : ros,
@@ -653,15 +667,6 @@ function move(cw, joint) {
     // the position is in degrees and is how much the joint will move from its current position
     console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
   }
-
-cmd_vel_listener.subscribe(function(message) {
-  console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
-});
-angular = get_speed();
-degree = get_degrees()*cw;
-console.log(degree, joint)
-// the position is in degrees and is how much the joint will move from its current position
-console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
 
 // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
 var twist = new ROSLIB.Message({
@@ -700,10 +705,12 @@ motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic
   document.getElementById('current_id').innerHTML = current_id;
   document.getElementById('current_pos').innerHTML = current_pos;
 }); 
-};
+}
 
 
-// the function that will be called when the user clicks on the move buttons
+// -----------------
+// The function that will be called when the user clicks on the move buttons
+// -----------------
 function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, down, left, right
   if (joint == 'reset'){
     move(1,'reset');
@@ -746,86 +753,6 @@ function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, dow
 // // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// // -----------------
-// // Audio Player for the web interface
-// // -----------------
-function playAudio(input) { 
-  $(".play_btn")[0].currentTime = 0;
-  
-  if ($(input).hasClass("active") ) {
-    $(input).removeClass("active");
-    
-  } 
-  else {
-    $(".play_btn").removeClass("active");
-    $(input).addClass("active"); 
-       
-
-    }
-  }
-
-
-
-function allowDrop(ev) {
-    ev.preventDefault();
-  }
-  
-var state_var = '';
-function drag(ev, state) {
-    state_var = state; 
-  }
-  
-function drop(ev) {
-    ev.preventDefault();
-    var drop_id = ev.target.id;
-  //   if ($(this).find("input id=*clone")){
-  //     $(document.getElementById(state_var)).appendTo(".dest_list").replaceWith(function() { 
-  //     return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
-  // });
-  //   }
-  //   else {
-
-    $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
-      $(this).find("p").addClass("sclone_p");
-      $(this).css('display', 'inline-grid');
-      $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
-      $(this).find("input").attr("class", state_var + "_clone");
-      var del_btn = document.createElement("i");
-      del_btn.setAttribute("class","bi bi-x-lg del_btn");
-      del_btn.setAttribute("onclick","clear_item(this)");
-      $(this).append(del_btn);
-      $('#'+state_var + "_clone\*").css('border-radius','0%').css('width','10%').css('margin','-20px').css("height","inherit");
-      $(".play_btn").css('margin','0');
-      return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
-  });
-
-  }
-
-  function auto_run(){
-    // click all buttons that end with "clone" in order with a delay of 1 second
-      $(".dest_list li input[class$='clone']").each(function(i) {
-        $(this).removeClass("active");
-        $(this).delay(5000 * i).queue(function() {
-          $(this).addClass("active");
-          $(this).click();
-          $(this).dequeue();
-          });
-
-      });
-    }
-
-function clean(){
-  $(".dest_list").empty();
-}
-function clear_item(item){
-  $(item).parent().remove();
-} 
-
-
-
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function submitWizardForm(data) {
   dtaa = JSON.stringify({
@@ -870,46 +797,67 @@ function submitWizardForm(data) {
       //     + result.sum);
       // });
 
-      // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // <----------------------------------------- END OF SERVICES ----------------------------------------->
-      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF SERVICES ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // <----------------------------------------- CAMERA VIEWER ----------------------------------------->
-      // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// -----------------
+// Get the msg type of the specified topic to publish on
+// -----------------
+function setrostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
+      
+      var ros_topic = new ROSLIB.Topic({
+        ros: ros,
+        name: topic_name,
+        messageType: msg_type // Set the message type of the topic
+      });
+      
+      ros_topic.subscribe(function(message) {
+        const fields = Object.keys(message); // Get the fields of the message type
+        console.log(fields);
+        const form = document.getElementById('messageForm');
+        
+        fields.forEach((field) => { // Create an input element for each field of the message type
+          const input = document.createElement('input');
+          input.setAttribute('type', 'text');
+          input.setAttribute('name', field);
+          input.setAttribute('placeholder', field);
 
-      // get handle for video placeholder
-      img = document.getElementById('rgb-canvas');
-      // Populate video source 
-      img.src = "http://" + robot_IP + ":8181/stream?topic=/camera/image_raw";
+          form.appendChild(input);
+        });
 
-      // ----------------------------------------------------------------------------------------------------------
-      // // <----------------------------------------- END OF CAMERA VIEWER ----------------------------------------->
-      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        publish_msg_form(ros_topic); // Publish the message when the form is submitted
+      });
+    }
+  });
+}
+
+// -----------------
+// Publish the message when the form is submitted
+// -----------------
+function publish_msg_form(topic) {
+  const msgform = document.getElementById('messageForm');
+  msgform.addEventListener('submit', function(event) { // Publish the message when the form is submitted
+    event.preventDefault();
+
+    const formData = new FormData(msgform);
+    const message = new ROSLIB.Message();
     
+    for (const pair of formData.entries()) {
+      message[pair[0]] = pair[1];
+    }
 
-
-  function setrostopic(topic_name) {
-    // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
-    $.ajax({
-      type: "GET",
-      url: '/setrostopic',
-      data: {
-        topic: topic_name
-      },
-      success: function(response) {
-        console.log(response);
-        var msg_type = response.msg_type;
-        console.log(msg_type);
-        var ros_topic = new ROSLIB.Topic({
-          ros : ros,
-          name : topic_name,
-          messageType : msg_type
-        });
-        ros_topic.subscribe(function(message) {
-          console.log('Received message on ' + ros_topic.name + ': ' + message);
-          document.getElementById("ros_topic").innerHTML = message;
-        });
-      }
-    });
-  }
+    topic.publish(message);
+  });
+}

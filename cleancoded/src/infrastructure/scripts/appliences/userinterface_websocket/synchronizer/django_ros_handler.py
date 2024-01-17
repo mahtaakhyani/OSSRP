@@ -57,24 +57,10 @@ class ROSHandler:
         return image_topics
     
 
-    def topic_type(self, topic):
+    def get_topic_type(self, topic):
         req_topic_list = [topic_list for topic_list in self.topics_list() if topic_list[0] == topic]
         if len(req_topic_list) != 0:
-            return req_topic_list[0][1] # Returns the type of the topic as a string
+            return req_topic_list[0][1] # Returns the type of the topic (i.e. msg type) as a string
         else:
             return 'Topic not found'
-        
-
-    def msg_coupling(self, topic):
-        msg_type = self.topic_type(topic)
-
-        string_msg = ['data']
-        twist_msg = {'linear': ['x', 'y', 'z'], 'angular': ['x', 'y', 'z']}
-        dyan_twist_msg = [twist_msg,'position','joint']
-        exp_msg = ['action','emotion','auto_imit']
-        
-
-
-        if msg_type == 'std_msgs/String':
-            return string_msg
         
