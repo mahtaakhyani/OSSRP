@@ -42,28 +42,27 @@ var robot_ws;
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
 // - - - Django Server - - - 
-// $.ajax({
-//   type: "GET",
-//   url: request_server_ip,
-//   success: function(response) {
-//     host = response.host
-//     android_host = response.android_ip;
-//     alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
-//     setTimeout(() => {
-//       // Code to execute after the delay
-//       console.log("After delay");
-//     }, 2000); // Delay of 2000 milliseconds (2 seconds)
+$.ajax({
+  type: "GET",
+  url: request_server_ip,
+  success: function(response) {
+    host = response.host
+    android_host = response.android_ip;
+    alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
+    setTimeout(() => {
+      // Code to execute after the delay
+      console.log("After delay");
+    }, 2000); // Delay of 2000 milliseconds (2 seconds)
     
-//     set_variables();
-//     set_ros();
-//     set_default_exp(); // Setting the default emotion to 'neutral'. 
-//                       // The function is defined in the emotion handling section 
-//                       // and also takes in the default emotion's name as an argument 
-//                       // (i.e. face_name_val='neutral' or whatever the default emotion must be)
+    set_variables();
+    set_ros();
+    set_default_exp(); // Setting the default emotion to 'neutral'. 
+                      // The function is defined in the emotion handling section 
+                      // and also takes in the default emotion's name as an argument 
+                      // (i.e. face_name_val='neutral' or whatever the default emotion must be)
 
-//   }
-// });
-// }
+  }
+});
 function set_variables() {
       console.log('setting environment variables...');
       django_base_url = 'http://' + host + ':' + port ;
