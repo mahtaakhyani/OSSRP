@@ -71,7 +71,7 @@
     .header h1 {
       margin: 0;
       margin-top: 5px;
-      font-size: 24px;
+      font-size: 20px;
       color: #333333;
       font-weight: 900 !important;
       font-family:'Times New Roman', Times, serif;
@@ -79,6 +79,7 @@
 
     .content {
       padding: 20px;
+      width: min-content;
     }
   
    
@@ -223,8 +224,8 @@
   <div class="u-clearfix">
     <div class="u-layout-row">
       <div class="u-layout-col" style="width: 20%;">
-        <div class="u-layout-row">
-          <div class="window u-layout-col" id="card" style="max-height: 400px;height: 300px;max-width: 100%;">
+        <div class="u-layout-row" style="height: 25%;">
+          <div class="window u-layout-col" id="card" style="max-height: 150%;height: 100%;max-width: 100%;">
             <div class="header image_view">
               <h1 class="col">Image View</h1>
               <label class="col dropdown">
@@ -267,7 +268,7 @@
           </div>
         </div>
         <div class="u-layout-row">
-          <div class="window u-layout-col" id="card" style="height: 100%;">
+          <div class="window u-layout-col" id="card" style="height: 90%;">
             <div class="header image_view">
               <h1 class="col">Robot's Face</h1>
               <label class="col dropdown">
@@ -279,7 +280,7 @@
             </div>
             <div class="content">
               <div class="u-layout-row">
-                <div class="u-layout-col ">
+                <div class="u-layout-col " style="height: 30%;">
                   <video id="vidsrc" class="embed-responsive-item  fit-video"  loop="true" playsinline="">
                     <source  src="" type="video/mp4">
                     <p>Your browser does not support HTML5 video.</p>
@@ -345,6 +346,24 @@
               </div>
             </div>
           </div>
+          </div>
+          <div class="window u-layout-col" id="card" style="height: 90%;">
+            <div class="header image_view">
+              <h1 class="col">ROS Topic Echo</h1>
+              <label class="col dropdown">
+                <div class="dd-button">
+                  select topic
+                </div> 
+                <input type="checkbox" class="dd-input" id="test">
+                <ul class="dd-menu">
+                  <li class="topic" onclick="echorostopic(this.className)">topic</li>
+                  <li>Another action</li>
+                </ul>
+              </label>
+            </div>
+            <div class="content">
+              <div class="scrollable" id="messages"></div>
+            </div>
         </div>
       </div>
     </div>
@@ -371,41 +390,41 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="u-layout-col">
-      <div class="u-layout-row">
-        <div class="u-layout-col" style="width: 20%;">
-          <div class="u-layout-row">
-            <div class="window u-layout-col" style="height: 100%">
-              <div class="header   image_view">
-                <h1 class="col">ROS Nodes</h1>
-                
+      <div class="u-layout-col">
+        <div class="u-layout-row">
+          <div class="u-layout-col" style="width: 20%;">
+            <div class="u-layout-row">
+              <div class="window u-layout-col" style="height: 100%">
+                <div class="header   image_view">
+                  <h1 class="col">ROS Nodes</h1>
+                  
+                </div>
+                <div class="content">
+                  <div class="scrollable" id="messages"></div>
+                </div>
               </div>
-              <div class="content">
-                <div class="scrollable" id="messages"></div>
+            </div>
+          </div>
+        </div>
+        <div class="u-layout-row">
+          <div class="u-layout-col" style="width: 20%;">
+            <div class="u-layout-row">
+              <div class="window u-layout-col" style="height: 100%">
+                <div class="header   image_view">
+                  <h1 class="col">ROS Launch</h1>
+                  
+                </div>
+                <div class="content">
+                  <div class="scrollable" id="messages"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="u-layout-row">
-        <div class="u-layout-col" style="width: 20%;">
-          <div class="u-layout-row">
-            <div class="window u-layout-col" style="height: 100%">
-              <div class="header   image_view">
-                <h1 class="col">ROS Launch</h1>
-                
-              </div>
-              <div class="content">
-                <div class="scrollable" id="messages"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     </div>
   </div>
+</div>
   <nav class="c-circle-menu js-menu menu">
     <button class="c-circle-menu__toggle menu js-menu-toggle" id="c-circle-menu">
       <span>Toggle</span>
