@@ -48,20 +48,21 @@ class FaceDetection():
 		# self.num = 0
 		self.c = 0
 		self.t = time.time()
-		rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
+		self.tt = time.time()
+		# rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
 		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=10)
 	
-	def syncinfo(self, info):  # sync camera video stream info
-		self.height = info.height
-		self.width = info.width	
-		# rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
-		try:
-			return self.height, self.width
-		except:
-			pass	
+	# def syncinfo(self, info):  # sync camera video stream info
+	# 	self.height = info.height
+	# 	self.width = info.width	
+	# 	# rospy.loginfo("image height: %s width: %s"%(self.height,self.width))
+	# 	try:
+	# 		return self.height, self.width
+	# 	except:
+	# 		pass	
 
 	def count(self,s,d=False):
-		self.dt = time.time() - self.t
+		self.dt = time.time() - self.tt
 		self.c +=1
 		print('frame number ',self.c, self.dt)
 		self.dt = 0
