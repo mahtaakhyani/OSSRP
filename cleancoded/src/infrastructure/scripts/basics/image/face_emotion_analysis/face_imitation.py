@@ -49,7 +49,7 @@ class FaceDetection():
 		self.c = 0
 		self.t = time.time()
 		rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
-		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=10, buff_size=2*13)
+		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=10)
 	
 	def syncinfo(self, info):  # sync camera video stream info
 		self.height = info.height
