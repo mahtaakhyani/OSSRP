@@ -27,6 +27,11 @@
                                         String
                                         String"/>
 
+<node pkg="infrastructure" type="save_logs_to_file.py" name="save_logs" output="screen" 
+        args="--topics $(arg logs_topics) 
+                --topics_msg_types $(arg logs_topics_msg_types) 
+                --file_name $(arg logs_file_name) 
+                --file_extension $(arg logs_file_extension)"/>
 
 <!-- Emotion interactions node -->
     <include file="$(find infrastructure)/launch/initiate_facial.launch"/>

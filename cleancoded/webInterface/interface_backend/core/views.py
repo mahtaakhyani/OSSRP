@@ -1,8 +1,9 @@
 from pathlib import Path
-import sys
+import sys,os
 import socket
 import fcntl
 import struct
+import arpreq
 # Create your views here."\move.py""\interface_backend\interface_backendapp\views.py"
 from django.http import HttpRequest, HttpResponse, request, JsonResponse, StreamingHttpResponse, HttpRequest
 from django.core.files.storage import Storage
@@ -282,34 +283,62 @@ class IPUpdater(APIView):
             hostname = 'hooshang-desktop.local'
 
         ip = ""
-        gateway = f"{'.'.join(hostname.split('.')[:3])}.0"
+        gateway = f"{'.'.join(hostname.split('.')[:3])}"
         print(gateway)
         android_mac = "3c:f7:a4:50:a2:d1"
-        output = subprocess.run(["arp", "-a"], stdout=subprocess.PIPE).stdout.decode()
-        if android_mac in output:
-            for i in output.split('?'):
-                if android_mac in i:
-                    ip = i.split("(")[1].split(")")[0]
+        ip = self.find_ip_address(gateway,android_mac)
+  
             
-        else:
-            print("MAC address of the android not found. Trying different method.")
-            android_mac = android_mac.upper()
-            p = subprocess.Popen([f"sudo nmap -sn {gateway}/24"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.PIPE)
-            password = "1"
-            stdout, stderr = p.communicate(input=(password + '\n').encode())
-            output = stdout.decode()
-            output = str(output).split("\n")
-            print(str(output).split("\n"))
-            for i,line in enumerate(output):
-                if android_mac in line:
-                    ip = output[i-2].replace("Nmap scan report for ","")
-        print(ip)
+        # else:
+        #     print("MAC address of the android not found. Trying different method.")
+        #     android_mac = android_mac.upper()
+        #     password = "1"
+            # p = subprocess.Popen([f"sudo nmap -sn {gateway}/24"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.PIPE)
+            # stdout, stderr = p.communicate(input=(password + '\n').encode())
+            # output = stdout.decode()
+            # output = process.stdout
+            # output = str(output).split("\n")
+            # print(str(output).split("\n"))
+            # for i,line in enumerate(output):
+            #     if android_mac in line:
+            #         ip = output[i-2].replace("Nmap scan report for ","")
         print(f"Hostname: {hostname}")
         return JsonResponse(data={"host": hostname,
                                 "android_ip": ip}, status=200)
    
   
 
+    def find_ip_address(self,gateway, mac_address):
+        for ip in range(1, 255):
+            ip_address = f"{gateway}.{ip}"
+            resolved_mac = arpreq.arpreq(ip_address)
+            try:
+                resolved_mac = arpreq.arpreq(ip_address)
+                if resolved_mac.lower() == mac_address.lower():
+                    return ip_address
+            except :
+                continue
+        
+        
+        iprange =f'{gateway}.0/24'
+        android_mac = mac_address.upper()
+        out = self.run_nmap_with_password(android_mac,iprange)
+        print(out)
+        return out
+
+    def run_nmap_with_password(self, mac_address, ip_range):
+        print("MAC address of the android not found. Trying different method.")
+        command = f"sudo nmap -sn -PR {ip_range}"
+        process = subprocess.Popen(command, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
+        output = output.decode()
+        output = str(output).split("\n")
+        print(str(output).split("\n"))
+        for i,line in enumerate(output):
+            if mac_address in line:
+                ip = output[i-2].replace("Nmap scan report for ","")
+                return ip
+        
 # ----------------------------------------- ROS handling ----------------------------------
 
 class ProViewTemp(APIView):

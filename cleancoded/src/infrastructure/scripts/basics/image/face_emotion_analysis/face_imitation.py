@@ -49,7 +49,7 @@ class FaceDetection():
 		self.c = 0
 		self.t = time.time()
 		rospy.Subscriber("/camera_info", CameraInfo, self.syncinfo, queue_size=10)
-		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=1, buff_size=2*13)
+		self.sub = rospy.Subscriber("/image_raw", Image, self.count, callback_args=False, queue_size=10, buff_size=2*13)
 	
 	def syncinfo(self, info):  # sync camera video stream info
 		self.height = info.height
@@ -99,6 +99,21 @@ class FaceDetection():
 
 
 	def prequisites(self,image):
+		# image = cv2.resize(image, (800, 600))
+		# image.flags.writeable = False
+		# gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+		try:
+			faces = DeepFace.detectFace(image, detector_backend='opencv')
+			# for x,y,w,h in faces:
+			# 			self.img=cv2.rectangle(self.frame_msgs,(x,y),(x+w,y+h),
+			# 			(random.randint(0,255),random.randint(0,255),random.randint(0,255)),1)  #making a recentangle to show up and detect the face and setting it position and colour
+			# 			self.face_width = h
+			print("Face Detected")
+			return True
+		except:
+			print("No face detected")
+			return False
+
 		with self.mp_holistic.Holistic(
 		# max_num_faces=1,  # number of faces to track in each frame
 		refine_face_landmarks=True,  # includes iris landmarks in the face mesh model
@@ -143,7 +158,7 @@ class FaceDetection():
 				condition = self.prequisites(image)
 				return "No face detected."
 			else:
-				analyze = DeepFace.analyze(self.frame_msgs,actions=['emotion'], enforce_detection=False)  #same thing is happing here as the previous example, we are using the analyze class from deepface and using ‘frame’ as input
+				analyze = DeepFace.analyze(image,actions=['emotion'], enforce_detection=False)  #same thing is happing here as the previous example, we are using the analyze class from deepface and using ‘frame’ as input
 				result = [analyze]
 				
 				self.dt = time.time() - self.t
@@ -157,10 +172,10 @@ class FaceDetection():
 		image = cv2.resize(image,(self.height,self.width))
 		feedback = self.analysis(image)
 		if feedback != "No face detected":
-			emotion = feedback[0][0]['emotion']
-			dominant = feedback[0][0]['dominant_emotion']
+			emotion = feedback[0]['emotion']
+			dominant = feedback[0]['dominant_emotion']
 			self.dt = time.time() - self.t
-			self.t = time.time()
+
 			print('analyzed untill last process: ',self.dt)
 
 			# self.dt = time.time() - self.t
@@ -182,7 +197,7 @@ class FaceDetection():
 			# 	self.mean = []
 			# 	self.num = 0
 
-			if len(self.global_dominant_emotion) <= 50:
+			if len(self.global_dominant_emotion) <= 3:
 				self.global_dominant_emotion.append(str(dominant))
 			else:
 				self.global_dominant_emotion = []
@@ -205,8 +220,10 @@ class FaceDetection():
 			# Converting to string to display on the camera frame output
 			prettied_str = '\n'.join(prettied_dict)
 			rospy.loginfo(prettied_str)
+			self.t = time.time()
 			return prettied_str
 		else:
+			self.t = time.time()
 			self.msg.data = []
 			self.pub.publish(self.msg)
 			return "No face detected"

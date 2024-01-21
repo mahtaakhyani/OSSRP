@@ -13,6 +13,11 @@ html, body {
   overflow: scroll;
   }
 
+#body {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .u-section-1 .u-layout-wrap-1 {
   width: -webkit-fill-available;
   margin: 33px 0 0 0;

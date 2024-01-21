@@ -1,42 +1,7 @@
-// sleep time expects milliseconds
-function sleep (time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-// Fetching server ip address --------------------- * DOESN'T WORK !
-// -----------------------------------------------
-
-// function get_ip() {
-//   $.ajax({
-//     type: "GET",
-//     url: request_server_ip, 
-//     success: function(response) {
-//       host = response.ip;
-//       console.log('Settings have successfully set [Jetson local ip address = '+host+']');
-//     },
-//     error: function(error) {
-//       console.log(error, "IP address could not be fetched. Setting IP address to 'localhost'");
-//       host = 'localhost';
-
-//     },
-//     // while the function is running, the page will be in a loading state
-//     beforeSend: function() {
-//       console.log("Loading server IP...");
-//     },
-//     // when the function is completed, the page will be in a normal state
-//     complete: function() {
-//       console.log("Fetching server IP Done");
-//       set_variables(host);
-
-//     }
-//   });
-// }
-
-
 // SETTING STATIC GLOBAL VARIABLES
 // ---------------------------------
-var host = 'hooshang-desktop.local';
-var android_host = "192.168.134.154";
+var host;
+var android_host;
 var port = '8000';
 var android_port = '8080';
 var rosbridge_port = '9090';
@@ -44,7 +9,9 @@ var face_url_id = '';
 var sound_url_val = '';
 var auto_imit_val = false;
 // - - - Django Server - - - 
-var request_server_ip = '/reqip'; //URL has been set in 'interface_backendapp/urls.py'
+var request_server_ip = '/reqip'; //URL has been set in 'interface_backend/core/urls.py'
+var get_latest_emotion_url = '/reqcli'; //URL has been set in 'interface_backend/core/urls.py'
+var get_msg_type_url = '/get_msg_type'; //URL has been set in 'interface_backend/core/urls.py'
 var django_base_url;
 var request_current_exp;
 var publish_new_exp;
@@ -71,55 +38,101 @@ var tts_srv_type = 'infrastructure/Tts';
 // - - - ROS - - -
 var robot_ws;
 
+
 // SETTING DYNAMIC GLOBAL VARIABLES
 // ---------------------------------
-function set_variables(host,android_host) {
-    console.log('setting environment variables...');
-    // - - - Django Server - - - 
-    django_base_url = 'http://' + host + ':' + port ;
-    request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
-    publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
-    android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
-    console.log('Android Server is listening on: '+android_server_url+
-                '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
-  
-    // - - - ROS - - -
-    // Workspace
-    robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
-    console.log('ROSBridge websocket is listening on: '+robot_ws+
-                '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
-                +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
-                '\n/head_cmd_vel to publish motion commands on');
+// - - - Django Server - - - 
+$.ajax({
+  type: "GET",
+  url: request_server_ip,
 
-    // - - - Camera - - -
-    var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
-    document.getElementById("camera_img").src = camera_img_url;
-    console.log('Camera is streaming on: '+camera_img_url);
-    // - - - Camera Landmarked - - -
-    var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
-    document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
-    console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
-    // - - - Camera Gaze Frame - - -
-    var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
-    document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
-    console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
-
-  }
-
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
-// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// initializing the variables and setting the default emotion to 'neutral'
-// -----------------
-set_variables(host,android_host);
-set_default_exp(); // Setting the default emotion to 'neutral'. 
+  success: function(response) {
+    host = response.host
+    android_host = response.android_ip;
+    alert("Android is at: "+ android_host + "\nSet the host ip on the Android to: " + host)
+    setTimeout(() => {
+      // Code to execute after the delay
+      console.log("After delay");
+    }, 2000); // Delay of 2000 milliseconds (2 seconds)
+    body_css = document.getElementById("body");
+    body_css.style.opacity = "1";
+    body_css.style.pointerEvents = "auto";
+    set_variables();
+    set_ros();
+    set_default_exp(); // Setting the default emotion to 'neutral'. 
                       // The function is defined in the emotion handling section 
                       // and also takes in the default emotion's name as an argument 
                       // (i.e. face_name_val='neutral' or whatever the default emotion must be)
 
-                      
+  }
+});
+function set_variables() {
+      console.log('setting environment variables...');
+      django_base_url = 'http://' + host + ':' + port ;
+      request_current_exp =  '/reqemo';  //URL has been set in 'interface_backendapp/urls.py'
+      publish_new_exp =  '/reqpub'; //URL has been set in 'interface_backendapp/urls.py'
+      android_server_url = 'http://' + android_host + ':' + android_port + '/android_server';
+      console.log('Android Server is listening on: '+android_server_url+
+      '\nAsking the server for latest emotion, then sending status, both on: /reqcli');
+      
+      // - - - ROS - - -
+      // Workspace
+      robot_ws = 'ws://'+host+':'+ rosbridge_port;	// Setting the websocket url for the ROS environment
+      console.log('ROSBridge websocket is listening on: '+robot_ws+
+      '\n\nActiveTopics:\n'+publish_exp_topic+' to publish selected emotion on\n '
+      +listen_exp_topic+' to listen for the recognized emotion from the robot (i.e. Auto mode)'+
+      '\n/head_cmd_vel to publish motion commands on');
+      
+      // - - - Camera - - -
+      var camera_img_url = 'http://' + host + ':8080/stream?topic=/image_raw';
+      document.getElementById("camera_img").src = camera_img_url;
+      console.log('Camera is streaming on: '+camera_img_url);
+      // - - - Camera Landmarked - - -
+      var camera_landmarked_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/landmarked';
+      document.getElementById("camera_landmarked_img").src = camera_landmarked_img_url;
+      console.log('Camera Landmarked is streaming on: '+camera_landmarked_img_url);
+      // - - - Camera Gaze Frame - - -
+      var camera_gaze_img_url = 'http://' + host + ':8080/stream?topic=/image_raw/gaze_frame';
+      document.getElementById("camera_gaze_img").src = camera_gaze_img_url;
+      console.log('Camera Gaze Frame is streaming on: '+camera_gaze_img_url);
+}
+      
+
+  
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------------- END OF VARIABLE DECLARATION -----------------------------------------------
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// // <----------------------------------------- ROS CONNECTION ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var ros;
+function set_ros() {
+  const ROSLIB = require('roslib');
+  // Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
+  // ----------------- 
+  ros = new ROSLIB.Ros({
+    url : robot_ws
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+}
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
+// // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+      
+// }                 
 
 // ---------------------------------------------- START OF INTERFACE FUNCTIONS -----------------------------------------------
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,9 +157,6 @@ $logmenu.addEventListener('click', function(e) {
 } );
 
 
-
-
-
 //Changing tabs
 // -----------------
 function viewdiv(div) {
@@ -154,37 +164,94 @@ function viewdiv(div) {
   $(document.getElementById(div)).show().children().show();
 }
 
+// Changing the image viewer's image
+// -----------------
+function changeimage(topic_name) {
+  var img_url = 'http://' + host + ':8080/stream?topic=' + topic_name;
+    document.getElementById("pro_viewer").src = img_url;
+    console.log('Image Viewer is showing: '+ img_url + ' topic');
+}
+
+// Drag and Drop
+// -----------------
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+var state_var = '';
+function drag(ev, state) {
+  state_var = state; 
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var drop_id = ev.target.id;
+//   if ($(this).find("input id=*clone")){
+//     $(document.getElementById(state_var)).appendTo(".dest_list").replaceWith(function() { 
+//     return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
+// });
+//   }
+//   else {
+
+  $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
+    $(this).find("p").addClass("sclone_p");
+    $(this).css('display', 'inline-grid');
+    $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
+    $(this).find("input").attr("class", state_var + "_clone");
+    var del_btn = document.createElement("i");
+    del_btn.setAttribute("class","bi bi-x-lg del_btn");
+    del_btn.setAttribute("onclick","clear_item(this)");
+    $(this).append(del_btn);
+    $('#'+state_var + "_clone\*").css('border-radius','0%').css('width','10%').css('margin','-20px').css("height","inherit");
+    $(".play_btn").css('margin','0');
+    return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
+});
+
+}
+
+function auto_run(){
+  // click all buttons that end with "clone" in order with a delay of 1 second
+    $(".dest_list li input[class$='clone']").each(function(i) {
+      $(this).removeClass("active");
+      $(this).delay(5000 * i).queue(function() {
+        $(this).addClass("active");
+        $(this).click();
+        $(this).dequeue();
+        });
+
+    });
+  }
+
+function clean(){
+$(".dest_list").empty();
+}
+function clear_item(item){
+$(item).parent().remove();
+} 
+// End of Drag and Drop
+// -----------------
+
+
+// // Audio Player for the web interface
+// // -----------------
+function playAudio(input) { 
+  $(".play_btn")[0].currentTime = 0;
+  
+  if ($(input).hasClass("active") ) {
+    $(input).removeClass("active");
+    
+  } 
+  else {
+    $(".play_btn").removeClass("active");
+    $(input).addClass("active"); 
+       
+
+    }
+  }
+
+
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF INTERFACE FUNCTIONS ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-// // <----------------------------------------- ROS CONNECTION ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
-// ----------------- 
-var ros = new ROSLIB.Ros({
-  url : robot_ws
-});
-
-ros.on('connection', function() {
-  console.log('Connected to websocket server.');
-});
-
-ros.on('error', function(error) {
-  console.log('Error connecting to websocket server: ', error);
-});
-
-ros.on('close', function() {
-  console.log('Connection to websocket server closed.');
-});
-
-
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // <----------------------------------------- END OF ROS CONNECTION ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -199,75 +266,6 @@ window.addEventListener('load', (event) => {
   sleep(6000).then(() => {  // wait 3 seconds
   console.log('page is fully loaded');
   console.log('Settings have successfully set [android server url = '+android_server_url+'], [Django base url = '+django_base_url+']', '[ROS websocket = '+robot_ws+']');  
-//   $('.bt_left').click(function(){
-//     $('.perso').animate({
-//   left: '-=60'
-//   });
-//   });
-//   $('.bt_right').click(function(){
-//     $('.perso').animate({
-//   left: '+=60'
-//   });
-//   });
-//   $('.bt_top').click(function(){
-//     $('.perso').animate({
-//   top: '-=60'
-//   });
-//   });
-//   $('.bt_bottom').click(function(){
-//   $('.perso').animate({
-//   top: '+=60'
-//   });
-//   });
-//   $('.bt_head_left').click(function(){
-//   $('.eve .head .face').animate({
-//   left: '-=4'
-//   });
-  
-//   });
-//   $('.bt_head_right').click(function(){
-//   $('.eve .head .face').animate({
-//   left: '+=4'
-//   });
-//   });
-//   $('.bt_head_top').click(function(){
-//   $('.eve .head .face').animate({
-//   top: '-=4'
-//   });
-//   });
-//   $('.bt_head_bottom').click(function(){
-//   $('.eve .head .face').animate({
-//   top: '+=4'
-//   });
-//   });
-//   $('.bt_rhand_top').click(function () {
-//   $('.eve .body:before').css('transform', 'rotate(-34deg)');
-//   });
-  
-//   $(document).keydown(function(key) {
-//   switch (key.which) {
-//   case 37:
-//     $('.perso').stop().animate({
-//         left: '-=60'
-//     });
-//     break;
-//   case 38:
-//     $('.perso').stop().animate({
-//         top: '-=60'
-//     });
-//     break;
-//   case 39:
-//     $('.perso').stop().animate({
-//         left: '+=60'
-//     }); 
-//     break;
-//   case 40:
-//     $('.perso').stop().animate({
-//         top: '+=60'
-//     });
-//     break;
-//   }
-//   });
 });
 });
 
@@ -279,16 +277,6 @@ window.addEventListener('load', (event) => {
 
 // // <---------------------------------------------- EMOTION HANDLING SECTION---------------------------------------->	
 // // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// -----------------
-// Creating new Topic for expressions data (used for publishing the user's commanded emotion in the update_exp function)
-// -----------------
-var exp_Topic = new ROSLIB.Topic({
-  ros : ros,
-  name : publish_exp_topic,
-  messageType : exp_msg_type
-});
-
 
 // -----------------
 // Handling the facial imitiator through the server (imitating the user's facial expression through ROS via camera)
@@ -323,7 +311,7 @@ autoexp_Topic.subscribe(function(message) { // updating the video file based on 
           document.getElementById("vidsoundsrc").pause();
           document.getElementById("vidsoundsrc").currentTime = 0;
           document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';};
- 
+
       console.log(response);
       var ids =   [response.face_url, sound_url];
       update_exp(ids);  // Returning the id of the button clicked 
@@ -367,6 +355,7 @@ function exp_face(element) {
     },
     success: function(response) {
       var sound_url = response.sound_url;
+      // Playing the requested emotion's sound and video file
       document.getElementById("vidsrc").innerHTML = '<source src="'+ response.face_url+'" type="video/mp4">';
       if (sound_url == 'No assigned sound found' | face_url_id == 'auto') {
         document.getElementById("vidsoundsrc").pause();
@@ -383,8 +372,6 @@ function exp_face(element) {
                         //  to be used in the update_exp function.
     }
   });
-   // returning the url of the face to prevent changing the video file when sound updates
-
 
 }
 
@@ -393,13 +380,13 @@ function exp_face(element) {
 // Taking in the user's commanded sound and passing on the url of the sound file to update_exp function.
 // -----------------
 function exp_sound(element) {
-  playAudio(element)
-  document.getElementById("vidsoundsrc").pause()
-  document.getElementById("vidsoundsrc").currentTime = 0;
+  playAudio(element) // Playing the sound file
+  document.getElementById("vidsoundsrc").pause() // Pausing the video file
+  document.getElementById("vidsoundsrc").currentTime = 0; // Resetting the video file to the beginning
   var sound_url_val = element.value;
-  document.getElementById("msg_sound").innerHTML = sound_url_val;
-  document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url_val+'" type="audio/mp3">';
-  document.getElementById("vidsoundsrc").play();
+  document.getElementById("msg_sound").innerHTML = sound_url_val; // Displaying the name of the sound file on the web interface
+  document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url_val+'" type="audio/mp3">'; // Updating the sound file
+  document.getElementById("vidsoundsrc").play(); // Playing the sound file
   var ids =   [face_url_id, sound_url_val];
   return update_exp(ids); // returning the id of the button clicked to be used in the 'exp' function.
 
@@ -407,7 +394,7 @@ function exp_sound(element) {
 
 
 
-// setting the default valua for the face expression and sound (neutral)
+// setting the default value for the face expression and sound (neutral)
 // -----------------
 function set_default_exp(face_name_val='neutral') {
 
@@ -439,7 +426,7 @@ function set_default_exp(face_name_val='neutral') {
 
     }
   });
-  document.getElementById("msg").innerHTML = "Default:"+ face_name_val;
+  document.getElementById("msg").innerHTML = "Default:"+ face_name_val; // Displaying the name of the emotion on the web interface
 }
 
 
@@ -470,15 +457,14 @@ function update_exp(ids) {
       sound: ids[1]
     },
     success: function(response) {
-      document.getElementById("vidsrc").load();
-
-      document.getElementById("vidsrc").play();
+      document.getElementById("vidsrc").load(); // Loading the new requested video file
+      document.getElementById("vidsrc").play(); // Playing the new requested video file
       
-      // Playing the new requested video and sound file
-      console.log(response);
+      console.log(response); // logging the response in browser's console
     }
-  }) // logging the response in browser's console
+  });
 
+  // Publishing the new emotion to the robot through ROS
   var exp_msg = new ROSLIB.Message({
     emotion : ids[0],
     auto_imit: auto_imit_val,
@@ -491,34 +477,66 @@ function update_exp(ids) {
   
 // // <--- END OF UPDATE_EXP FUNCTION --->
 
+function get_latest_emotion() { // Getting the latest emotion from the server
+  $.ajax({
+    type: "GET",
+    url: get_latest_emotion_url,
+    
+    success: function(response) {
+      console.log(response);
+      var sound_url = response.sound;
+      var face_url = response.face;
+      // Playing the recognized emotion's sound and video file
+      document.getElementById("vidsrc").pause(); // Pausing the video file
+      document.getElementById("vidsrc").currentTime = 0; // Resetting the video file to the beginning
+      document.getElementById("vidsrc").innerHTML = '<source src="'+ face_url+'" type="video/mp4">'; 
+      document.getElementById("vidsrc").load(); // Loading the new requested video file
+      document.getElementById("vidsrc").play() // Playing the new requested video file
+      if (sound_url != 'No assigned sound found') {
+        document.getElementById("vidsoundsrc").innerHTML = '<source src="'+ sound_url+'" type="audio/mp3">'; // Updating the sound file
+        document.getElementById("vidsoundsrc").play(); // Playing the sound file
+        } else {
+          document.getElementById("vidsoundsrc").pause(); // Pausing the sound file
+          document.getElementById("vidsoundsrc").currentTime = 0; // Resetting the sound file to the beginning
+          document.getElementById("vidsoundsrc").innerHTML = '<source src="" type="audio/mp3">';}; // Updating the sound file
+      
+    }
+  });
+}
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// // <----------------------------------------- CSRF Token Handling ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var csrftoken = $.cookie('csrftoken');
+var csrftoken = $.cookie('csrftoken'); // Getting the CSRF token from the browser's cookies
 
 function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  // these HTTP methods do not require CSRF protection
+  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method)); // Returning true if the method is GET, HEAD, OPTIONS, or TRACE
 }
 
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
+$.ajaxSetup({ // Setting up the ajax request to include the CSRF token in the header
+  beforeSend: function(xhr, settings) { // Before sending the request
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) { // If the request is not safe and is not cross domain
+      xhr.setRequestHeader("X-CSRFToken", csrftoken); // Set the CSRF token in the header
     }
+  }
 });
-var csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF CSRF Token Handling ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// // <----------------------------------------- PARROT ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function parr_b(element) {
-  document.getElementById("pb_msg").innerHTML = element.value;
+  document.getElementById("pb_msg").innerHTML = element.value; 
   dta=JSON.stringify({
-    // Updating sound and video urls based on returned data from exp_face and exp_sound functions
     id: element.id,
     tag: element.id,
     '_token': csrf
@@ -540,6 +558,10 @@ function parr_r(element) {
   document.getElementById("pr_msg").innerHTML = element.value;
 }
 
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF PARROT ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- TEXT-TO-SPEECH ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,7 +569,7 @@ function parr_r(element) {
 function tts() {
   var text = document.getElementById("tts_text").value;
 
-  var speech_to_text_client = new ROSLIB.Service({
+  var text_to_speech_client = new ROSLIB.Service({
       ros : ros,
       name : tts_service,
       serviceType : tts_srv_type
@@ -557,8 +579,8 @@ function tts() {
       text : text,
     });
   
-    speech_to_text_client.callService(request, function(result) {
-      console.log('Service called successfully.');
+    text_to_speech_client.callService(request, function(result) {
+      console.log('Service called successfully. \n The generated sound will be played on the robot, not on the web interface.');
     });
 }
 
@@ -566,6 +588,7 @@ function tts() {
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF TEXT-TO-SPEECH ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------------- MOTION HANDLING --------------------------------------------->
@@ -590,8 +613,6 @@ motion_Topic.subscribe(function(message) {
   
 });
 
-
-
 // -----------------
 // Creating new Topic for dynamixel movement commands
 // -----------------
@@ -601,22 +622,31 @@ var dyna_Topic = new ROSLIB.Topic({
   messageType : dyna_msg_type
 });
 
+var exp_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : publish_exp_topic,
+  messageType : exp_msg_type
+});
+
+
 
 // // -----------------
 // // Publishing manual movement commands from the user interface(not from the keyboard) on /cmd_vel_web topic
 // // -----------------
 
 function get_speed(){
-  var speed = document.getElementById("speed").value;
-  return speed;
+var speed = document.getElementById("speed").value;
+return speed;
 }
 
 function get_degrees(){
-  var degrees = document.getElementById("degrees").value;
-  return degrees;
+var degrees = document.getElementById("degrees").value;
+return degrees;
 }
 
-// the function that will be called from the move_keys function when the user clicks on the move buttons
+// -----------------
+// The function that will be called from the move_keys function when the user clicks on the move buttons
+// -----------------
 function move(cw, joint) { 
   var cmd_vel_listener = new ROSLIB.Topic({
     ros : ros,
@@ -630,52 +660,64 @@ function move(cw, joint) {
   angular = get_speed();
   degree = get_degrees()*cw;
   console.log(degree, joint)
-  // the position is in degrees and is how much the joint will move from its current position
-  console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+  if (joint == 'reset'){
+    degree = 0;
+    console.log('Resetting all joints to 0');
 
-  // Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
-  var twist = new ROSLIB.Message({
-    linear: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
-    angular: {
-      x: parseFloat(angular),
-      y: 0,
-      z: 0
-    }
-  });
+  }
+  else {
+    // the position is in degrees and is how much the joint will move from its current position
+    console.log('Moving '+joint+' '+degree+' degress'+ ' with angular speed of '+angular+' degrees/sec');
+  }
 
-  var dyna_twist = new ROSLIB.Message({
-    speed: twist,
-    position: parseInt(degree),
-    joint: joint
-  });
-  cmd_vel_listener.publish(dyna_twist);
-  console.log(dyna_twist)
+// Creating a message of the type DynaTwist to be published on the /cmd_vel/dyna topic
+var twist = new ROSLIB.Message({
+  linear: {
+    x: 0,
+    y: 0,
+    z: 0
+  },
+  angular: {
+    x: parseFloat(angular),
+    y: 0,
+    z: 0
+  }
+});
 
-  var motion_Topic = new ROSLIB.Topic({
-    ros : ros,
-    name : listen_dyna_status_topic,
-    messageType : dyna_status_msg_type
-  });
-  
-  var current_pos;
-  var current_id;
-  motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
-    console.log('Received message on ' + listen_dyna_status_topic + ': ' + message.joint + ':' + message.position);
-    current_pos = message.position;
-    current_id = message.joint;
-    document.getElementById('current_id').innerHTML = current_id;
-    document.getElementById('current_pos').innerHTML = current_pos;
-  }); 
-};
+var dyna_twist = new ROSLIB.Message({
+  speed: twist,
+  position: parseInt(degree),
+  joint: joint
+});
+cmd_vel_listener.publish(dyna_twist);
+console.log(dyna_twist)
+
+var motion_Topic = new ROSLIB.Topic({
+  ros : ros,
+  name : listen_dyna_status_topic,
+  messageType : dyna_status_msg_type
+});
+
+var current_pos;
+var current_id;
+motion_Topic.subscribe(function(message) {// listening to the /cmd_vel_web topic to get the robot's current joint positions through the web interface.
+  console.log('Received message on ' + listen_dyna_status_topic + ': ' + message.joint + ':' + message.position);
+  current_pos = message.position;
+  current_id = message.joint;
+  document.getElementById('current_id').innerHTML = current_id;
+  document.getElementById('current_pos').innerHTML = current_pos;
+}); 
+}
 
 
-// the function that will be called when the user clicks on the move buttons
+// -----------------
+// The function that will be called when the user clicks on the move buttons
+// -----------------
 function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, down, left, right
-  if (joint == 'head'){
+  if (joint == 'reset'){
+    move(1,'reset');
+  }
+  else if (joint == 'head'){
     if (pos == 'up'){
       move(1,'head');
     }
@@ -713,86 +755,6 @@ function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, dow
 // // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// // -----------------
-// // Audio Player for the web interface
-// // -----------------
-function playAudio(input) { 
-  $(".play_btn")[0].currentTime = 0;
-  
-  if ($(input).hasClass("active") ) {
-    $(input).removeClass("active");
-    
-  } 
-  else {
-    $(".play_btn").removeClass("active");
-    $(input).addClass("active"); 
-       
-
-    }
-  }
-
-
-
-function allowDrop(ev) {
-    ev.preventDefault();
-  }
-  
-var state_var = '';
-function drag(ev, state) {
-    state_var = state; 
-  }
-  
-function drop(ev) {
-    ev.preventDefault();
-    var drop_id = ev.target.id;
-  //   if ($(this).find("input id=*clone")){
-  //     $(document.getElementById(state_var)).appendTo(".dest_list").replaceWith(function() { 
-  //     return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
-  // });
-  //   }
-  //   else {
-
-    $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
-      $(this).find("p").addClass("sclone_p");
-      $(this).css('display', 'inline-grid');
-      $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
-      $(this).find("input").attr("class", state_var + "_clone");
-      var del_btn = document.createElement("i");
-      del_btn.setAttribute("class","bi bi-x-lg del_btn");
-      del_btn.setAttribute("onclick","clear_item(this)");
-      $(this).append(del_btn);
-      $('#'+state_var + "_clone\*").css('border-radius','0%').css('width','10%').css('margin','-20px').css("height","inherit");
-      $(".play_btn").css('margin','0');
-      return "<li draggable='true' ondragstart='drag(event,this.id)'>" + this.innerHTML + "</li>"; 
-  });
-
-  }
-
-  function auto_run(){
-    // click all buttons that end with "clone" in order with a delay of 1 second
-      $(".dest_list li input[class$='clone']").each(function(i) {
-        $(this).removeClass("active");
-        $(this).delay(5000 * i).queue(function() {
-          $(this).addClass("active");
-          $(this).click();
-          $(this).dequeue();
-          });
-
-      });
-    }
-
-function clean(){
-  $(".dest_list").empty();
-}
-function clear_item(item){
-  $(item).parent().remove();
-} 
-
-
-
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// // <----------------------------------------- END OF EMOTION HANDLING ----------------------------------------->
-// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function submitWizardForm(data) {
   dtaa = JSON.stringify({
@@ -837,20 +799,102 @@ function submitWizardForm(data) {
       //     + result.sum);
       // });
 
-      // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // <----------------------------------------- END OF SERVICES ----------------------------------------->
-      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// // <----------------------------------------- END OF SERVICES ----------------------------------------->
+// // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      // // <----------------------------------------- CAMERA VIEWER ----------------------------------------->
-      // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// -----------------
+// Get the msg type of the specified topic to publish on
+// -----------------
+function setrostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
+      
+      var ros_topic = new ROSLIB.Topic({
+        ros: ros,
+        name: topic_name,
+        messageType: msg_type // Set the message type of the topic
+      });
+      
+      ros_topic.subscribe(function(message) {
+        const fields = Object.keys(message); // Get the fields of the message type
+        console.log(fields);
+        const form = document.getElementById('messageForm');
+        
+        fields.forEach((field) => { // Create an input element for each field of the message type
+          const input = document.createElement('input');
+          input.setAttribute('type', 'text');
+          input.setAttribute('name', field);
+          input.setAttribute('placeholder', field);
 
-      // get handle for video placeholder
-      img = document.getElementById('rgb-canvas');
-      // Populate video source 
-      img.src = "http://" + robot_IP + ":8181/stream?topic=/camera/image_raw";
+          form.appendChild(input);
+          const bt = document.getElementById('pub');
+          bt.style.display = 'block';
+        });
 
-      // ----------------------------------------------------------------------------------------------------------
-      // // <----------------------------------------- END OF CAMERA VIEWER ----------------------------------------->
-      // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        publish_msg_form(ros_topic); // Publish the message when the form is submitted
+      });
+    }
+  });
+}
+
+// -----------------
+// Publish the message when the form is submitted
+// -----------------
+function publish_msg_form(topic) {
+  const msgform = document.getElementById('messageForm');
+  msgform.addEventListener('submit', function(event) { // Publish the message when the form is submitted
+    event.preventDefault();
+
+    const formData = new FormData(msgform);
+    const message = new ROSLIB.Message();
     
+    for (const pair of formData.entries()) {
+      message[pair[0]] = pair[1];
+    }
+
+    topic.publish(message);
+  });
+}
+
+function echorostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
+      
+      var ros_topic = new ROSLIB.Topic({ 
+        ros: ros,
+        name: topic_name,
+        messageType: msg_type // Set the message type of the topic
+      });
+
+      ros_topic.subscribe(function(message) {
+        // add a new line to the topic's div with the message
+        const div = document.getElementById('topics');
+        const p = document.createElement('p');
+        p.innerHTML = JSON.stringify(message);
+        div.appendChild(p);
+        p.innerHTML = '------------------ <br>';
+        div.appendChild(p);
+        
+      });
+    }
+  });
+}

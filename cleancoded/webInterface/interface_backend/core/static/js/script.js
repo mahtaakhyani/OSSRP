@@ -45,15 +45,18 @@ var robot_ws;
 $.ajax({
   type: "GET",
   url: request_server_ip,
+
   success: function(response) {
     host = response.host
     android_host = response.android_ip;
-    alert("Android is at: "+ android_host + "Set the host ip on the Android to: " + host)
+    alert("Android is at: "+ android_host + "\nSet the host ip on the Android to: " + host)
     setTimeout(() => {
       // Code to execute after the delay
       console.log("After delay");
     }, 2000); // Delay of 2000 milliseconds (2 seconds)
-    
+    body_css = document.getElementById("body");
+    body_css.style.opacity = "1";
+    body_css.style.pointerEvents = "auto";
     set_variables();
     set_ros();
     set_default_exp(); // Setting the default emotion to 'neutral'. 
