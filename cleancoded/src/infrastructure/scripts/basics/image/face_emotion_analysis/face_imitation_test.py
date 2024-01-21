@@ -28,6 +28,17 @@ def save_camera_input_to_file(file_path):
         
         # Write the frame to the file
         out.write(frame)
+        try:
+            faces = DeepFace.detectFace(frame, detector_backend='opencv')
+            # for x,y,w,h in faces:
+            # 			self.img=cv2.rectangle(self.frame_msgs,(x,y),(x+w,y+h),
+            # 			(random.randint(0,255),random.randint(0,255),random.randint(0,255)),1)  #making a recentangle to show up and detect the face and setting it position and colour
+            # 			self.face_width = h
+            print("Face Detected")
+            return True
+        except:
+            print("No face detected")
+            return False
         analyze = [DeepFace.analyze(frame,actions=['emotion'], enforce_detection=False)]  #same thing is happing here as the previous example, we are using the analyze class from deepface and using ‘frame’ as input
         emotion = analyze[0]['emotion']
         dominant = analyze[0]['dominant_emotion']
