@@ -205,7 +205,7 @@ class GazeResponse {
 
   static getMessageSize(object) {
     let length = 0;
-    length += object.gazedirection.length;
+    length += _getByteLength(object.gazedirection);
     return length + 4;
   }
 

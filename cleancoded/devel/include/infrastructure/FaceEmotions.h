@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
@@ -34,7 +34,7 @@ struct FaceEmotions_
 
 
 
-   typedef std::vector< ::infrastructure::EmoProbArr_<ContainerAllocator> , typename ContainerAllocator::template rebind< ::infrastructure::EmoProbArr_<ContainerAllocator> >::other >  _data_type;
+   typedef std::vector< ::infrastructure::EmoProbArr_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::infrastructure::EmoProbArr_<ContainerAllocator> >> _data_type;
   _data_type data;
 
 
@@ -88,16 +88,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::FaceEmotions_<ContainerAllocator> >
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::FaceEmotions_<ContainerAllocator> const>
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::FaceEmotions_<ContainerAllocator> >
   : TrueType
   { };
@@ -105,6 +95,16 @@ struct IsMessage< ::infrastructure::FaceEmotions_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::FaceEmotions_<ContainerAllocator> const>
   : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::FaceEmotions_<ContainerAllocator> >
+  : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::FaceEmotions_<ContainerAllocator> const>
+  : FalseType
   { };
 
 template <class ContainerAllocator>

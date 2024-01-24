@@ -150,7 +150,7 @@ class SttResponse {
 
   static getMessageSize(object) {
     let length = 0;
-    length += object.transcription.length;
+    length += _getByteLength(object.transcription);
     return length + 4;
   }
 

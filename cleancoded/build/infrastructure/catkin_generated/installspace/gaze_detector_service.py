@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # This module is the server for the gaze detection service. 
 # First, it subscribes to the extracted landmarkes from image frame topic and sends it to the gaze detection function.

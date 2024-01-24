@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
@@ -33,7 +33,7 @@ struct Array3D_
 
 
 
-   typedef std::vector<double, typename ContainerAllocator::template rebind<double>::other >  _data_type;
+   typedef std::vector<double, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<double>> _data_type;
   _data_type data;
 
 
@@ -87,16 +87,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::Array3D_<ContainerAllocator> >
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::Array3D_<ContainerAllocator> const>
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::Array3D_<ContainerAllocator> >
   : TrueType
   { };
@@ -104,6 +94,16 @@ struct IsMessage< ::infrastructure::Array3D_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::Array3D_<ContainerAllocator> const>
   : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::Array3D_<ContainerAllocator> >
+  : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::Array3D_<ContainerAllocator> const>
+  : FalseType
   { };
 
 template <class ContainerAllocator>

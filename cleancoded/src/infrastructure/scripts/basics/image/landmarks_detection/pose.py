@@ -157,6 +157,7 @@ class MeshDetector():
 			refine_face_landmarks=True,  # includes iris landmarks in the face mesh model
 			min_detection_confidence=0.5,
 			min_tracking_confidence=0.5) as face_mesh:
+			
 			results = face_mesh.process(image_array)
 		self.dt = time.time() - self.t
 		self.t = time.time()

@@ -55,84 +55,84 @@ class MeshDetector():
 	def convert_frame(self, data, cv2window=False): # convert the frame to a numpy array from ROS image
 		self.t = time.time()
 
-		try:
-			encoding = data.encoding
-			dd = data
-			data = data.data
-			# Convert image data to numpy array
-			np_arr = np.frombuffer(data, np.uint8)
-			cv2_img = np_arr.reshape((self.height, self.width, -1))
+		# try:
+		encoding = data.encoding
+		dd = data
+		data = data.data
+		# Convert image data to numpy array
+		np_arr = np.frombuffer(data, np.uint8)
+		cv2_img = np_arr.reshape((self.height, self.width, -1))
 
-			# Convert image encoding if necessary
-			if encoding != 'bgr8':
-							cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
-			frame = cv2_img
-			self.modif_image = cv2.resize(frame, (self.height, self.width)) # resize the image to the desired size which is the camera info size
-			self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
-			self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
-			self.dt = time.time() - self.t
-			self.t = time.time()
-			print('did preprocessing in ',self.dt)
-			# rospy.loginfo("Pose: Got the image")
+		# Convert image encoding if necessary
+		if encoding != 'bgr8':
+						cv2_img = cv2.cvtColor(cv2_img, cv2.COLOR_RGB2BGR)
+		frame = cv2_img
+		self.modif_image = cv2.resize(frame, (self.height, self.width)) # resize the image to the desired size which is the camera info size
+		self.modif_image = cv2.cvtColor(self.modif_image, cv2.COLOR_BGR2RGB) # convert the image to RGB
+		self.modif_image.flags.writeable =False # To improve performance, optionally mark the image as not writeable to pass by reference.
+		self.dt = time.time() - self.t
+		self.t = time.time()
+		print('did preprocessing in ',self.dt)
+		# rospy.loginfo("Pose: Got the image")
 
-			self.arrrrr= np.array(self.modif_image, dtype=np.uint8).reshape((640,480,3))
+		self.arrrrr= np.array(self.modif_image, dtype=np.uint8).reshape((640,480,3))
 
-			landmarks_array = self.analyze(self.arrrrr)
-			# rospy.loginfo("Pose: Analyzed the image")
-			
+		landmarks_array = self.analyze(self.arrrrr)
+		# rospy.loginfo("Pose: Analyzed the image")
+		
 
-			face_points = []
-			if landmarks_array[0]:
-				for point in landmarks_array[0].landmark:
-					point_sub_msg = Point()
-					point_sub_msg.x = point.x
-					point_sub_msg.y = point.y
-					point_sub_msg.z = point.z
-					face_points.append(point_sub_msg)
-
-
-			lhand_points = []
-			if landmarks_array[1]:
-				for point in landmarks_array[1].landmark:
-					point_sub_msg = Point()
-					point_sub_msg.x = point.x
-					point_sub_msg.y = point.y
-					point_sub_msg.z = point.z
-					lhand_points.append(point_sub_msg)
+		face_points = []
+		if landmarks_array[0]:
+			for point in landmarks_array[0].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				face_points.append(point_sub_msg)
 
 
-			rhand_points = []
-			if landmarks_array[2]:
-				for point in landmarks_array[2].landmark:
-					point_sub_msg = Point()
-					point_sub_msg.x = point.x
-					point_sub_msg.y = point.y
-					point_sub_msg.z = point.z
-					rhand_points.append(point_sub_msg)
+		lhand_points = []
+		if landmarks_array[1]:
+			for point in landmarks_array[1].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				lhand_points.append(point_sub_msg)
 
-			pose_points = []
-			if landmarks_array[3]:
-				for point in landmarks_array[0].landmark:
-					point_sub_msg = Point()
-					point_sub_msg.x = point.x
-					point_sub_msg.y = point.y
-					point_sub_msg.z = point.z
-					pose_points.append(point_sub_msg)
 
-			landmarks_msg = Landmarks()
-			landmarks_msg.face = face_points
-			landmarks_msg.left_hand = lhand_points
-			landmarks_msg.right_hand = rhand_points
-			landmarks_msg.pose = pose_points
+		rhand_points = []
+		if landmarks_array[2]:
+			for point in landmarks_array[2].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				rhand_points.append(point_sub_msg)
 
-			
-			landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
-			landmark_pub.publish(landmarks_msg)
-			
-			self.callservice(dd,landmarks_msg)
+		pose_points = []
+		if landmarks_array[3]:
+			for point in landmarks_array[0].landmark:
+				point_sub_msg = Point()
+				point_sub_msg.x = point.x
+				point_sub_msg.y = point.y
+				point_sub_msg.z = point.z
+				pose_points.append(point_sub_msg)
 
-		except Exception as e:
-			rospy.logerr("Error: %s"%e)
+		landmarks_msg = Landmarks()
+		landmarks_msg.face = face_points
+		landmarks_msg.left_hand = lhand_points
+		landmarks_msg.right_hand = rhand_points
+		landmarks_msg.pose = pose_points
+
+		
+		landmark_pub = rospy.Publisher('/landmarks',Landmarks,queue_size=10)
+		landmark_pub.publish(landmarks_msg)
+		
+		self.callservice(dd,landmarks_msg)
+
+		# except Exception as e:
+		# 	rospy.logerr("Error: %s"%e)
 		
 	def convert_back(self,cv2_img):
 		ros_image = Image()
@@ -157,6 +157,7 @@ class MeshDetector():
 			refine_face_landmarks=True,  # includes iris landmarks in the face mesh model
 			min_detection_confidence=0.5,
 			min_tracking_confidence=0.5) as face_mesh:
+			
 			results = face_mesh.process(image_array)
 		self.dt = time.time() - self.t
 		self.t = time.time()

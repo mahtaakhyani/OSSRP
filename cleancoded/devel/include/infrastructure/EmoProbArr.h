@@ -8,7 +8,7 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <memory>
 
 #include <ros/types.h>
 #include <ros/serialization.h>
@@ -35,7 +35,7 @@ struct EmoProbArr_
 
 
 
-   typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _emotion_type;
+   typedef std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>> _emotion_type;
   _emotion_type emotion;
 
    typedef float _probability_type;
@@ -93,16 +93,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::EmoProbArr_<ContainerAllocator> >
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
-struct IsFixedSize< ::infrastructure::EmoProbArr_<ContainerAllocator> const>
-  : FalseType
-  { };
-
-template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::EmoProbArr_<ContainerAllocator> >
   : TrueType
   { };
@@ -110,6 +100,16 @@ struct IsMessage< ::infrastructure::EmoProbArr_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsMessage< ::infrastructure::EmoProbArr_<ContainerAllocator> const>
   : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::EmoProbArr_<ContainerAllocator> >
+  : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsFixedSize< ::infrastructure::EmoProbArr_<ContainerAllocator> const>
+  : FalseType
   { };
 
 template <class ContainerAllocator>
@@ -193,7 +193,7 @@ struct Printer< ::infrastructure::EmoProbArr_<ContainerAllocator> >
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::infrastructure::EmoProbArr_<ContainerAllocator>& v)
   {
     s << indent << "emotion: ";
-    Printer<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::stream(s, indent + "  ", v.emotion);
+    Printer<std::basic_string<char, std::char_traits<char>, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<char>>>::stream(s, indent + "  ", v.emotion);
     s << indent << "probability: ";
     Printer<float>::stream(s, indent + "  ", v.probability);
   }
