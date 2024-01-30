@@ -234,8 +234,9 @@
                 </div> 
                 <input type="checkbox" class="dd-input" id="test">
                 <ul class="dd-menu">
-                  <li class="topic" onclick="changeimage(this.className)">topic</li>
-                  <li>Another action</li>
+                  {% for image_topic in img_ros_topics %}
+                  <li class="{{image_topic}}" onclick="changeimage(this.className)">{{image_topic}}</li>
+                  {% endfor %}
                 </ul>
               </label>
             </div>
@@ -254,8 +255,9 @@
                 </div> 
                 <input type="checkbox" class="dd-input" id="test">
                 <ul class="dd-menu">
-                  <li class="topic" onclick="setrostopic(this.className)">topic</li>
-                  <li>Another action</li>
+                  {% for topic in topics %}
+                  <li class="{{topic}}" onclick="setrostopic(this.className)">{{topic}}</li>
+                  {% endfor %}
                 </ul>
               </label>
             </div>

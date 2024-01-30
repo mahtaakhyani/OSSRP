@@ -1,0 +1,1 @@
+Copy the files in this directory to the right system folders.

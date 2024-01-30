@@ -1,0 +1,10 @@
+[Unit]
+Description=start roscore
+After=remote-fs.target
+After=syslog.target
+[Service]
+ExecStart=/home/hooshang/Desktop/OSSRP/cleancoded/services/init_robot.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -828,20 +828,20 @@ function setrostopic(topic_name) {
       ros_topic.subscribe(function(message) {
         const fields = Object.keys(message); // Get the fields of the message type
         console.log(fields);
-        const form = document.getElementById('messageForm');
+        // const form = document.getElementById('messageForm');
         
-        fields.forEach((field) => { // Create an input element for each field of the message type
-          const input = document.createElement('input');
-          input.setAttribute('type', 'text');
-          input.setAttribute('name', field);
-          input.setAttribute('placeholder', field);
+        // fields.forEach((field) => { // Create an input element for each field of the message type
+        //   const input = document.createElement('input');
+        //   input.setAttribute('type', 'text');
+        //   input.setAttribute('name', field);
+        //   input.setAttribute('placeholder', field);
 
-          form.appendChild(input);
-          const bt = document.getElementById('pub');
-          bt.style.display = 'block';
-        });
+        //   form.appendChild(input);
+        //   const bt = document.getElementById('pub');
+        //   bt.style.display = 'block';
+        // });
 
-        publish_msg_form(ros_topic); // Publish the message when the form is submitted
+        // publish_msg_form(ros_topic); // Publish the message when the form is submitted
       });
     }
   });

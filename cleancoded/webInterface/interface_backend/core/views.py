@@ -20,11 +20,11 @@ import subprocess
 ws_dir = str(Path(__file__).resolve().parent.parent.parent)
 sys.path.insert(0, ws_dir)
 
-# import rospkg
-# pkg = rospkg.RosPack().get_path('infrastructure')
-# module_path = os.path.join(pkg, 'appliences', 'userinterface_websocket', 'synchronizer')
-# sys.path.append(module_path)
-# from django_ros_handler import ROSHandler as RH
+import rospkg
+pkg = rospkg.RosPack().get_path('infrastructure')
+module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+sys.path.append(module_path)
+from django_ros_handler import ROSHandler as RH
 
 from core.serializers import *
 from core.models import *
@@ -343,23 +343,26 @@ class IPUpdater(APIView):
 
 class ProViewTemp(APIView):
     def get(self, request):
-        # img_topics_list = RH().get_image_topics()
+        rh = RH()
+        img_topics_list = rh.get_image_topics()
+        all_topics_list = rh.get_all_topics()
         emdb = EmotionModel.objects.all().order_by('-id')[0:]
         sdb = Song.objects.all().order_by('-id')[0:]
         return TemplateResponse(request, 
             f'Modified_files/pro.html',
             {'emotions':emdb,
             'voices':sdb,
-            # 'img_ros_topics':img_topics_names
+            'img_ros_topics':img_topics_list,
+            'topics': all_topics_list
             }) #Sending the data to the template for rendering
 
 
 class GetMsgType(APIView):
     def get(self,request):
         req_topic = request.GET.get('topic')
-        # msg_type = RH().get_topic_type()
-        # print(msg_type)
-        # return JsonResponse(data={"msg_type": msg_type}, status=200)
-        return JsonResponse(data={"msg_type": "std_msg/String"}, status=200)
+        msg_type = RH().get_topic_type(request.GET.get("topic"))
+        print(msg_type)
+        return JsonResponse(data={"msg_type": msg_type}, status=200)
+        # return JsonResponse(data={"msg_type": "std_msg/String"}, status=200)
 
     
