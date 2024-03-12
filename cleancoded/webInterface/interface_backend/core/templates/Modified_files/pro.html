@@ -256,7 +256,7 @@
                 <input type="checkbox" class="dd-input" id="test">
                 <ul class="dd-menu">
                   {% for topic in topics %}
-                  <li class="{{topic}}" onclick="setrostopic(this.className)">{{topic}}</li>
+                  <li id="{{topic}}" onclick="setrostopic(this.id)">{{topic}}</li>
                   {% endfor %}
                 </ul>
               </label>
@@ -358,8 +358,9 @@
                 </div> 
                 <input type="checkbox" class="dd-input" id="test">
                 <ul class="dd-menu">
-                  <li class="topic" onclick="echorostopic(this.className)">topic</li>
-                  <li>Another action</li>
+                  {% for topic in topics %}
+                  <li id="{{topic}}" onclick="echorostopic(this.id)">{{topic}}</li>
+                  {% endfor %}
                 </ul>
               </label>
             </div>

@@ -57,6 +57,9 @@ class ROSHandler:
                 image_topics.append(topic)
         return image_topics
     
+    def get_msg_type(self,topic):
+        req_topic_list = [topic_list for topic_list in self.topics if topic_list[0] == topic]
+        return req_topic_list[0][1]
 
     def get_topic_type(self, topic):
         req_topic_list = [topic_list for topic_list in self.topics if topic_list[0] == topic]
@@ -69,17 +72,26 @@ class ROSHandler:
             # msg_name = msg_type.split("/")[1]
             # msg = getattr(pkg, msg_name)
             msg_sub_fields = msg_obj.__slots__
-            print(msg_sub_fields)
+            # print(msg_sub_fields)
             for field in msg_sub_fields:
-            #     # try:
-            #     print(field)
-                sub_field = getattr(msg_obj, str(field))
-                print(sub_field)
-            #     # msg_sub_fields.pop(field)
-            #     # msg_sub_fields.append([sub_field])
-            #     # except:
-            #     #     pass
+                try:
+                    sub_field = getattr(msg_obj, str(field))
+                    print(sub_field)
+                    try:
+                        sub_sub_field = getattr(msg_obj, str(sub_field))
+                        print(sub_sub_field)
+                    except:
+                        pass
+                    msg_sub_fields.remove(field)
+                    msg_sub_fields.append([sub_field])
+                except:
+                    pass
+            msg_sub_fields = list(filter(lambda x: x != [0], msg_sub_fields))
+            msg_sub_fields = list(filter(lambda x: x != [b''], msg_sub_fields))
             return msg_sub_fields # Returns the type of the topic (i.e. msg type) as a string
         else:
             return 'Topic not found'
         
+
+# s = ROSHandler().get_topic_type('/image_raw')
+# print(s)

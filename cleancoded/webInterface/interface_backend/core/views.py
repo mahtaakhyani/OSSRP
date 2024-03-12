@@ -20,11 +20,46 @@ import subprocess
 ws_dir = str(Path(__file__).resolve().parent.parent.parent)
 sys.path.insert(0, ws_dir)
 
-import rospkg
-pkg = rospkg.RosPack().get_path('infrastructure')
-module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
-sys.path.append(module_path)
-from django_ros_handler import ROSHandler as RH
+# import rospkg
+# rospack = rospkg.RosPack()
+# pkg = rospkg.RosPack().get_path('infrastructure')
+# module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+# sys.path.append(module_path)
+# from django_ros_handler import ROSHandler as RH
+
+# processes = os.popen('ps -ef').read().splitlines()
+
+# # Iterate through the processes and kill the ones that match "ros"
+# for process in processes:
+#     if "ros" in process:
+#         pid = process.split()[1]
+#         os.system(f"kill {pid}")
+
+# def check_rosmaster():
+#     try:
+#         subprocess.check_output(["rosnode", "list"])
+#         return True
+#     except subprocess.CalledProcessError:
+#         return False
+    
+# if check_rosmaster():
+#     import rospkg
+#     rospack = rospkg.RosPack()
+#     pkg = rospkg.RosPack().get_path('infrastructure')
+#     module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+#     sys.path.append(module_path)
+#     from django_ros_handler import ROSHandler as RH
+# else:
+#     print("Master not running. starting master node and launch files...")
+#     subprocess.call(["roslaunch", "infrastructure", "init_robot.launch"])
+    
+#     import rospkg
+#     rospack = rospkg.RosPack()
+#     pkg = rospkg.RosPack().get_path('infrastructure')
+#     module_path = os.path.join(pkg, 'scripts', 'tools', 'helper_modules')
+#     sys.path.append(module_path)
+#     from django_ros_handler import ROSHandler as RH
+
 
 from core.serializers import *
 from core.models import *
@@ -38,6 +73,7 @@ from django.utils.decorators import method_decorator
 @method_decorator(login_required, name='dispatch')
 class MainViewTemp(APIView):
     def get(self, request):
+        port = 8000
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             hostname = socket.inet_ntoa(fcntl.ioctl(
@@ -56,11 +92,11 @@ class MainViewTemp(APIView):
             url_parts = emotion.face_video_url.split('/')
             # Replace first part with hostname if local
             if 'hoosh' in url_parts[2] or '192' in url_parts[2] or 'local' in url_parts[2]:
-                try:   
+                try:
                     file_name = str(emotion.video_file.file).split('/')[-1]
                 except:
                     file_name = url_parts[-1]
-                new_url = f'http://{hostname}/api/stream?path=media/videos/{file_name}'
+                new_url = f'http://{hostname}:{port}/api/stream?path=media/videos/{file_name}'
                 # Update field
                 emotion.face_video_url = new_url
 
@@ -73,11 +109,11 @@ class MainViewTemp(APIView):
 
             # Replace first part with hostname if local
             if 'hoosh' in url_parts[2] or '192' in url_parts[2] or 'local' in url_parts[2]:
-                try:   
+                try:
                     file_name = str(song.audio_file.file).split('/')[-1]
                 except:
                     file_name = url_parts[-1]
-                new_url = f'http://{hostname}/api/stream?path=media/sounds/{file_name}'
+                new_url = f'http://{hostname}:{port}/api/stream?path=media/sounds/{file_name}'
 
                 # Update field
                 song.audio_link = new_url
@@ -272,6 +308,7 @@ class EmotionModelViewDB(APIView):
 # -----------------------------------------------------------------------------------------
 class IPUpdater(APIView):
     def get(self,request: HttpRequest):
+        android_mac = "3c:f7:a4:50:a2:d1"
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             hostname = socket.inet_ntoa(fcntl.ioctl(
@@ -285,23 +322,7 @@ class IPUpdater(APIView):
         ip = ""
         gateway = f"{'.'.join(hostname.split('.')[:3])}"
         print(gateway)
-        android_mac = "3c:f7:a4:50:a2:d1"
         ip = self.find_ip_address(gateway,android_mac)
-  
-            
-        # else:
-        #     print("MAC address of the android not found. Trying different method.")
-        #     android_mac = android_mac.upper()
-        #     password = "1"
-            # p = subprocess.Popen([f"sudo nmap -sn {gateway}/24"], stdout=subprocess.PIPE, shell=True, stderr=subprocess.PIPE)
-            # stdout, stderr = p.communicate(input=(password + '\n').encode())
-            # output = stdout.decode()
-            # output = process.stdout
-            # output = str(output).split("\n")
-            # print(str(output).split("\n"))
-            # for i,line in enumerate(output):
-            #     if android_mac in line:
-            #         ip = output[i-2].replace("Nmap scan report for ","")
         print(f"Hostname: {hostname}")
         return JsonResponse(data={"host": hostname,
                                 "android_ip": ip}, status=200)
@@ -343,9 +364,13 @@ class IPUpdater(APIView):
 
 class ProViewTemp(APIView):
     def get(self, request):
-        rh = RH()
-        img_topics_list = rh.get_image_topics()
-        all_topics_list = rh.get_all_topics()
+        try:
+            rh = RH()
+            img_topics_list = rh.get_image_topics()
+            all_topics_list = rh.get_all_topics()
+        except:
+            img_topics_list = []
+            all_topics_list = []
         emdb = EmotionModel.objects.all().order_by('-id')[0:]
         sdb = Song.objects.all().order_by('-id')[0:]
         return TemplateResponse(request, 
@@ -360,9 +385,14 @@ class ProViewTemp(APIView):
 class GetMsgType(APIView):
     def get(self,request):
         req_topic = request.GET.get('topic')
-        msg_type = RH().get_topic_type(request.GET.get("topic"))
-        print(msg_type)
-        return JsonResponse(data={"msg_type": msg_type}, status=200)
+        print(req_topic)
+        try:
+            msg_fields = RH().get_topic_type(req_topic)
+            msg_type = RH().get_msg_type(req_topic)
+            print(msg_type)
+            return JsonResponse(data={"msg_type": str(msg_type)}, status=200)
+        except:
+            return JsonResponse(data={"msg_type": "Unable to communicate with master node."}, status=200)
         # return JsonResponse(data={"msg_type": "std_msg/String"}, status=200)
 
     

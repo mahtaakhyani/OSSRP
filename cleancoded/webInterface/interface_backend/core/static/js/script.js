@@ -107,7 +107,6 @@ function set_variables() {
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var ros;
 function set_ros() {
-  const ROSLIB = require('roslib');
   // Connecting to ROS via 'rosbridge_websocket_server' Launch Node running on the master "URI/IP/URL :Port 9090(default)"
   // ----------------- 
   ros = new ROSLIB.Ros({
@@ -825,24 +824,20 @@ function setrostopic(topic_name) {
         messageType: msg_type // Set the message type of the topic
       });
       
-      ros_topic.subscribe(function(message) {
-        const fields = Object.keys(message); // Get the fields of the message type
-        console.log(fields);
-        // const form = document.getElementById('messageForm');
-        
-        // fields.forEach((field) => { // Create an input element for each field of the message type
-        //   const input = document.createElement('input');
-        //   input.setAttribute('type', 'text');
-        //   input.setAttribute('name', field);
-        //   input.setAttribute('placeholder', field);
+      const form = document.getElementById('messageForm');
+      
+      const input = document.createElement('input');
+      input.setAttribute('type', 'text');
+      input.setAttribute('name', msg_type);
+      alert(input.getAttribute('name'));
+      input.setAttribute('placeholder', msg_type);
 
-        //   form.appendChild(input);
-        //   const bt = document.getElementById('pub');
-        //   bt.style.display = 'block';
-        // });
+        form.appendChild(input);
+        const bt = document.getElementById('pub');
+        bt.style.display = 'block';
 
-        // publish_msg_form(ros_topic); // Publish the message when the form is submitted
-      });
+        publish_msg_form(ros_topic); // Publish the message when the form is submitted
+
     }
   });
 }
@@ -878,21 +873,22 @@ function echorostopic(topic_name) {
     success: function(response) {
       console.log(response);
       msg_type = response.msg_type;
-      
+
       var ros_topic = new ROSLIB.Topic({ 
         ros: ros,
-        name: topic_name,
-        messageType: msg_type // Set the message type of the topic
+        name: topic_name.toString(),
+        messageType: msg_type.toString() // Set the message type of the topic
       });
 
       ros_topic.subscribe(function(message) {
-        // add a new line to the topic's div with the message
-        const div = document.getElementById('topics');
-        const p = document.createElement('p');
-        p.innerHTML = JSON.stringify(message);
-        div.appendChild(p);
-        p.innerHTML = '------------------ <br>';
-        div.appendChild(p);
+        alert(msg_type);
+        // // add a new line to the topic's div with the message
+        // const div = document.getElementById('topics');
+        // const p = document.createElement('p');
+        // p.innerHTML = JSON.stringify(message);
+        // div.appendChild(p);
+        // p.innerHTML = '------------------ <br>';
+        // div.appendChild(p);
         
       });
     }

@@ -1,0 +1,26 @@
+#!/bin/bash
+alias python='python2.7'
+CURRENT_IP=$(ifconfig $(route -n | grep ^0.0.0.0 | awk '{print $NF}') | grep inet | grep -v inet6 | awk '{print $2}')
+export ROS_IP=$CURRENT_IP
+export ROS_MASTER_URI=http://"$CURRENT_IP":11311/
+export PATH="/usr/bin/python3.8:$PATH"
+export PATH="/home/hooshang/.local/lib/python3.8/site-packages:$PATH"
+export PATH="/home/hooshang/.local/lib/python3.6/site-packages:$PATH"
+export PATH="/home/hooshang/.local/lib/python2.7/site-packages:$PATH"
+source /opt/ros/melodic/setup.bash
+source /home/hooshang/Desktop/hooshang/django-gunicorn-nginx/.DJANGO_SECRET_KEY
+
+
+# Define the function to be executed by the systemd service
+function launch_robot() {
+    # Change to the directory where the script is located
+    cd /home/hooshang/Desktop/OSSRP/cleancoded
+    
+    # Run the roslaunch command
+    source /home/hooshang/Desktop/OSSRP/cleancoded/devel/setup.bash
+    roslaunch infrastructure init_robot.launch
+    rosparam set /rosversion 1.14.13 
+}
+
+# Call the function to launch the robot
+launch_robot
