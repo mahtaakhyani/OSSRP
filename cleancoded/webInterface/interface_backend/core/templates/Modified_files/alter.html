@@ -1,0 +1,576 @@
+{% load static %}
+
+<html>
+
+<head>
+  <title>Pro Control Panel</title>
+  <link rel="stylesheet" href=" {% static 'css/nicepage.css' %} " media="screen">
+  <link rel="stylesheet" href=" {% static 'css/styleui.css' %} " media="screen">
+  <link rel="stylesheet" href=" {% static 'css/Page-1.css' %} " media="screen">
+
+  <link rel="stylesheet" href=" {% static 'css/bootstrap.min.css' %} " media="screen">
+  <link rel="stylesheet" href=" {% static 'font-awesome-4.7.0/css/font-awesome.min.css' %} ">
+  <link rel="stylesheet" href=" {% static 'icons-1.5.0/font/bootstrap-icons.css' %} ">
+  
+  <script class="u-script" type="text/javascript" src=" {% static 'js/jquery.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/roslib.min.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/nicepage.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/script.js' %} " defer=""></script>
+  <script class="u-script" type="text/javascript" src=" {% static 'js/joystick/webui.js' %} " defer=""></script>
+
+  <script class="u-script" type="text/javascript" src=" {% static 'js/joystick.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/interact.min.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/TweenLite.min.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/CSSPlugin.min.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/jquery.min.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/bootstrap.min.js' %} " defer=""></script>
+   <script class="u-script" type="text/javascript" src=" {% static 'js/EasePack.min.js' %} " defer=""></script>
+
+
+  <style>
+    
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+    
+    li {
+      display: table;
+      padding: 0.5rem;
+    }
+    .window {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      animation: zoom-in 0.5s;
+      margin: 10px;
+      height: fit-content;
+    }
+
+    #login {
+      min-width: 300px;
+    }
+    @media screen and (max-width: 600px) {
+      .window {
+        min-width: 300px;
+      }
+      
+    }
+
+    @keyframes zoom-in {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .header {
+      background-color: #f8dfbb;
+      padding: 10px;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      margin: 0;
+      margin-top: 5px;
+      font-size: 20px;
+      color: #333333;
+      font-weight: 900 !important;
+      font-family:'Times New Roman', Times, serif;
+    }
+
+    .content {
+      padding: 20px;
+      width: min-content;
+    }
+  
+    .joystick_content {
+      display: flex;
+      align-content: flex-end;
+      width: 100%;
+      max-width: 350px;
+    }
+   
+
+/* Dropdown */
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+  margin-left: 20px;
+}
+
+.dd-button {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 10px 30px 10px 20px;
+  background-color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dd-button:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  width: 0; 
+  height: 0; 
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
+}
+
+.dd-button:hover {
+  background-color: #eeeeee;
+}
+
+
+.dd-input {
+  display: none;
+}
+
+.dd-menu {
+  position: absolute;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0;
+  margin: 2px 0 0 0;
+  box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  list-style-type: none;
+  z-index: 1000;
+  margin-top: 2px !important;
+}
+
+.dd-input + .dd-menu {
+  display: none;
+} 
+
+.dd-input:checked + .dd-menu {
+  display: block;
+} 
+
+.dd-menu li {
+  padding: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dd-menu li:hover {
+  background-color: #f6f6f6;
+}
+
+.dd-menu li a {
+  display: block;
+  margin: -10px -20px;
+  padding: 10px 20px;
+}
+
+.dd-menu li.divider{
+  padding: 0;
+  border-bottom: 1px solid #cccccc;
+}
+
+.refresh-button {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 50%;
+  padding: 5px;
+  background-color: #26ff32;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.refresh-button:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+}
+
+.image_view {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.fit-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.emobtns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  width: fit-content;
+
+}
+
+.emoinput {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.emoinput:hover {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  transform: scale(0.95);
+  background-color: #8cdf91;
+}
+
+.arrow {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform-origin: top;
+  transform: translate(-50%, -50%);
+  width: 15px;
+  border-radius: 50%;
+  height: 80px;
+  background-color: black;
+}
+.degree {
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.container_arrow {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+.button_meters {
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 100px solid black;
+  cursor: pointer;
+  background: transparent;
+  border-top: none;
+}
+
+@media (max-width: 600px) {
+  .slider_table {
+    margin-top: 216% !important;
+  }
+  #dragdrop {
+    display: none;
+  }
+  
+}
+  </style>
+  
+</head>
+
+<body>
+  <div class="u-clearfix">
+    <div class="u-layout-row" style="height: 100%;">
+      <div class="u-layout-col" style="width: 20%; ">
+        <div class="u-layout-row" style="height: 25%;">
+          <div class="window u-layout-col" id="card" style="max-height: 150%;height: 25%;max-width: 100%;">
+            <div class="header image_view">
+              <h1 class="col">Image View</h1>
+              <label class="col dropdown">
+                <div class="dd-button">
+                  select feed
+                </div> 
+                <input type="checkbox" class="dd-input" id="test">
+                <ul class="dd-menu">
+                  <li class="/image_raw" onclick="changeimage(this.className)">Camera</li>
+                  <li class="/image_raw/landmarked" onclick="changeimage(this.className)">Camera Landmarked</li>
+                  <li class="/image_raw/gaze_frame" onclick="changeimage(this.className)">Gaze Detection</li>
+                </ul>
+              </label>
+            </div>
+            <div class="content">
+              <img id="pro_viewer" class="fit-video embed-responsive-item" src="">
+                <p>Unable to load image frames.</p>
+            </div>
+            
+          </div>
+          </div>
+          </div>
+          <div class="u-layout-col">
+            <div class="window u-layout-col" id="card" >
+            <div class="header image_view">
+              <h1 class="col">Robot's Face & Sound</h1>
+              <label class="col dropdown">
+                <div class="refresh-button" onclick="get_latest_emotion()">
+                  <i class="bi bi-arrow-clockwise" style="font-size: 2rem;"></i>
+                </div> 
+                
+              </label>
+            </div>
+            <div class="content">
+              <div class="u-layout-row">
+                <div class="u-layout-col " style="height: 30%;">
+                  <video id="vidsrc" class="embed-responsive-item  fit-video"  loop="true" playsinline="">
+                    <source  src="" type="video/mp4">
+                    <p>Your browser does not support HTML5 video.</p>
+                  </video>
+                    <audio id="vidsoundsrc" class="fc-media" style="width: 100%;">
+                      <source src="" type="audio/mp3"/>
+                    </audio>
+                </div>
+                <div class="u-layout-col">
+                  <div class="scrollable" style="margin-top: 20px;" id="repeater">
+                  <table style="width: 100%;">
+                    <tr>
+                      <td>
+                        <h4 class="u-text u-text-1" style=" font-weight: 700; ">Face's Name</h4>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p id="msg" style=" font-weight: 600;  text-align: left;">Null</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <p id="sound_description" style=" font-weight: 600;  text-align: left;">-</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      {% for emotion in emotions %}{% if emotion %}
+                      <!-- if the id can be divided by two, break the table to the next row: -->
+                      {% if forloop.counter|divisibleby:"3" %}</tr><tr> {% endif %}
+
+                      <td>
+                        <div class="emobtns" id="{{emotion}}"  draggable="true" ondragstart="drag(event,this.id)">
+                          <p style="display: none;">{{emotion.face}}</p>
+                          <input type="button"
+                          id={{emotion.face_video_url}} 
+                          onclick="exp_face(this); update_description('{{emotion.sound.description}}')"
+                          value="{{emotion}}"
+                          class="emoinput">
+                        </div>
+                      </td>
+                      {% endif %} {% endfor %}
+                  </div>
+                  <table>
+                    <tr>
+                      <td>
+                        <div class="emobtns">
+                          <a href="/admincore/emotionmodel/add/" 
+                                          target="_blank" 
+                                          onclick="window.open('/admincore/emotionmodel/add/', 
+                                      'add new emotion model', 
+                                      'width=600,height=500','toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,status=no'); 
+                                          return false;"
+                                          class="u-align-center u-border-3 u-border-custom-color-7 u-border-hover-palette-1-light-1 u-btn u-btn-round u-button-style u-none u-radius-50 u-btn-1"
+                                          style="    padding: 0;
+                                          min-width: auto;
+                                          font-size: 2rem;
+                                          background: #d0cdcd40 !important;
+                                          border: 0rem  !important;
+                                      ">
+                            <i class="bi bi-plus-circle-dotted"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+    <div class="u-layout-row">
+      <div class="u-layout-col">
+        <div class="u-layout-row">
+          <div class="u-layout-col" style="width: 20%;">
+            <div class="u-layout-row">
+              <div class="window u-layout-col" style="height: 100%">
+                <div class="header   image_view">
+                  <h1 class="col">Head, Neck, & Hands</h1>
+                  
+                </div>
+                <div class="u-layout-row content joystick_content">
+                  <div class="u-layout-col" style="height: 100%;">
+                    <div class="u-layout-row" style="height: 70%;">
+                      <div class="u-layout-col">
+                        <div id="joystick">
+                          <div class="draggable" id="knob"></div>
+                        </div>
+                      </div>
+                      <!-- hand slider -->
+                      <div class="u-layout-col" style="height: 100%;display: flex;align-items: center;">
+                        <div class="u-layout-row" style="width: 20%;">
+                          <table class="slider_table" style="
+                          margin-top: -20%;
+                          margin-left: 120%;
+                      ">
+                          <tr><td><input type="range" min="-150" max="50" value="19" class="slider u-layout-col" id="lefthand" oninput="handRangeChange(this.value, this.id)" style="rotate: 90deg; margin-right: 100px;"></td>
+                         <td><input type="range" min="-150" max="100" value="-70" class="slider u-layout-col" id="righthand" oninput="handRangeChange(this.value, this.id)" style="rotate: -90deg; margin-right: 100px;"></td></tr>
+                        </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="console" class="u-layout-row">
+                    <table>
+                      <tr>
+                        <td>Head Rotation: <span id="panValue">0</span></td>
+                      </tr>
+                      <tr>
+                        <td>Neck Rotation: <span id="tiltValue">0</span></td>
+                      </tr>
+                      <tr><td>----------</td></tr>
+                      <tr>
+                        <td>Right Hand Position: <span id="righthandValue">-70</span></td>
+                      </tr>
+                      <tr>
+                        <td>Left Hand Position: <span id="lefthandValue">19</span></td>
+                      </tr>
+                    </table>
+                  </div>
+                </div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="u-layout-row">
+          <div class="u-layout-col" style="width: 20%;">
+            <div class="u-layout-row">
+              <div class="window u-layout-col" style="height: 100%">
+                <div class="header   image_view">
+                  <h1 class="col">Transition & Rotation</h1>
+                  <!-- a circular input to set degree of rotation of the robot-->
+                </div>
+                <div class="content u-layout-row">
+                  <div class="container_arrow">
+                    <div class="arrow"></div>
+                    <div class="degree">0°</div>
+                  </div>
+                  <!-- slider -->
+                  <div class="u-layout-row">
+                    <button class="button_meters" onmousedown="startCount()" onmouseup="stopCount()"></button>
+                    <p id="count">0</p>                 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="u-layout-col" id="dragdrop" style="width: 20%;">
+        <div class="window ddropp" style="margin-right: 10px; margin-left: 10px;">
+              <div class="u-expanded-width u-tab-links-align-left u-tabs u-tabs-1">
+                <div class="header   ddpanel">
+                  <h1 class="col">Drag & Drop Panel</h1>
+                  
+                </div>
+                <!-- <ul class="u-border-2 u-border-grey-75 u-custom-color-7 u-tab-list u-unstyled u-tab-list-1" role="tablist">
+            
+                  <li class="u-tab-item" role="presentation">
+                    <a class="active u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d34" href="#tab-3d34" role="tab" aria-controls="tab-3d34" aria-selected="true">No. 1</a>
+                  </li>
+                  <li class="u-tab-item" role="presentation">
+                    <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d35" href="#tab-3d35" role="tab" aria-controls="tab-3d35" aria-selected="true">No. 2</a>
+                  </li>
+                  <li class="u-tab-item" role="presentation">
+                    <a class="u-active-white u-border-2 u-border-active-grey-75 u-border-grey-60 u-border-hover-grey-75 u-border-no-bottom u-button-style u-custom-color-7 u-tab-link u-tab-link-1" id="link-tab-3d36" href="#tab-3d36" role="tab" aria-controls="tab-3d36" aria-selected="true">No. 4</a>
+                  </li>
+                
+                </ul> -->
+                <div class="u-tab-content"  ondrop="drop(event)" ondragover="allowDrop(event)">
+                  <div class="u-container-style  u-layout-cell u-size-30 u-tab-active u-tab-pane" id="tab-3d34" role="tabpanel" aria-labelledby="link-tab-3d34">
+                    <div class="u-layout-col scrollable" style="height: 820px;">
+                      <div class="" style="padding: 20px;">
+                        <button class="u-layout-col auto_run btn btn-primary" style="margin-right: 10px;" onclick="auto_run();">Auto Run</button>
+                        <button class="u-layout-col clean_all btn btn-primary" onclick="clean();">Clear All</button>
+                      </div>
+                      <div class="u-layout-row">
+                        <ul class="dest_list" style="width: 90%;">
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+  <nav class="c-circle-menu js-menu menu">
+    <button class="c-circle-menu__toggle menu js-menu-toggle" id="c-circle-menu">
+      <span>Toggle</span>
+    </button>
+    <ul class="c-circle-menu__items menu">
+      <li class="c-circle-menu__item">
+        <a href="#" class="c-circle-menu__link">
+          <i class="bi bi-power"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/hooshang" class="c-circle-menu__link">
+          <i class="bi bi-exclude"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="#" class="c-circle-menu__link js-toggle" onclick="cssCircleMenuchild()">
+          <i class="bi bi-controller"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/admin" class="c-circle-menu__link">
+          <i class="bi bi-sliders"></i>
+        </a>
+      </li>
+      <li class="c-circle-menu__item menu">
+        <a href="/auth/login" class="c-circle-menu__link">
+          <i class="bi bi-house-fill"></i>
+        </a>
+      </li>
+    </ul>
+    <div class="c-circle-menu__mask js-menu-mask menu"></div>
+  </nav>
+  
+
+  <script>
+    function displaysimple(){
+      var display = document.getElementById("sec-48f7");
+      for (var i = 0; i < display.childElementCount; i++) {
+        if (!display.children[i].className.includes("menu")) {
+          if (display.children[i].style.display == "none") {
+            display.children[i].style.display = "block";
+          } else {
+            display.children[i].style.display = "none";
+          }
+        }
+      }
+    }
+    function goToUrl(url) {
+    window.location.href = url;
+    }
+
+    
+  </script>
+</body>
+
+</html>

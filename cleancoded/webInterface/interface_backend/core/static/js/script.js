@@ -171,6 +171,19 @@ function changeimage(topic_name) {
     console.log('Image Viewer is showing: '+ img_url + ' topic');
 }
 
+// Updating the sound description on the panel
+// -----------------
+function update_description(class_name) {
+  // cut the "emoinput", "clone" or "active" if they exist from the "class_name" string to get the description
+  var description = class_name.replace('emoinput', '').replace('clone', '').replace('active', '');
+ 
+  if (description == 'No assigned sound found') {
+    document.getElementById("sound_description").innerHTML = 'No sound assigned for this emotion';
+  } else {
+  document.getElementById("sound_description").innerHTML = description;
+  }
+}
+
 // Drag and Drop
 // -----------------
 function allowDrop(ev) {
@@ -194,6 +207,7 @@ function drop(ev) {
 
   $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
     $(this).find("p").addClass("sclone_p");
+    $(this).find("p").css('display', 'block');
     $(this).css('display', 'inline-grid');
     $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
     $(this).find("input").attr("class", state_var + "_clone");
@@ -336,6 +350,7 @@ var face_url_id = '';
 // and passing on the url of the video file and its assigned sound's url to update_exp function.
 // -----------------
 function exp_face(element) {
+
   var face_url_id = element.id;
   var face_name_val = element.value;
   
@@ -749,6 +764,7 @@ function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, dow
     }
   }
 }
+
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->

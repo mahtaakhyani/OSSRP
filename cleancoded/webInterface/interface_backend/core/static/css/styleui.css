@@ -55,6 +55,7 @@
   padding: 6px;
   bottom: 145px;
   background: #b7b2b29c;
+  width: 200px;
 }
 
 .no-select {
@@ -398,4 +399,79 @@ body {
     width: 220px;
     height: 90px;
     scale: 0.65;
+}
+
+
+/*
+========
+CIRCULAR
+========
+*/
+.c-rng--circular {
+  --circle-bgc: #fff;
+  --circle-size: 200px;
+  --track-bgc: hsl(219, 20%, 85%);
+  --track-fill: cornflowerblue;
+  --thumb-size: 30px;
+
+  --gradient-start: 0deg;
+  --gradient-end: 0deg;
+
+  background-image: conic-gradient(
+    var(--track-bgc) 0,
+    var(--track-bgc) var(--gradient-start),
+    var(--track-fill) var(--gradient-start),
+    var(--track-fill) var(--gradient-end),
+    var(--track-bgc) var(--gradient-end),
+    var(--track-bgc)
+  );
+  border-radius: 50%;
+  display: inline-block;
+  height: var(--circle-size);
+  margin: 0.25rem;
+  position: relative;
+  touch-action: none;
+  width: var(--circle-size);
+}
+.c-rng--circular::before {
+  align-items: center;
+  background-color: var(--circle-bgc);
+  border-radius: 50%;
+  content: attr(data-value);
+  display: flex;
+  font-family: ui-sans-serif, ui-system, sans-serif;
+  font-size: 2rem;
+  height: calc(var(--circle-size) - (var(--thumb-size) * 2));
+  justify-content: center;
+  left: var(--thumb-size);
+  position: absolute;
+  top: var(--thumb-size);
+  width: calc(var(--circle-size) - (var(--thumb-size) * 2));
+}
+
+.c-rng--circular-output {
+  background: transparent;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: var(--thumb-size);
+  margin-top: calc(var(--thumb-size) / -2);
+  transform: rotate(var(--angle));
+  transform-origin: center left;
+  width: 50%;
+  z-index: 1;
+}
+.c-rng--circular-output::before {
+  background-color: var(--thumb-bgc, #fff);
+  border: var(--thumb-bdw, 2px) solid var(--track-fill);
+  border-radius: 50%;
+  box-shadow: var(--thumb-bxsh, none);
+  box-sizing: border-box;
+  content: "";
+  cursor: grab;
+  display: inline-block;
+  height: var(--thumb-size);
+  position: absolute;
+  right: 0;
+  width: var(--thumb-size);
 }

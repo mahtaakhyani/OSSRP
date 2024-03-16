@@ -330,18 +330,19 @@ class IPUpdater(APIView):
   
 
     def find_ip_address(self,gateway, mac_address):
-        for ip in range(1, 255):
-            ip_address = f"{gateway}.{ip}"
-            resolved_mac = arpreq.arpreq(ip_address)
-            try:
-                resolved_mac = arpreq.arpreq(ip_address)
-                if resolved_mac.lower() == mac_address.lower():
-                    return ip_address
-            except :
-                continue
+        if "local" not in gateway:
+            for ip in range(1, 255):
+                ip_address = f"{gateway}.{ip}"
+                try:
+                    resolved_mac = arpreq.arpreq(ip_address)
+                    if resolved_mac.lower() == mac_address.lower():
+                        return ip_address
+                except:
+                    continue
+            iprange =f'{gateway}.0/24'
+        else:
+            iprange = '127.0.0.1/24'
         
-        
-        iprange =f'{gateway}.0/24'
         android_mac = mac_address.upper()
         out = self.run_nmap_with_password(android_mac,iprange)
         print(out)
