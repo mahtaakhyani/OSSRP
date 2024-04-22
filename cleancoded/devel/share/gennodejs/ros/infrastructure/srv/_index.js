@@ -1,16 +1,16 @@
 
 "use strict";
 
-let Stt = require('./Stt.js')
-let Tts = require('./Tts.js')
-let EmoProb = require('./EmoProb.js')
-let AudFeature = require('./AudFeature.js')
 let Gaze = require('./Gaze.js')
+let Stt = require('./Stt.js')
+let AudFeature = require('./AudFeature.js')
+let EmoProb = require('./EmoProb.js')
+let Tts = require('./Tts.js')
 
 module.exports = {
-  Stt: Stt,
-  Tts: Tts,
-  EmoProb: EmoProb,
-  AudFeature: AudFeature,
   Gaze: Gaze,
+  Stt: Stt,
+  AudFeature: AudFeature,
+  EmoProb: EmoProb,
+  Tts: Tts,
 };

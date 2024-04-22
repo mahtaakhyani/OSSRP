@@ -59,7 +59,7 @@ class EmoProbArr {
 
   static getMessageSize(object) {
     let length = 0;
-    length += _getByteLength(object.emotion);
+    length += object.emotion.length;
     return length + 8;
   }
 

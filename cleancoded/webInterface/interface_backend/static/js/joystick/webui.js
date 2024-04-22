@@ -69,151 +69,151 @@ var motor = '';
 //     console.log(urdfModel);
 //   });
 
-function load_joystick(){
-	var joystick = document.getElementById("joystick"),
-			    knob = document.getElementById("knob"),
-			target_x = joystick.clientWidth/2-knob.clientWidth/2,
-			target_y = joystick.clientHeight/2-knob.clientHeight/2;
+// function load_joystick(){
+// 	var joystick = document.getElementById("joystick"),
+// 			    knob = document.getElementById("knob"),
+// 			target_x = joystick.clientWidth/2-knob.clientWidth/2,
+// 			target_y = joystick.clientHeight/2-knob.clientHeight/2;
 
-	var panSpan  = document.getElementById("actValue"),
-			tiltSpan = document.getElementById("powerValue"),
-      dirSpan = document.getElementById("dirValue"),
-      linspeedSpan = document.getElementById("linValue"),
-      angspeedSpan = document.getElementById("angValue");
+// 	var panSpan  = document.getElementById("actValue"),
+// 			tiltSpan = document.getElementById("powerValue"),
+//       dirSpan = document.getElementById("dirValue"),
+//       linspeedSpan = document.getElementById("linValue"),
+//       angspeedSpan = document.getElementById("angValue");
 
-	knob.style.webkitTransform = "translate("+target_x+"px, "+target_y+"px)";
+// 	knob.style.webkitTransform = "translate("+target_x+"px, "+target_y+"px)";
 
-	// update the position attributes
-	var target = document.getElementById("knob");
-	updatePositionAttributes(target,target_x,target_y);
+// 	// update the position attributes
+// 	var target = document.getElementById("knob");
+// 	updatePositionAttributes(target,target_x,target_y);
 
-	// target elements with the "draggable" class
-	interact('.draggable')
-		.draggable({
-			inertia: false,
-			// keep the element within the area of its parent
-			restrict: {
-				restriction: "parent",
-				endOnly: false,
-				elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
-			},
-			onmove: dragMoveListener,
-			onend: function (event) {
-				var target = event.target;
-				TweenLite.to(target, 0.2, {ease: Back.easeOut.config(1.7), "webkitTransform":"translate("+target_x+"px, "+target_y+"px)"});
-				updatePositionAttributes(target,target_x,target_y);
-				panSpan.innerHTML = 0;
-				tiltSpan.innerHTML = 0;
-        dirSpan.innerHTML = '-';
-        linspeedSpan.innerHTML = 0;
-        angspeedSpan.innerHTML = 0;
-			}
-		});
+// 	// target elements with the "draggable" class
+// 	interact('.draggable')
+// 		.draggable({
+// 			inertia: false,
+// 			// keep the element within the area of its parent
+// 			restrict: {
+// 				restriction: "parent",
+// 				endOnly: false,
+// 				elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+// 			},
+// 			onmove: dragMoveListener,
+// 			onend: function (event) {
+// 				var target = event.target;
+// 				TweenLite.to(target, 0.2, {ease: Back.easeOut.config(1.7), "webkitTransform":"translate("+target_x+"px, "+target_y+"px)"});
+// 				updatePositionAttributes(target,target_x,target_y);
+// 				panSpan.innerHTML = 0;
+// 				tiltSpan.innerHTML = 0;
+//         dirSpan.innerHTML = '-';
+//         linspeedSpan.innerHTML = 0;
+//         angspeedSpan.innerHTML = 0;
+// 			}
+// 		});
 
-	function dragMoveListener (event) {
-		var target = event.target,
-				// keep the dragged position in the data-x/data-y attributes
-				x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-				y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+// 	function dragMoveListener (event) {
+// 		var target = event.target,
+// 				// keep the dragged position in the data-x/data-y attributes
+// 				x = parseInt((parseFloat(target.getAttribute('data-x')) || 0) + event.dx),
+// 				y = parseInt((parseFloat(target.getAttribute('data-y')) || 0) + event.dy);
 
-		// translate the element
-		target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+// 		// translate the element
+// 		target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
     
-		// update text display
-    var xy = '';
-    var yz = '';
-    var actn ='';
-    var acth ='';
-    var dist = Math.sqrt(Math.pow(x-joystick.clientWidth/4,2)+Math.pow(y-joystick.clientHeight/4,2));
-    dist = 445+x*3.87;
-    var angle = Math.atan2(y-joystick.clientHeight/4,x-joystick.clientWidth/4);
-    var lin = Math.cos(angle / 57.29) * dist * 0.005;
-    var ang = Math.sin(angle / 57.29) * dist * 0.05;
+// 		// update text display
+//     var xy = '';
+//     var yz = '';
+//     var actn ='';
+//     var acth ='';
+//     var dist = Math.sqrt(Math.pow(x-joystick.clientWidth/4,2)+Math.pow(y-joystick.clientHeight/4,2));
+//     dist = 445+x*3.87;
+//     var angle = Math.atan2(y-joystick.clientHeight/4,x-joystick.clientWidth/4);
+//     var lin = Math.cos(angle / 57.29) * dist * 0.005;
+//     var ang = Math.sin(angle / 57.29) * dist * 0.05;
     
-    if (Math.abs(x-joystick.clientWidth/4) < 1.0) {
-      xy = '';
-      actn = ' ';
-      lin = '0';
-      ang = '0';
-      motor = 0; //neck=0
-    }
-    else if (x-joystick.clientWidth/4 > 0) {
-      xy = 'right';
-      actn = ' neck(CW)';
-      motor = 0; //neck=0
-    }
-    else {
-      xy = 'left';
-      actn = ' neck(CCW)';
-      motor = 0; //neck=0
-    }
-    if (Math.abs(y-joystick.clientWidth/4) < 1.0) {
-      yz = '';
-      acth = ' ';
-      motor = 0; //head=1
-    }
-    else if (y-joystick.clientHeight/4 < 0) {
-      acth += ' head(CCW)';
-      yz = 'up';
-      motor = 0; //head=1
-    }
-    else {
-      yz = 'down';
-      acth += ' head(CW)';
-      motor = 0; //head=1
-    }
+//     if (Math.abs(x-joystick.clientWidth/4) < 1.0) {
+//       xy = '';
+//       actn = ' ';
+//       lin = '0';
+//       ang = '0';
+//       motor = 0; //neck=0
+//     }
+//     else if (x-joystick.clientWidth/4 > 0) {
+//       xy = 'right';
+//       actn = ' neck(CW)';
+//       motor = 0; //neck=0
+//     }
+//     else {
+//       xy = 'left';
+//       actn = ' neck(CCW)';
+//       motor = 0; //neck=0
+//     }
+//     if (Math.abs(y-joystick.clientWidth/4) < 1.0) {
+//       yz = '';
+//       acth = ' ';
+//       motor = 0; //head=1
+//     }
+//     else if (y-joystick.clientHeight/4 < 0) {
+//       acth += ' head(CCW)';
+//       yz = 'up';
+//       motor = 0; //head=1
+//     }
+//     else {
+//       yz = 'down';
+//       acth += ' head(CW)';
+//       motor = 0; //head=1
+//     }
     
-    panSpan.innerHTML = actn+acth;
-    dirSpan.innerHTML = (xy+' '+yz);
-		tiltSpan.innerHTML = (Math.abs(y-joystick.clientHeight/4));
-    linspeedSpan.innerHTML = (dist).toFixed(2);
-    angspeedSpan.innerHTML = (ang*100).toFixed(2);
-    
-    // updatePositionAttributes(target,x,y);
-    moveAction(lin,ang,motor);
-	}
+//     panSpan.innerHTML = actn+acth;
+//     dirSpan.innerHTML = (xy+' '+yz);
+// 		tiltSpan.innerHTML = (Math.abs(y-joystick.clientHeight/4));
+//     linspeedSpan.innerHTML = (dist).toFixed(2);
+//     angspeedSpan.innerHTML = (ang*100).toFixed(2);
+//     console.log('linear: '+lin+' angular: '+ang);
+//     // updatePositionAttributes(target,x,y);
+//     moveAction(lin,ang,motor);
+// 	}
   
-	function updatePositionAttributes(element,x,y){
-		target.setAttribute('data-x', x);
-		target.setAttribute('data-y', y);
-	}
-  var isMouseDown,initX,initY,height = draggable.offsetHeight,width = draggable.offsetWidth;
+// 	function updatePositionAttributes(element,x,y){
+// 		target.setAttribute('data-x', x);
+// 		target.setAttribute('data-y', y);
+// 	}
+//   var isMouseDown,initX,initY,height = draggable.offsetHeight,width = draggable.offsetWidth;
 
-draggable.addEventListener('mousedown', function(e) {
-  isMouseDown = true;
-  document.body.classList.add('no-select');
-  initX = e.offsetX;
-  initY = e.offsetY;
-})
+// draggable.addEventListener('mousedown', function(e) {
+//   isMouseDown = true;
+//   document.body.classList.add('no-select');
+//   initX = e.offsetX;
+//   initY = e.offsetY;
+// })
 
-document.addEventListener('mousemove', function(e) {
-  if (isMouseDown) {
-    var cx = e.clientX - initX,
-        cy = e.clientY - initY;
-    if (cx < 0) {
-      cx = 0;
-    }
-    if (cy < 0) {
-      cy = 0;
-    }
-    if (window.innerWidth - e.clientX + initX < width) {
-      cx = window.innerWidth - width;
-    }
-    if (e.clientY > window.innerHeight - height+ initY) {
-      cy = window.innerHeight - height;
-    }
-    draggable.style.left = cx + 'px';
-    draggable.style.top = cy + 'px';
-  }
-})
+// document.addEventListener('mousemove', function(e) {
+//   if (isMouseDown) {
+//     var cx = e.clientX - initX,
+//         cy = e.clientY - initY;
+//     if (cx < 0) {
+//       cx = 0;
+//     }
+//     if (cy < 0) {
+//       cy = 0;
+//     }
+//     if (window.innerWidth - e.clientX + initX < width) {
+//       cx = window.innerWidth - width;
+//     }
+//     if (e.clientY > window.innerHeight - height+ initY) {
+//       cy = window.innerHeight - height;
+//     }
+//     draggable.style.left = cx + 'px';
+//     draggable.style.top = cy + 'px';
+//   }
+// })
 
-draggable.addEventListener('mouseup', function() {
-  isMouseDown = false;
-  document.body.classList.remove('no-select');
-})
+// draggable.addEventListener('mouseup', function() {
+//   isMouseDown = false;
+//   document.body.classList.remove('no-select');
+// })
 
 
-};
+// };
 
 function moveAction(linear, angular, motor_number) {
     // Init message with zero values.
@@ -453,4 +453,86 @@ function gameCircleMenuchild() {
   } 
 }
 
+  // slider
+
+  function handRangeChange(value, id) {
+    // if id includes "left", then update the value for id "lefthandvalue"
+    if (id.includes("left")) {
+      document.getElementById("lefthandValue").innerHTML = value;
+    }
+    // if id includes "right", then update the value for id "righthandvalue"
+    else {
+      document.getElementById("righthandValue").innerHTML = value;
+    }
+  }
+
+  // cicular input
   
+  const container = document.querySelector('.container_arrow');
+  const arrow = document.querySelector('.arrow');
+  const degree = document.querySelector('.degree');
+
+  container.addEventListener('mousedown', startRotation);
+  container.addEventListener('touchstart', startRotation);
+
+  function startRotation(event) {
+    event.preventDefault();
+    const startX = event.clientX || event.touches[0].clientX;
+    const startY = event.clientY || event.touches[0].clientY;
+
+    document.addEventListener('mousemove', rotateArrow);
+    document.addEventListener('touchmove', rotateArrow);
+    document.addEventListener('mouseup', stopRotation);
+    document.addEventListener('touchend', stopRotation);
+
+    function rotateArrow(event) {
+      event.preventDefault();
+      const currentX = event.clientX || event.touches[0].clientX;
+      const currentY = event.clientY || event.touches[0].clientY;
+
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
+      const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+      arrow.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+      degree.textContent = `${angle.toFixed(2)}°`;
+    }
+
+    function stopRotation() {
+      document.removeEventListener('mousemove', rotateArrow);
+      document.removeEventListener('touchmove', rotateArrow);
+      document.removeEventListener('mouseup', stopRotation);
+      document.removeEventListener('touchend', stopRotation);
+      console.log('stop');
+      console.log(degree.textContent);
+    }
+  }
+
+  // meters button
+
+  let intervalId;
+    let count = 0;
+
+    function startCount() {
+      intervalId = setInterval(incrementCount, 100);
+    }
+
+    function stopCount() {
+      console.log('stop');
+      console.log(count);
+      clearInterval(intervalId);
+      count = 0;
+      updateCount();
+    }
+
+    function incrementCount() {
+      count++;
+      if (count === 10 || count === 100) {
+        count = 0;
+      }
+      updateCount();
+    }
+    function updateCount() {
+      document.getElementById('count').textContent = count;
+      
+    }

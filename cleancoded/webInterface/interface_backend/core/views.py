@@ -73,7 +73,7 @@ from django.utils.decorators import method_decorator
 @method_decorator(login_required, name='dispatch')
 class MainViewTemp(APIView):
     def get(self, request):
-        port = 8000
+        port = 5353
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             hostname = socket.inet_ntoa(fcntl.ioctl(

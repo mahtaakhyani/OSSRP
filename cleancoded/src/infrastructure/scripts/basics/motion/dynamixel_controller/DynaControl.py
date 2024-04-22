@@ -285,7 +285,7 @@ class DynaControl:
                     min_position = -150
                     max_position = 50
                 elif joint == 'neck':
-                    min_position = -58
+                    min_position = -68
                     max_position = 0
                 elif joint == 'head':
                     min_position = -150

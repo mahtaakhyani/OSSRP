@@ -187,6 +187,7 @@ catkin_install_python(PROGRAMS
   scripts/services/audio/speech_feature_extraction_server.py
   scripts/services/ai/conversation_bot.py
   scripts/tools/save_logs_to_file.py
+  scripts/basics/motion/translation_and_rotation/serial_communication.py
 
 
 

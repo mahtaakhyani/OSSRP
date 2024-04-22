@@ -109,16 +109,6 @@ namespace message_traits
 
 
 template <class ContainerAllocator>
-struct IsMessage< ::infrastructure::Landmarks_<ContainerAllocator> >
-  : TrueType
-  { };
-
-template <class ContainerAllocator>
-struct IsMessage< ::infrastructure::Landmarks_<ContainerAllocator> const>
-  : TrueType
-  { };
-
-template <class ContainerAllocator>
 struct IsFixedSize< ::infrastructure::Landmarks_<ContainerAllocator> >
   : FalseType
   { };
@@ -126,6 +116,16 @@ struct IsFixedSize< ::infrastructure::Landmarks_<ContainerAllocator> >
 template <class ContainerAllocator>
 struct IsFixedSize< ::infrastructure::Landmarks_<ContainerAllocator> const>
   : FalseType
+  { };
+
+template <class ContainerAllocator>
+struct IsMessage< ::infrastructure::Landmarks_<ContainerAllocator> >
+  : TrueType
+  { };
+
+template <class ContainerAllocator>
+struct IsMessage< ::infrastructure::Landmarks_<ContainerAllocator> const>
+  : TrueType
   { };
 
 template <class ContainerAllocator>

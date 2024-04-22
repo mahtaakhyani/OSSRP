@@ -32,18 +32,6 @@
                 --topics_msg_types $(arg logs_topics_msg_types) 
                 --file_name $(arg logs_file_name) 
                 --file_extension $(arg logs_file_extension)"/>
-
-<!-- Emotion interactions node -->
-    <include file="$(find infrastructure)/launch/initiate_facial.launch"/>
-<!-- Gaze_pose launch -->
-    <!-- <include file="$(find infrastructure)/launch/gaze_pose.launch"/> -->
-<!-- Speech_to_text launch -->
-    <!-- <include file="$(find infrastructure)/launch/speech_to_text.launch"/> -->
-<!-- Text_to_speech launch -->
-    <!-- <include file="$(find infrastructure)/launch/text_to_speech.launch"/> -->
-<!-- Speech_emotion_analysis launch-->
-    <!-- <include file="$(find infrastructure)/launch/speech_emotion_analysis.launch"/> -->
-
 <!-- Controlling the Dynamixels -->
     <node pkg="infrastructure" type="DynaControl.py" name="Dynamixels_controller" output="screen" 
         args="--port $(arg port) 
@@ -57,8 +45,21 @@
         args="--topic $(arg body_language_emotion_topic) 
                 --msg_type $(arg body_language_emotion_msg_type)"/>
 
-    
+    <node pkg="infrastructure" type="serial_communication.py" name="serial_communication" output="screen"/>
+
   
+<!-- Emotion interactions node -->
+    <include file="$(find infrastructure)/launch/initiate_facial.launch"/>
+<!-- Gaze_pose launch -->
+    <!-- <include file="$(find infrastructure)/launch/gaze_pose.launch"/> -->
+<!-- Speech_to_text launch -->
+    <!-- <include file="$(find infrastructure)/launch/speech_to_text.launch"/> -->
+<!-- Text_to_speech launch -->
+    <!-- <include file="$(find infrastructure)/launch/text_to_speech.launch"/> -->
+<!-- Speech_emotion_analysis launch-->
+    <!-- <include file="$(find infrastructure)/launch/speech_emotion_analysis.launch"/> -->
+
+
 
 <!-- Bridging between ROS and HTML interface node -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>

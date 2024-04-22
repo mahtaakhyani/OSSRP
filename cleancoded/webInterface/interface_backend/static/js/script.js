@@ -171,6 +171,19 @@ function changeimage(topic_name) {
     console.log('Image Viewer is showing: '+ img_url + ' topic');
 }
 
+// Updating the sound description on the panel
+// -----------------
+function update_description(class_name) {
+  // cut the "emoinput", "clone" or "active" if they exist from the "class_name" string to get the description
+  var description = class_name.replace('emoinput', '').replace('clone', '').replace('active', '');
+ 
+  if (description == 'No assigned sound found') {
+    document.getElementById("sound_description").innerHTML = 'No sound assigned for this emotion';
+  } else {
+  document.getElementById("sound_description").innerHTML = description;
+  }
+}
+
 // Drag and Drop
 // -----------------
 function allowDrop(ev) {
@@ -194,6 +207,7 @@ function drop(ev) {
 
   $(document.getElementById(state_var)).clone().appendTo(".dest_list"+drop_id).replaceWith(function() { 
     $(this).find("p").addClass("sclone_p");
+    $(this).find("p").css('display', 'block');
     $(this).css('display', 'inline-grid');
     $(this).find("input").removeClass("u-radius-50").css('font-size',' 0rem').css( 'min-width', '0.5rem');
     $(this).find("input").attr("class", state_var + "_clone");
@@ -336,6 +350,7 @@ var face_url_id = '';
 // and passing on the url of the video file and its assigned sound's url to update_exp function.
 // -----------------
 function exp_face(element) {
+
   var face_url_id = element.id;
   var face_name_val = element.value;
   
@@ -750,6 +765,7 @@ function move_keys(joint,pos){ // joint: head, neck, rhand, lhand | pos: up, dow
   }
 }
 
+
 // //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // // <----------------------------------------- END OF MOTION HANDLING ----------------------------------------->
 // // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -805,95 +821,92 @@ function submitWizardForm(data) {
 // -----------------
 // Get the msg type of the specified topic to publish on
 // -----------------
-// function setrostopic(topic_name) {
-//   var msg_type;
-//   // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
-//   $.ajax({
-//     type: "GET",
-//     url: get_msg_type_url,
-//     data: {
-//       topic: topic_name
-//     },
-//     success: function(response) {
-//       console.log(response);
-//       msg_type = response.msg_type;
+function setrostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
       
-//       var ros_topic = new ROSLIB.Topic({
-//         ros: ros,
-//         name: topic_name,
-//         messageType: msg_type // Set the message type of the topic
-//       });
+      var ros_topic = new ROSLIB.Topic({
+        ros: ros,
+        name: topic_name,
+        messageType: msg_type // Set the message type of the topic
+      });
       
-//       ros_topic.subscribe(function(message) {
-//         const fields = Object.keys(message); // Get the fields of the message type
-//         console.log(fields);
-//         const form = document.getElementById('messageForm');
-        
-//         fields.forEach((field) => { // Create an input element for each field of the message type
-//           const input = document.createElement('input');
-//           input.setAttribute('type', 'text');
-//           input.setAttribute('name', field);
-//           input.setAttribute('placeholder', field);
+      const form = document.getElementById('messageForm');
+      
+      const input = document.createElement('input');
+      input.setAttribute('type', 'text');
+      input.setAttribute('name', msg_type);
+      alert(input.getAttribute('name'));
+      input.setAttribute('placeholder', msg_type);
 
-//           form.appendChild(input);
-//           const bt = document.getElementById('pub');
-//           bt.style.display = 'block';
-//         });
+        form.appendChild(input);
+        const bt = document.getElementById('pub');
+        bt.style.display = 'block';
 
-//         publish_msg_form(ros_topic); // Publish the message when the form is submitted
-//       });
-//     }
-//   });
-// }
+        publish_msg_form(ros_topic); // Publish the message when the form is submitted
 
-// // -----------------
-// // Publish the message when the form is submitted
-// // -----------------
-// function publish_msg_form(topic) {
-//   const msgform = document.getElementById('messageForm');
-//   msgform.addEventListener('submit', function(event) { // Publish the message when the form is submitted
-//     event.preventDefault();
+    }
+  });
+}
 
-//     const formData = new FormData(msgform);
-//     const message = new ROSLIB.Message();
+// -----------------
+// Publish the message when the form is submitted
+// -----------------
+function publish_msg_form(topic) {
+  const msgform = document.getElementById('messageForm');
+  msgform.addEventListener('submit', function(event) { // Publish the message when the form is submitted
+    event.preventDefault();
+
+    const formData = new FormData(msgform);
+    const message = new ROSLIB.Message();
     
-//     for (const pair of formData.entries()) {
-//       message[pair[0]] = pair[1];
-//     }
+    for (const pair of formData.entries()) {
+      message[pair[0]] = pair[1];
+    }
 
-//     topic.publish(message);
-//   });
-// }
+    topic.publish(message);
+  });
+}
 
-// function echorostopic(topic_name) {
-//   var msg_type;
-//   // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
-//   $.ajax({
-//     type: "GET",
-//     url: get_msg_type_url,
-//     data: {
-//       topic: topic_name
-//     },
-//     success: function(response) {
-//       console.log(response);
-//       msg_type = response.msg_type;
-      
-//       var ros_topic = new ROSLIB.Topic({ 
-//         ros: ros,
-//         name: topic_name,
-//         messageType: msg_type // Set the message type of the topic
-//       });
+function echorostopic(topic_name) {
+  var msg_type;
+  // send a GET request to the Django server to set the topic name, and retrieve the topic type (aka. msg type)
+  $.ajax({
+    type: "GET",
+    url: get_msg_type_url,
+    data: {
+      topic: topic_name
+    },
+    success: function(response) {
+      console.log(response);
+      msg_type = response.msg_type;
 
-//       ros_topic.subscribe(function(message) {
-//         // add a new line to the topic's div with the message
-//         const div = document.getElementById('topics');
-//         const p = document.createElement('p');
-//         p.innerHTML = JSON.stringify(message);
-//         div.appendChild(p);
-//         p.innerHTML = '------------------ <br>';
-//         div.appendChild(p);
+      var ros_topic = new ROSLIB.Topic({ 
+        ros: ros,
+        name: topic_name.toString(),
+        messageType: msg_type.toString() // Set the message type of the topic
+      });
+
+      ros_topic.subscribe(function(message) {
+        alert(msg_type);
+        // // add a new line to the topic's div with the message
+        // const div = document.getElementById('topics');
+        // const p = document.createElement('p');
+        // p.innerHTML = JSON.stringify(message);
+        // div.appendChild(p);
+        // p.innerHTML = '------------------ <br>';
+        // div.appendChild(p);
         
-//       });
-//     }
-//   });
-// }
+      });
+    }
+  });
+}

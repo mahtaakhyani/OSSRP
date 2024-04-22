@@ -18514,6 +18514,7 @@ a.pswp__share--download:hover {
   background-color: whitesmoke;
   height: 2.5rem;
   display: flex;
+  justify-content: space-evenly;
   /* flex-wrap: wrap; */
   /* align-items: flex-end; */
 }
