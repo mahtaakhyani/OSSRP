@@ -47,9 +47,9 @@ $.ajax({
   url: request_server_ip,
 
   success: function(response) {
-    host = response.host
+    host = response.host;
     android_host = response.android_ip;
-    alert("Android is at: "+ android_host + "\nSet the host ip on the Android to: " + host)
+    alert("Android is at: "+ android_host + "\nSet the host ip on the Android to: " + host);
     setTimeout(() => {
       // Code to execute after the delay
       console.log("After delay");
@@ -671,8 +671,8 @@ function move(cw, joint) {
   cmd_vel_listener.subscribe(function(message) {
     console.log('Received message on ' + dyna_Topic.name + ' for ' + message.joint);
   });
-  angular = get_speed();
-  degree = get_degrees()*cw;
+  var angular = get_speed();
+  var degree = get_degrees()*cw;
   console.log(degree, joint)
   if (joint == 'reset'){
     degree = 0;

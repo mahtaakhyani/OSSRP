@@ -149,11 +149,81 @@ class FeelingsController:
             elif feeling == "point":
                 self.pointing()
                 
+                
             elif feeling == "shake":
                 self.shake_hands()
                 
             elif feeling == "nod":
+                self.pub_serial.publish("2")
+                time.sleep(4)
                 self.nod()
+                
+            elif feeling == "raise_hands":
+                self.raising_hands()
+            
+            elif feeling == "turn_head":
+                self.turning_head_left_center()
+                
+            elif feeling == "point_up":
+                self.point_up()
+                
+            elif feeling == "joint_attention_handless":
+                self.pub_serial.publish("2")
+                time.sleep(4)
+                self.neck_up()
+                
+            elif feeling == "joint_attention":
+                self.pub_serial.publish("2")
+                time.sleep(4)
+                self.point_up()
+            
+            elif feeling == "joint_attention_point_down":
+                self.pub_serial.publish("2")
+                time.sleep(5)
+                self.point_down()
+                
+            elif feeling == "joint_attention_point_down_handless":
+                self.pub_serial.publish("2")
+                time.sleep(5)
+                self.neck_down()
+                
+            elif feeling == "talk_lhand":
+                self.talk_lhand()
+                
+            elif feeling == "talk_rhand":
+                self.talk_rhand()
+            
+            
+            elif feeling == "talk_neck":
+                self.neck_up_pause()
+                
+            elif feeling == "talk_rhand_neck":
+                self.talk_rhand_neck_pause()
+            
+             
+            elif feeling == "dance":
+                self.pub_serial.publish("2")
+                time.sleep(1)
+                self.tilt_up_neck()
+                time.sleep(1)
+                self.raising_hands()
+                self.pub_serial.publish("3")
+                time.sleep(1)
+                self.tilt_down_neck()
+                time.sleep(1)
+                self.pub_serial.publish("3")
+                time.sleep(1)
+                self.pub_serial.publish("5")
+                time.sleep(1)
+                self.tilt_up_neck()
+                time.sleep(1)
+                self.pub_serial.publish("3")
+                time.sleep(2)
+                self.tilt_down_neck()
+                time.sleep(1)
+                self.pub_serial.publish("2")
+                
+            
 
         except Exception as e:
             
@@ -163,7 +233,33 @@ class FeelingsController:
             self.reset_position()
             self.move_to_more_natural_position()
 
-
+    def talk_rhand_neck_pause(self):
+        su = self.rhand_middle()
+        nu = self.neck_up_pause()
+        self.perform_movement(su)
+        self.perform_movement(nu)
+        time.sleep(2)
+        self.move_to_more_natural_position()
+        
+    def talk_rhand(self):
+        su = self.rhand_middle()
+        sd = self.rhand_down() 
+        for i in range(3):
+            self.perform_movement(su)
+            time.sleep(3)
+            self.perform_movement(sd)
+            time.sleep(5)
+        self.move_to_more_natural_position()
+        
+    def talk_lhand(self):
+        su = self.lhand_middle()
+        sd = self.lhand_down() 
+        for i in range(3):
+            self.perform_movement(su)
+            time.sleep(3)
+            self.perform_movement(sd)
+            time.sleep(5)
+        self.move_to_more_natural_position()
 
     def seq(self):
         """
@@ -253,22 +349,56 @@ class FeelingsController:
             # rospy.sleep(2)
             # self.move_to_more_natural_position()
             # rospy.sleep(5)
-
+    
+    def neck_up_pause(self):
+        p = self.tilt_up_neck()
+        self.perform_movement(p)
+        time.sleep(2)
+        self.move_to_more_natural_position()
+        
+    def neck_up(self):
+        rospy.loginfo(rospy.get_caller_id()+" performing neck up movement")
+        p = self.tilt_up_neck()
+        self.perform_movement(p)
+        time.sleep(6)
+        self.move_to_more_natural_position()
+        
+    def neck_down(self):
+        rospy.loginfo(rospy.get_caller_id()+" performing neck down movement")
+        p = self.tilt_down_neck()
+        self.perform_movement(p)
+        time.sleep(5)
+        self.move_to_more_natural_position()
+    
     def pointing(self):
         rospy.loginfo(rospy.get_caller_id()+" performing pointing movement")
-        p = self.poiting_hand()
+        p = self.poiting_hand_neck_down()
         self.perform_movement(p)
-        time.sleep(4)
-        l = self.look_right_head()
-        self.perform_movement(l)
-        time.sleep(10)
+        time.sleep(5)
         self.move_to_more_natural_position()
+        
+    def point_up(self):
+        rospy.loginfo(rospy.get_caller_id()+" performing pointing neck up movement")
+        p = self.poiting_hand_up_neck_up()
+        self.perform_movement(p)
+        time.sleep(6)
+        self.move_to_more_natural_position()
+    
+    def point_down(self):
+        rospy.loginfo(rospy.get_caller_id()+" performing pointing neck down movement")
+        p = self.poiting_hand_neck_down()
+        self.perform_movement(p)
+        time.sleep(6)
+        self.move_to_more_natural_position()
+    
+    
+    
     
     def shake_hands(self):
         rospy.loginfo(rospy.get_caller_id()+" performing shaking hands")
         self.move_to_more_natural_position()
-        su = self.shake_hands_up()
-        sd = self.shake_hands_down()
+        su = self.rhand_middle()
+        sd = self.rhand_down()
         self.pub_serial.publish("2")
         time.sleep(3)
         for i in range(3):
@@ -282,16 +412,44 @@ class FeelingsController:
         rospy.loginfo(rospy.get_caller_id()+" performing nodding")
         nu = self.tilt_up_neck()
         nd = self.tilt_down_neck()
-        self.pub_serial.publish("2")
-        time.sleep(3)
         for i in range(3):
             self.perform_movement(nu)
             time.sleep(2)
             self.perform_movement(nd)
             time.sleep(2)
         self.move_to_more_natural_position()
+          
+    def raising_hands(self):
+        rospy.loginfo(rospy.get_caller_id()+" raising hands")
+        rh = self.raise_hands()
+        rhu = self.rhand_up()
+        lhu = self.lhand_up()
+        rhm = self.rhand_middle()
+        lhm = self.lhand_middle()
+        first_both_hands_list_actions = [rhu[0],lhm[0]]
+        sec_both_hands_list_actions = [rhm[0],lhu[0]]
         
         
+        self.pub_serial.publish("2")
+        time.sleep(3)
+        self.perform_movement(rh)
+        for i in range(3):
+            self.perform_movement(first_both_hands_list_actions)
+            time.sleep(2)
+            self.perform_movement(sec_both_hands_list_actions)
+            time.sleep(2)
+        self.move_to_more_natural_position()
+        
+    def turning_head_left_center(self):
+        hr = self.turn_head()
+        self.pub_serial.publish("2")
+        time.sleep(3)
+        for i in range(3):
+            self.perform_movement(hr)
+            time.sleep(2)
+            self.move_to_more_natural_position()
+            time.sleep(2)
+            
     def perform_surprised_movement(self):
         """
         Perform the movement for the "surprised" feeling.
@@ -307,8 +465,6 @@ class FeelingsController:
 
         # perform the movement
         self.perform_movement(all_actions_list)
-
-    
 
     def perform_happy_movement(self):
         """
@@ -326,8 +482,6 @@ class FeelingsController:
         # perform the movement
         self.perform_movement(hand_actions_list)
 
-
-
     def perform_sad_movement(self):
         """
         Perform the movement for the "sad" feeling.
@@ -344,9 +498,6 @@ class FeelingsController:
         # perform the movement
         self.perform_movement(all_actions_list)
 
-
-
-
     def perform_fearful_movement(self):
         """
         Perform the movement for the "fearful" feeling.
@@ -362,9 +513,6 @@ class FeelingsController:
 
         # perform the movement
         self.perform_movement(all_actions_list)
-
-
-
 
     def perform_disgusted_movement(self):
         """
@@ -383,7 +531,7 @@ class FeelingsController:
         self.perform_movement(all_actions_list)
 
 
-
+    
     
     def perform_angry_movement(self):
         """
@@ -401,16 +549,38 @@ class FeelingsController:
         # perform the movement
         self.perform_movement(all_actions_list)
 
-    def poiting_hand(self):
-        position = -70
+    def poiting_hand_neck_down(self):
+        position = -80
         joint = "neck"
         speed = 60
         neck_action = [[speed, position, joint]]
-        position = -50
+        position = -35
         joint = "rhand"
         speed = 60
         hand_action = [[speed, position, joint]]
         return [hand_action, neck_action]
+    
+    def poiting_hand_up_neck_up(self):
+        position = -40
+        joint = "neck"
+        speed = 80
+        neck_action = [[speed, position, joint]]
+        position = 35
+        joint = "rhand"
+        speed = 200
+        hand_action = [[speed, position, joint]]
+        return [neck_action,hand_action]
+    
+    def poiting_hand_up_neck_up(self):
+        position = -40
+        joint = "neck"
+        speed = 80
+        neck_action = [[speed, position, joint]]
+        position = 35
+        joint = "rhand"
+        speed = 200
+        hand_action = [[speed, position, joint]]
+        return [neck_action,hand_action]
     
     def look_right_head(self):
         position = -90
@@ -423,9 +593,9 @@ class FeelingsController:
         log_message = f"{rospy.get_caller_id()} tilt neck up"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position1 = -30
+        position1 = 20
         joint1 = "neck"
-        speed = 60
+        speed = 80
         neck_action = [[speed, position1, joint1]]
         
         return [neck_action]
@@ -434,9 +604,9 @@ class FeelingsController:
         log_message = f"{rospy.get_caller_id()} tilt neck down"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position1 = -65
+        position1 = -10
         joint1 = "neck"
-        speed = 60
+        speed = 75
         neck_action = [[speed, position1, joint1]]
         
         return [neck_action]
@@ -455,27 +625,98 @@ class FeelingsController:
 
         return [hand_action]
 
-    def shake_hands_up(self):
-        log_message = f"{rospy.get_caller_id()} shake hands"
+
+    def rhand_up(self):
+        log_message = f"{rospy.get_caller_id()} up rhand"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position1 = 0
+        position1 = 100
         joint1 = "rhand"
-        speed = 80
+        speed = 110
+        hand_action = [[speed, position1, joint1]]
+        
+        return [hand_action]
+    
+    def rhand_middle(self):
+        log_message = f"{rospy.get_caller_id()} middle rhand"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = 40
+        joint1 = "rhand"
+        speed = 70
         hand_action = [[speed, position1, joint1]]
         
         return [hand_action]
         
-    def shake_hands_down(self):
+    def rhand_down(self):
         log_message = f"{rospy.get_caller_id()} shake hands"
         rospy.loginfo(log_message)
         self.pub_log.publish(log_message)
-        position1 = -50
+        position1 = 10
         joint1 = "rhand"
         speed = 80
         hand_action = [[speed, position1, joint1]]
 
         return [hand_action]
+    
+    def lhand_up(self):
+        log_message = f"{rospy.get_caller_id()} up lhand"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = 100
+        joint1 = "lhand"
+        speed = 110
+        hand_action = [[speed, position1, joint1]]
+        
+        return [hand_action]
+    
+    def lhand_middle(self):
+        log_message = f"{rospy.get_caller_id()} lhands middle"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = 50
+        joint1 = "lhand"
+        speed = 110
+        hand_action = [[speed, position1, joint1]]
+        
+        return [hand_action]
+        
+    def lhand_down(self):
+        log_message = f"{rospy.get_caller_id()} lhands down"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = 0
+        joint1 = "lhand"
+        speed = 110
+        hand_action = [[speed, position1, joint1]]
+
+        return [hand_action]
+    
+    def raise_hands(self):
+        log_message = f"{rospy.get_caller_id()} raise hands"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position1 = -110
+        joint1 = "lhand"
+        speed = 80
+        rhand_action = [[speed, position1, joint1]]
+        position2 = 70
+        joint2 = "rhand"
+        speed = 80
+        lhand_action = [[speed, position2, joint2]]
+
+        return [rhand_action,lhand_action]
+    
+    def turn_head(self):
+        log_message = f"{rospy.get_caller_id()} turn head"
+        rospy.loginfo(log_message)
+        self.pub_log.publish(log_message)
+        position2 = -30
+        joint2 = "head"
+        speed = 80
+        head_action = [[speed, position2, joint2]]
+
+        return [head_action]
     
     def seq_hands2(self):
         log_message = f"{rospy.get_caller_id()} seq hands2"
@@ -789,14 +1030,14 @@ class FeelingsController:
         position = 19
         lhand_action = [[speed, position, joint]]
         joint = "rhand"
-        position = -70
+        position = 10
         rhand_action = [[speed, position, joint]]
         joint = "head"
         speed = 60
-        position = -75
+        position = 0
         head_action = [[speed, position, joint]]
         joint = "neck"
-        position = -55
+        position = 5
         neck_action = [[speed, position, joint]]
         
         combined_actions = [lhand_action, rhand_action, head_action, neck_action]
